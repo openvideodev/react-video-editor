@@ -36,8 +36,8 @@ An advanced, AI-powered video editor that leverages **WebCodecs API** for high-p
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/openvideodev/openvideo.git
-    cd openvideo
+    git clone https://github.com/openvideodev/react-video-editor.git
+    cd react-video-editor
     ```
 
 2.  Install dependencies:
