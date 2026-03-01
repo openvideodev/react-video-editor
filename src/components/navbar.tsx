@@ -63,8 +63,11 @@ const Navbar = () => {
               <Icons.discord className="size-4" />
             </a>
           </div>
-          <Button className="px-5 py-2 text-sm font-semibold rounded-md">
-            Get Started
+          <Button
+            className="px-5 py-2 text-sm font-semibold rounded-full bg-secondary/80 hover:bg-secondary text-secondary-foreground transition-all"
+            onClick={() => handleGetStarted("/projects")}
+          >
+            Try editor
           </Button>
         </div>
       </div>
