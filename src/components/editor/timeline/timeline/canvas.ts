@@ -146,6 +146,9 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   }
 
   public init() {
+    // Ensure container is empty to prevent multiple canvases in strict mode
+    this.containerEl.innerHTML = "";
+
     const canvasElement = document.createElement("canvas");
     canvasElement.style.width = "100%";
     canvasElement.style.height = "100%";
@@ -1198,6 +1201,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
       this.clearTransitionButton();
       this.disposeScrollbars();
       this.canvas.dispose();
+      this.containerEl.innerHTML = "";
     }
   }
 }
