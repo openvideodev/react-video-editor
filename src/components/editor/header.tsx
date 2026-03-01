@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { IconShare } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "../ui/mode-toggle";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { studio } = useStudioStore();
@@ -39,7 +41,11 @@ export default function Header() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isBatchExporting, setIsBatchExporting] = useState(false);
+  const router = useRouter();
 
+  const handleGetStarted = (route: string) => {
+    router.push(route);
+  };
   const handleBatchExport = async () => {
     if (!studio) return;
     setIsBatchExporting(true);
@@ -275,7 +281,10 @@ export default function Header() {
     <header className="relative flex h-[52px] w-full shrink-0 items-center justify-between px-4 bg-card z-10">
       {/* Left Section */}
       <div className="flex items-center gap-2">
-        <div className="pointer-events-auto flex h-9 w-9 bg-primary/20 items-center justify-center rounded-md ">
+        <div
+          className="pointer-events-auto flex h-9 w-9 bg-primary/20 items-center justify-center rounded-md "
+          onClick={() => handleGetStarted("/")}
+        >
           <LogoIcons.scenify width={24} />
         </div>
         <DropdownMenu>

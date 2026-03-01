@@ -21,7 +21,7 @@ const Navbar = () => {
       >
         <div
           className="pointer-events-auto flex h-9 w-9 bg-primary/20 items-center justify-center rounded-md "
-          onClick={() => handleGetStarted("/home")}
+          onClick={() => handleGetStarted("/")}
         >
           <LogoIcons.scenify width={24} />
         </div>
@@ -29,7 +29,7 @@ const Navbar = () => {
         {/* Links Centrales */}
         <div className="hidden md:flex items-center gap-8">
           <a
-            onClick={() => handleGetStarted("/home")}
+            onClick={() => handleGetStarted("/")}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             Home
