@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ArrowUpIcon, Wand2, MessageCircle } from 'lucide-react';
+import { ArrowUpIcon, Wand2, MessageCircle, SparkleIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStudioStore } from '@/stores/studio-store';
 import { Studio } from 'openvideo';
@@ -21,6 +21,7 @@ import { useTimelineStore } from '@/stores/timeline-store';
 import { IClip } from '@/types/timeline';
 import { chatFlow } from '@/genkit/chat-flow';
 import { ImportAsset } from '@/genkit/type';
+import { Icons } from '@/components/shared/icons';
 
 interface Message {
   role: 'user' | 'model';
@@ -73,9 +74,9 @@ export default function Assistant() {
           },
           trim: clip.trim
             ? {
-                from: clip.trim.from / 1000,
-                to: clip.trim.to / 1000,
-              }
+              from: clip.trim.from / 1000,
+              to: clip.trim.to / 1000,
+            }
             : undefined,
         };
       });
@@ -248,13 +249,13 @@ export default function Assistant() {
         >
           {messages.length === 0 ? (
             <div className="flex flex-1 h-full flex-col items-center justify-center space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
-              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted">
-                <MessageCircle className="w-8 h-8 text-muted-foreground" />
+              <div className="flex items-center justify-center w-16 h-16">
+                <Icons.sparkle className="w-12 h-12 text-muted-foreground/90" />
               </div>
 
               <div className="text-center space-y-2">
                 <h2 className="text-xl font-semibold">
-                  I'm Coco, your AI assistant
+                  I'm ILO, your AI assistant
                 </h2>
                 <p className="text-muted-foreground">
                   What can I help you with?
@@ -365,7 +366,7 @@ export default function Assistant() {
                                 <code
                                   className={cn(
                                     isInline &&
-                                      'bg-muted px-1.5 py-0.5 rounded font-mono text-sm',
+                                    'bg-muted px-1.5 py-0.5 rounded font-mono text-sm',
                                     className
                                   )}
                                   {...props}
