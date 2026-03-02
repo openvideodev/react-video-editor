@@ -48,7 +48,7 @@ export default function Editor() {
         </div>
       )}
       <Header />
-      <div className="flex-1 min-h-0 min-w-0 px-2 pb-2">
+      <div className="flex-1 min-h-0 min-w-0">
         <ResizablePanelGroup
           direction="horizontal"
           className="h-full w-full gap-0"
@@ -65,7 +65,7 @@ export default function Editor() {
             <FloatingControl />
           </ResizablePanel>
 
-          <ResizableHandle className="bg-transparent w-1.5" />
+          <ResizableHandle className="bg-border/90" />
 
           {/* Middle Column: Preview + Timeline */}
           <ResizablePanel
@@ -96,7 +96,7 @@ export default function Editor() {
                 />
               </ResizablePanel>
 
-              <ResizableHandle className="bg-transparent !h-1.5" />
+              <ResizableHandle className="bg-border/90" />
 
               {/* Timeline Panel */}
               <ResizablePanel
@@ -112,7 +112,7 @@ export default function Editor() {
           </ResizablePanel>
           {isCopilotVisible && (
             <>
-              <ResizableHandle className="bg-transparent w-1.5" />
+              <ResizableHandle className="bg-border/90" />
               {/* Right Column: Chat Copilot */}
               <ResizablePanel
                 defaultSize={copilotPanel}
