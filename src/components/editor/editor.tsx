@@ -41,7 +41,7 @@ export default function Editor() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-background overflow-hidden space-y-1.5">
+    <div className="h-screen w-screen flex flex-col bg-background overflow-hidden">
       {!isReady && (
         <div className="absolute inset-0 z-50">
           <Loading />

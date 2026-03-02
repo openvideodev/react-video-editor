@@ -294,7 +294,7 @@ export default function Header() {
   };
 
   return (
-    <header className="relative flex h-[52px] w-full shrink-0 items-center justify-between px-4 bg-card z-10">
+    <header className="relative flex h-[52px] w-full shrink-0 items-center justify-between px-4 bg-card z-10 border-b">
       {/* Left Section */}
       <div className="flex items-center gap-2">
         <div

@@ -201,7 +201,7 @@ export function Timeline() {
         Math.min(
           duration,
           (mouseX + scrollLeft) /
-            (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel),
+          (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel),
         ),
       );
 
@@ -241,7 +241,9 @@ export function Timeline() {
   // but we still need to keep the UI in sync when the canvas scrolls.
 
   useEffect(() => {
-    const canvas = new TimelineCanvas("timeline-canvas");
+    const canvas = new TimelineCanvas("timeline-canvas", {
+      getDuration: () => useTimelineStore.getState().getTotalDuration(),
+    });
     timelineCanvasRef.current = canvas;
 
     // Set up UI event listeners (scroll/zoom)
@@ -277,8 +279,8 @@ export function Timeline() {
       handleWheel({
         ctrlKey: true,
         deltaY: delta,
-        preventDefault: () => {},
-        stopPropagation: () => {},
+        preventDefault: () => { },
+        stopPropagation: () => { },
       } as any);
     });
 
@@ -291,7 +293,7 @@ export function Timeline() {
       scrollbarColor: scrollbarColors.fill,
     });
 
-    canvas.setTracks(tracks);
+    canvas.setTracks(tracks, clips);
 
     return () => {
       canvas.dispose();
@@ -319,7 +321,7 @@ export function Timeline() {
   useEffect(() => {
     if (timelineCanvasRef.current) {
       timelineCanvasRef.current.setTimeScale(zoomLevel);
-      timelineCanvasRef.current.setTracks(tracks);
+      timelineCanvasRef.current.setTracks(tracks, clips);
     }
   }, [zoomLevel, tracks, clips]);
 
