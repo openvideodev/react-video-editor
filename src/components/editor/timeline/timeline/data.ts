@@ -1,4 +1,4 @@
-import { ITimelineTrack, IClip } from '@/types/timeline';
+import { ITimelineTrack, IClip } from "@/types/timeline";
 
 export function loadStudioData() {
   const clips: Record<string, IClip> = {};

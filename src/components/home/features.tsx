@@ -27,12 +27,14 @@ const Features = () => {
   const features = [
     {
       title: "AI Editor Copilot",
-      description: "Write commands to edit video, generate transitions or analyze your media in real time.",
+      description:
+        "Write commands to edit video, generate transitions or analyze your media in real time.",
       icon: <IconSparkles2 size={18} />,
     },
     {
       title: "Zero Latency Renderer",
-      description: "Fast, client-side rendering using WebCodecs and PixiJS for a smooth editing experience.",
+      description:
+        "Fast, client-side rendering using WebCodecs and PixiJS for a smooth editing experience.",
       icon: <Icons.video size={18} />,
     },
     {
@@ -54,7 +56,7 @@ const Features = () => {
       title: "Fluid Animations",
       description: "Bring elements to life with customizable keyframe-based motion and transforms.",
       icon: <Move size={18} />,
-    }
+    },
   ];
 
   return (
@@ -65,9 +67,12 @@ const Features = () => {
           <Badge variant="secondary" className="px-4 py-2">
             Features
           </Badge>{" "}
-          <h2 className="text-4xl font-medium tracking-tight">Everything you need to edit at phase</h2>
+          <h2 className="text-4xl font-medium tracking-tight">
+            Everything you need to edit at phase
+          </h2>
           <p className="max-w-2xl mx-auto max-sm:text-sm text-muted-foreground text-lg">
-            Powerful AI-assisted tools, real-time rendering and professional video workflows — all running directly in your browser.
+            Powerful AI-assisted tools, real-time rendering and professional video workflows — all
+            running directly in your browser.
           </p>
         </div>{" "}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

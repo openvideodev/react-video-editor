@@ -38,10 +38,7 @@ export async function POST(req: Request) {
     const { name, category, data } = body;
 
     if (!name || !category || !data) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const preset = await prisma.customPreset.create({
@@ -56,9 +53,6 @@ export async function POST(req: Request) {
     return NextResponse.json(preset);
   } catch (error) {
     console.error("Error creating custom preset:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

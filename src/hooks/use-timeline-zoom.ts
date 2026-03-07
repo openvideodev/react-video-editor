@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, RefObject } from 'react';
+import { useState, useCallback, useEffect, RefObject } from "react";
 
 interface UseTimelineZoomProps {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -44,10 +44,10 @@ export function useTimelineZoom({
       }
     };
 
-    document.addEventListener('wheel', preventZoom, { passive: false });
+    document.addEventListener("wheel", preventZoom, { passive: false });
 
     return () => {
-      document.removeEventListener('wheel', preventZoom);
+      document.removeEventListener("wheel", preventZoom);
     };
   }, [isInTimeline, containerRef]);
 

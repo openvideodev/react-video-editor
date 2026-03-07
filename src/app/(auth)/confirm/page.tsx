@@ -19,12 +19,9 @@ export default function AuthenticationPage() {
             <div className="flex items-center justify-center">
               <MailCheckIcon className="h-6 w-6" />
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Check your email
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
             <p className="text-sm text-muted-foreground">
-              We emailed a magic link to your email address. Click the link to
-              continue.
+              We emailed a magic link to your email address. Click the link to continue.
             </p>
           </div>
         </div>

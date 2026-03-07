@@ -82,14 +82,10 @@ export default function Header() {
       // 2. Select project template: prefer current studio if it has clips, otherwise use API template
       const currentProject = studio.exportToJSON();
       const baseProject =
-        currentProject.clips && currentProject.clips.length > 0
-          ? currentProject
-          : template;
+        currentProject.clips && currentProject.clips.length > 0 ? currentProject : template;
 
       if (!baseProject.clips || baseProject.clips.length === 0) {
-        throw new Error(
-          "No template content available. Please add a clip to the canvas.",
-        );
+        throw new Error("No template content available. Please add a clip to the canvas.");
       }
 
       const settings = baseProject.settings || {};
@@ -106,10 +102,7 @@ export default function Header() {
         // Find the first non-Audio/Transition/Effect clip to animate
         const targetClip =
           project.clips.find(
-            (c: any) =>
-              c.type !== "Audio" &&
-              c.type !== "Transition" &&
-              c.type !== "Effect",
+            (c: any) => c.type !== "Audio" && c.type !== "Transition" && c.type !== "Effect",
           ) || project.clips[0];
 
         if (targetClip) {
@@ -158,10 +151,9 @@ export default function Header() {
         if (!uploadRes.ok) throw new Error(`Failed to save ${key}`);
       }
 
-      toast.success(
-        `Batch export complete! ${keys.length} videos saved to D:\\animations`,
-        { id: toastId },
-      );
+      toast.success(`Batch export complete! ${keys.length} videos saved to D:\\animations`, {
+        id: toastId,
+      });
     } catch (error: any) {
       toast.error(`Batch export failed: ${error.message}`, { id: toastId });
     } finally {
@@ -178,13 +170,7 @@ export default function Header() {
     setCanUndo(studio.history.canUndo());
     setCanRedo(studio.history.canRedo());
 
-    const handleHistoryChange = ({
-      canUndo,
-      canRedo,
-    }: {
-      canUndo: boolean;
-      canRedo: boolean;
-    }) => {
+    const handleHistoryChange = ({ canUndo, canRedo }: { canUndo: boolean; canRedo: boolean }) => {
       setCanUndo(canUndo);
       setCanRedo(canRedo);
     };
@@ -240,7 +226,6 @@ export default function Header() {
       clearTimeout(timeoutId);
     };
   }, [studio, projectId]);
-
 
   const handleNew = () => {
     if (!studio) return;
@@ -325,9 +310,7 @@ export default function Header() {
         });
 
         if (validClips.length === 0) {
-          throw new Error(
-            "No valid clips found in JSON. All clips have empty source URLs.",
-          );
+          throw new Error("No valid clips found in JSON. All clips have empty source URLs.");
         }
 
         const validJson = { ...json, clips: validClips };
@@ -430,9 +413,7 @@ export default function Header() {
                             isSelected && "border-primary",
                           )}
                         >
-                          {isSelected && (
-                            <div className="h-2 w-2 rounded-full bg-primary" />
-                          )}
+                          {isSelected && <div className="h-2 w-2 rounded-full bg-primary" />}
                         </div>
                       </DropdownMenuItem>
                     );
@@ -448,9 +429,7 @@ export default function Header() {
                 </p>
                 <div className="grid grid-cols-2 gap-2 px-1">
                   <div className="space-y-1">
-                    <label className="text-[10px] text-muted-foreground uppercase">
-                      Width
-                    </label>
+                    <label className="text-[10px] text-muted-foreground uppercase">Width</label>
                     <input
                       type="number"
                       value={customWidth}
@@ -460,9 +439,7 @@ export default function Header() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] text-muted-foreground uppercase">
-                      Height
-                    </label>
+                    <label className="text-[10px] text-muted-foreground uppercase">Height</label>
                     <input
                       type="number"
                       value={customHeight}
@@ -485,12 +462,7 @@ export default function Header() {
         </DropdownMenu>
 
         <div className=" pointer-events-auto flex h-10 items-center px-1.5">
-          <Button
-            onClick={() => studio?.undo()}
-            disabled={!canUndo}
-            variant="ghost"
-            size="icon"
-          >
+          <Button onClick={() => studio?.undo()} disabled={!canUndo} variant="ghost" size="icon">
             <Icons.undo className="size-5" />
           </Button>
           <Button
@@ -551,23 +523,12 @@ export default function Header() {
 
         {/* End of right actions */}
 
-        <ExportModal
-          open={isExportModalOpen}
-          onOpenChange={setIsExportModalOpen}
-        />
-        <ShortcutsModal
-          open={isShortcutsModalOpen}
-          onOpenChange={setIsShortcutsModalOpen}
-        />
+        <ExportModal open={isExportModalOpen} onOpenChange={setIsExportModalOpen} />
+        <ShortcutsModal open={isShortcutsModalOpen} onOpenChange={setIsShortcutsModalOpen} />
 
         <ModeToggle />
 
-
-        <Button
-          size="sm"
-          className="gap-2 rounded-full"
-          onClick={() => setIsExportModalOpen(true)}
-        >
+        <Button size="sm" className="gap-2 rounded-full" onClick={() => setIsExportModalOpen(true)}>
           Download
         </Button>
       </div>

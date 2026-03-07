@@ -1,7 +1,7 @@
-import { randomUUID } from 'crypto';
-import { type NextRequest, NextResponse } from 'next/server';
-import { config } from '@/lib/config';
-import { R2StorageService } from '@/lib/r2';
+import { randomUUID } from "crypto";
+import { type NextRequest, NextResponse } from "next/server";
+import { config } from "@/lib/config";
+import { R2StorageService } from "@/lib/r2";
 
 interface PresignRequest {
   userId: string;
@@ -19,12 +19,12 @@ const r2 = new R2StorageService({
 export async function POST(request: NextRequest) {
   try {
     const body: PresignRequest = await request.json();
-    const { userId = 'mockuser', fileNames } = body;
+    const { userId = "mockuser", fileNames } = body;
 
     if (!fileNames || !Array.isArray(fileNames) || fileNames.length === 0) {
       return NextResponse.json(
-        { error: 'fileNames array is required and must not be empty' },
-        { status: 400 }
+        { error: "fileNames array is required and must not be empty" },
+        { status: 400 },
       );
     }
 
@@ -45,18 +45,18 @@ export async function POST(request: NextRequest) {
           presignedUrl: presigned.presignedUrl,
           url: presigned.url,
         };
-      })
+      }),
     );
 
     return NextResponse.json({ success: true, uploads });
   } catch (error) {
-    console.error('Error in presign route:', error);
+    console.error("Error in presign route:", error);
     return NextResponse.json(
       {
-        error: 'Internal server error',
+        error: "Internal server error",
         details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,10 +1,4 @@
-import {
-  Input,
-  ALL_FORMATS,
-  BlobSource,
-  CanvasSink,
-  WrappedCanvas,
-} from 'mediabunny';
+import { Input, ALL_FORMATS, BlobSource, CanvasSink, WrappedCanvas } from "mediabunny";
 
 interface VideoSinkData {
   sink: CanvasSink;
@@ -16,20 +10,13 @@ export class VideoCache {
   private sinks = new Map<string, VideoSinkData>();
   private initPromises = new Map<string, Promise<void>>();
 
-  async getFrameAt(
-    mediaId: string,
-    file: File,
-    time: number
-  ): Promise<WrappedCanvas | null> {
+  async getFrameAt(mediaId: string, file: File, time: number): Promise<WrappedCanvas | null> {
     await this.ensureSink(mediaId, file);
 
     const sinkData = this.sinks.get(mediaId);
     if (!sinkData) return null;
 
-    if (
-      sinkData.currentFrame &&
-      this.isFrameValid(sinkData.currentFrame, time)
-    ) {
+    if (sinkData.currentFrame && this.isFrameValid(sinkData.currentFrame, time)) {
       return sinkData.currentFrame;
     }
 
@@ -51,7 +38,7 @@ export class VideoCache {
   }
   private async iterateToTime(
     sinkData: VideoSinkData,
-    targetTime: number
+    targetTime: number,
   ): Promise<WrappedCanvas | null> {
     if (!sinkData.iterator) return null;
 
@@ -71,16 +58,13 @@ export class VideoCache {
         if (frame.timestamp > targetTime + 1.0) break;
       }
     } catch (error) {
-      console.warn('Iterator failed, will restart:', error);
+      console.warn("Iterator failed, will restart:", error);
       sinkData.iterator = null;
     }
 
     return null;
   }
-  private async seekToTime(
-    sinkData: VideoSinkData,
-    time: number
-  ): Promise<WrappedCanvas | null> {
+  private async seekToTime(sinkData: VideoSinkData, time: number): Promise<WrappedCanvas | null> {
     try {
       if (sinkData.iterator) {
         await sinkData.iterator.return();
@@ -97,7 +81,7 @@ export class VideoCache {
         return frame;
       }
     } catch (error) {
-      console.warn('Failed to seek video:', error);
+      console.warn("Failed to seek video:", error);
     }
 
     return null;
@@ -128,17 +112,17 @@ export class VideoCache {
 
       const videoTrack = await input.getPrimaryVideoTrack();
       if (!videoTrack) {
-        throw new Error('No video track found');
+        throw new Error("No video track found");
       }
 
       const canDecode = await videoTrack.canDecode();
       if (!canDecode) {
-        throw new Error('Video codec not supported for decoding');
+        throw new Error("Video codec not supported for decoding");
       }
 
       const sink = new CanvasSink(videoTrack, {
         poolSize: 3,
-        fit: 'contain',
+        fit: "contain",
       });
 
       this.sinks.set(mediaId, {
@@ -175,11 +159,8 @@ export class VideoCache {
   getStats() {
     return {
       totalSinks: this.sinks.size,
-      activeSinks: Array.from(this.sinks.values()).filter((s) => s.iterator)
-        .length,
-      cachedFrames: Array.from(this.sinks.values()).filter(
-        (s) => s.currentFrame
-      ).length,
+      activeSinks: Array.from(this.sinks.values()).filter((s) => s.iterator).length,
+      cachedFrames: Array.from(this.sinks.values()).filter((s) => s.currentFrame).length,
     };
   }
 }

@@ -9,11 +9,7 @@ import {
   ColorPickerOutput,
   ColorPickerSelection,
 } from "@/components/ui/color-picker";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { IClip, AnimationOptions, KeyframeData } from "openvideo";
 import {
   Select,
@@ -98,9 +94,7 @@ const FontPicker = React.memo(
       >
         <SelectTrigger className="w-full h-12">
           <SelectValue placeholder="Select font">
-            <div className="flex items-center h-full">
-              {currentFamily.family}
-            </div>
+            <div className="flex items-center h-full">{currentFamily.family}</div>
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-[300px]">{fontItems}</SelectContent>
@@ -171,15 +165,12 @@ export function TextProperties({ clip }: TextPropertiesProps) {
 
   // Memoize font computations to prevent unnecessary recalculations
   const currentFont = useMemo(
-    () =>
-      getFontByPostScriptName(style.fontFamily) || GROUPED_FONTS[0].mainFont,
+    () => getFontByPostScriptName(style.fontFamily) || GROUPED_FONTS[0].mainFont,
     [style.fontFamily],
   );
 
   const currentFamily = useMemo(
-    () =>
-      GROUPED_FONTS.find((f) => f.family === currentFont.family) ||
-      GROUPED_FONTS[0],
+    () => GROUPED_FONTS.find((f) => f.family === currentFont.family) || GROUPED_FONTS[0],
     [currentFont.family],
   );
 
@@ -257,9 +248,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
         <div className="grid grid-cols-2 gap-2">
           <InputGroup>
             <InputGroupAddon align="inline-start">
-              <span className="text-[10px] font-medium text-muted-foreground">
-                X
-              </span>
+              <span className="text-[10px] font-medium text-muted-foreground">X</span>
             </InputGroupAddon>
             <NumberInput
               value={Math.round(textClip.left || 0)}
@@ -269,9 +258,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
           </InputGroup>
           <InputGroup>
             <InputGroupAddon align="inline-start">
-              <span className="text-[10px] font-medium text-muted-foreground">
-                Y
-              </span>
+              <span className="text-[10px] font-medium text-muted-foreground">Y</span>
             </InputGroupAddon>
             <NumberInput
               value={Math.round(textClip.top || 0)}
@@ -283,9 +270,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
         <div className="grid grid-cols-2 gap-2">
           <InputGroup>
             <InputGroupAddon align="inline-start">
-              <span className="text-[10px] font-medium text-muted-foreground">
-                W
-              </span>
+              <span className="text-[10px] font-medium text-muted-foreground">W</span>
             </InputGroupAddon>
             <NumberInput
               value={Math.round(textClip.width || 0)}
@@ -295,9 +280,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
           </InputGroup>
           <InputGroup>
             <InputGroupAddon align="inline-start">
-              <span className="text-[10px] font-medium text-muted-foreground">
-                H
-              </span>
+              <span className="text-[10px] font-medium text-muted-foreground">H</span>
             </InputGroupAddon>
             <NumberInput
               value={Math.round(textClip.height || 0)}
@@ -341,24 +324,17 @@ export function TextProperties({ clip }: TextPropertiesProps) {
           Font
         </label>
 
-        <FontPicker
-          currentFamily={currentFamily}
-          handleFontChange={handleFontChange}
-        />
+        <FontPicker currentFamily={currentFamily} handleFontChange={handleFontChange} />
 
         <div className="grid grid-cols-2 gap-2">
-          <Select
-            value={currentFont.postScriptName}
-            onValueChange={(v) => handleFontChange(v)}
-          >
+          <Select value={currentFont.postScriptName} onValueChange={(v) => handleFontChange(v)}>
             <SelectTrigger className="bg-input border h-9 w-full overflow-hidden">
               <SelectValue placeholder="Style" />
             </SelectTrigger>
             <SelectContent>
               {currentFamily.styles.map((style) => (
                 <SelectItem key={style.id} value={style.postScriptName}>
-                  {style.fullName.replace(currentFamily.family, "").trim() ||
-                    "Regular"}
+                  {style.fullName.replace(currentFamily.family, "").trim() || "Regular"}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -449,11 +425,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
           <InputGroupAddon align="inline-start" className="relative p-0">
             <Popover modal={true}>
               <PopoverTrigger asChild>
-                <InputGroupButton
-                  variant="ghost"
-                  size="icon-xs"
-                  className="h-full w-8"
-                >
+                <InputGroupButton variant="ghost" size="icon-xs" className="h-full w-8">
                   <div
                     className="h-4 ml-2 w-4 border border-white/10 shadow-sm"
                     style={{
@@ -491,10 +463,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
             onChange={(e) => handleStyleUpdate({ fill: e.target.value })}
             className="text-sm p-0 text-[10px] font-mono"
           />
-          <InputGroupAddon
-            align="inline-end"
-            className="border-l border-white/5 pl-2"
-          >
+          <InputGroupAddon align="inline-end" className="border-l border-white/5 pl-2">
             <span className="text-[10px]">100%</span>
           </InputGroupAddon>
         </InputGroup>
@@ -559,9 +528,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
                 className="flex items-center justify-between p-2 bg-secondary/30 rounded-md group"
               >
                 <div className="flex flex-col flex-1">
-                  <span className="text-xs font-medium capitalize">
-                    {anim.type}
-                  </span>
+                  <span className="text-xs font-medium capitalize">{anim.type}</span>
                   <span className="text-[10px] text-muted-foreground">
                     {Math.round(anim.options.duration / 1e6)}s duration
                   </span>
@@ -608,16 +575,11 @@ export function TextProperties({ clip }: TextPropertiesProps) {
             <InputGroupAddon align="inline-start" className="relative p-0">
               <Popover modal={true}>
                 <PopoverTrigger asChild>
-                  <InputGroupButton
-                    variant="ghost"
-                    size="icon-xs"
-                    className="h-full w-8"
-                  >
+                  <InputGroupButton variant="ghost" size="icon-xs" className="h-full w-8">
                     <div
                       className="h-4 w-4 rounded-full border border-white/10 shadow-sm"
                       style={{
-                        backgroundColor:
-                          (style.stroke?.color as string) || "#000000",
+                        backgroundColor: (style.stroke?.color as string) || "#000000",
                       }}
                     />
                   </InputGroupButton>
@@ -650,10 +612,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
               onChange={(e) => handleStrokeUpdate({ color: e.target.value })}
               className="text-sm p-0 text-[10px] font-mono"
             />
-            <InputGroupAddon
-              align="inline-end"
-              className="border-l border-white/5 pl-2"
-            >
+            <InputGroupAddon align="inline-end" className="border-l border-white/5 pl-2">
               <span className="text-[10px]">100%</span>
             </InputGroupAddon>
           </InputGroup>
@@ -694,9 +653,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
               <IconRotate className="size-3.5" />
             </InputGroupAddon>
             <NumberInput
-              value={Math.round(
-                ((style.dropShadow?.angle || 0) * 180) / Math.PI,
-              )}
+              value={Math.round(((style.dropShadow?.angle || 0) * 180) / Math.PI)}
               onChange={(val) => handleBlurUpdate({ angle: val })}
             />
           </InputGroup>
@@ -717,11 +674,7 @@ export function TextProperties({ clip }: TextPropertiesProps) {
             <InputGroupAddon align="inline-start" className="relative p-0">
               <Popover modal={true}>
                 <PopoverTrigger asChild>
-                  <InputGroupButton
-                    variant="ghost"
-                    size="icon-xs"
-                    className="h-full w-8"
-                  >
+                  <InputGroupButton variant="ghost" size="icon-xs" className="h-full w-8">
                     <div
                       className="h-4 w-4 border border-white/10 shadow-sm"
                       style={{

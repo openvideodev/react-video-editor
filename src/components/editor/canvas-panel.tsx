@@ -1,10 +1,5 @@
 import { useEffect, useRef, useMemo } from "react";
-import {
-  Studio,
-  fontManager,
-  registerCustomTransition,
-  registerCustomEffect,
-} from "openvideo";
+import { Studio, fontManager, registerCustomTransition, registerCustomEffect } from "openvideo";
 import { useTheme } from "next-themes";
 import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
@@ -118,10 +113,7 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
 
     if (parentElement) {
       resizeObserver = new ResizeObserver(() => {
-        if (
-          studioRef.current &&
-          (studioRef.current as any).updateArtboardLayout
-        ) {
+        if (studioRef.current && (studioRef.current as any).updateArtboardLayout) {
           (studioRef.current as any).updateArtboardLayout();
         }
       });

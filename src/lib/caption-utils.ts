@@ -35,19 +35,14 @@ export async function regenerateCaptionClips({
   if (!studio || !captionClip?.mediaId) return;
   console.log("styleUpdate", styleUpdate);
 
-  const getAnimationObjects = (
-    animation: string | string[],
-    clipDuration: number,
-  ) => {
+  const getAnimationObjects = (animation: string | string[], clipDuration: number) => {
     const animations = Array.isArray(animation) ? animation : [animation];
     return animations
       .filter((a) => a !== "undefined")
       .map((a) => ({
         type: a,
         opts: {
-          duration: CUSTOM_ANIMATIONS_CAPTIONS.includes(a)
-            ? clipDuration
-            : clipDuration * 0.2,
+          duration: CUSTOM_ANIMATIONS_CAPTIONS.includes(a) ? clipDuration : clipDuration * 0.2,
           delay: 0,
         },
       }));
@@ -143,9 +138,7 @@ export async function regenerateCaptionClips({
             json.display.to - json.display.from,
           ),
         }),
-        ...(styleUpdate?.wordAnimation
-          ? { wordAnimation: styleUpdate.wordAnimation }
-          : {}),
+        ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
       },
       opts: {
         ...(json.opts || {}),
@@ -157,15 +150,10 @@ export async function regenerateCaptionClips({
             json.display.to - json.display.from,
           ),
         }),
-        ...(styleUpdate?.wordAnimation
-          ? { wordAnimation: styleUpdate.wordAnimation }
-          : {}),
+        ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
       },
       animations: styleUpdate?.animation
-        ? getAnimationObjects(
-            styleUpdate.animation,
-            json.display.to - json.display.from,
-          )
+        ? getAnimationObjects(styleUpdate.animation, json.display.to - json.display.from)
         : [],
       display: {
         from: json.display.from + mediaStartUs,
@@ -177,27 +165,20 @@ export async function regenerateCaptionClips({
     if (styleUpdate) {
       if (styleUpdate.fill) enrichedJson.style.color = styleUpdate.fill;
       if (styleUpdate.align) enrichedJson.style.align = styleUpdate.align;
-      if (styleUpdate.fontFamily)
-        enrichedJson.style.fontFamily = styleUpdate.fontFamily;
+      if (styleUpdate.fontFamily) enrichedJson.style.fontFamily = styleUpdate.fontFamily;
       if (styleUpdate.fontUrl) enrichedJson.style.fontUrl = styleUpdate.fontUrl;
 
       if (styleUpdate.strokeWidth !== undefined || styleUpdate.stroke) {
-        if (
-          typeof enrichedJson.style.stroke !== "object" ||
-          enrichedJson.style.stroke === null
-        ) {
+        if (typeof enrichedJson.style.stroke !== "object" || enrichedJson.style.stroke === null) {
           enrichedJson.style.stroke = {
             color:
-              typeof enrichedJson.style.stroke === "string"
-                ? enrichedJson.style.stroke
-                : "#000000",
+              typeof enrichedJson.style.stroke === "string" ? enrichedJson.style.stroke : "#000000",
             width: 0,
           };
         }
         if (styleUpdate.strokeWidth !== undefined)
           enrichedJson.style.stroke.width = styleUpdate.strokeWidth;
-        if (styleUpdate.stroke)
-          enrichedJson.style.stroke.color = styleUpdate.stroke;
+        if (styleUpdate.stroke) enrichedJson.style.stroke.color = styleUpdate.stroke;
       }
 
       if (styleUpdate.dropShadow) {
@@ -205,20 +186,14 @@ export async function regenerateCaptionClips({
           color: styleUpdate.dropShadow.color,
           alpha: styleUpdate.dropShadow.alpha,
           blur: styleUpdate.dropShadow.blur,
-          offsetX:
-            styleUpdate.dropShadow.distance *
-            Math.cos(styleUpdate.dropShadow.angle),
-          offsetY:
-            styleUpdate.dropShadow.distance *
-            Math.sin(styleUpdate.dropShadow.angle),
+          offsetX: styleUpdate.dropShadow.distance * Math.cos(styleUpdate.dropShadow.angle),
+          offsetY: styleUpdate.dropShadow.distance * Math.sin(styleUpdate.dropShadow.angle),
         };
       }
 
-      if (styleUpdate.textCase)
-        enrichedJson.style.textCase = styleUpdate.textCase;
+      if (styleUpdate.textCase) enrichedJson.style.textCase = styleUpdate.textCase;
 
-      if (styleUpdate.wordAnimation)
-        enrichedJson.style.wordAnimation = styleUpdate.wordAnimation;
+      if (styleUpdate.wordAnimation) enrichedJson.style.wordAnimation = styleUpdate.wordAnimation;
 
       if (styleUpdate.caption) {
         if (!enrichedJson.caption) enrichedJson.caption = {};

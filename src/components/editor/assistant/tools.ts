@@ -1,4 +1,4 @@
-import { usePlaybackStore } from '@/stores/playback-store';
+import { usePlaybackStore } from "@/stores/playback-store";
 import {
   Video,
   Image,
@@ -9,59 +9,48 @@ import {
   IClip,
   fontManager,
   jsonToClip,
-} from 'openvideo';
-import { duplicateClip, splitClip, trimClip } from './action-handlers';
-import { useTimelineStore } from '@/stores/timeline-store';
-import { generateCaptionClips } from '@/lib/caption-generator';
+} from "openvideo";
+import { duplicateClip, splitClip, trimClip } from "./action-handlers";
+import { useTimelineStore } from "@/stores/timeline-store";
+import { generateCaptionClips } from "@/lib/caption-generator";
 
 export const handleAddClip = async (input: any, studio: Studio) => {
-  const {
-    text,
-    prompt,
-    assetType,
-    targetId,
-    duration,
-    width,
-    height,
-    left,
-    top,
-    action,
-  } = input;
+  const { text, prompt, assetType, targetId, duration, width, height, left, top, action } = input;
   const from = input.from ?? 0;
   const to = input.to ? (input.to - from < 1 ? 1 : input.to) : from + 5;
 
   let clip;
   const type =
     assetType ||
-    (action === 'add_text'
-      ? 'text'
-      : action === 'add_image'
-        ? 'image'
-        : action === 'add_video'
-          ? 'video'
-          : action === 'add_audio'
-            ? 'audio'
-            : 'video');
+    (action === "add_text"
+      ? "text"
+      : action === "add_image"
+        ? "image"
+        : action === "add_video"
+          ? "video"
+          : action === "add_audio"
+            ? "audio"
+            : "video");
 
-  if (type === 'video' && prompt) {
-    console.log('video prompt: ', prompt);
+  if (type === "video" && prompt) {
+    console.log("video prompt: ", prompt);
     const url =
-      'https://cdn.scenify.io/AUTOCROP/VIDEO/e4545b0a-56e8-4982-80af-9b51094909f7/ec042fbe-01d8-4ef2-8389-c166eae76a77.mp4';
+      "https://cdn.scenify.io/AUTOCROP/VIDEO/e4545b0a-56e8-4982-80af-9b51094909f7/ec042fbe-01d8-4ef2-8389-c166eae76a77.mp4";
     clip = await Video.fromUrl(url);
-  } else if (type === 'image' && prompt) {
-    console.log('image prompt: ', prompt);
-    const url = 'https://picsum.photos/800/600';
+  } else if (type === "image" && prompt) {
+    console.log("image prompt: ", prompt);
+    const url = "https://picsum.photos/800/600";
     clip = await Image.fromUrl(url);
-  } else if (type === 'text' && (text || input.text)) {
+  } else if (type === "text" && (text || input.text)) {
     clip = new Text(text || input.text, {
       fontSize: 100,
-      fill: '#ffffff',
-      fontFamily: 'Inter',
+      fill: "#ffffff",
+      fontFamily: "Inter",
     });
-  } else if (type === 'audio' && prompt) {
-    console.log('audio prompt: ', prompt);
+  } else if (type === "audio" && prompt) {
+    console.log("audio prompt: ", prompt);
     const url =
-      'https://cdn.scenify.io/AUTOCROP/VIDEO/e4545b0a-56e8-4982-80af-9b51094909f7/ec042fbe-01d8-4ef2-8389-c166eae76a77.mp4';
+      "https://cdn.scenify.io/AUTOCROP/VIDEO/e4545b0a-56e8-4982-80af-9b51094909f7/ec042fbe-01d8-4ef2-8389-c166eae76a77.mp4";
     clip = await Audio.fromUrl(url);
   }
 
@@ -110,8 +99,7 @@ export const handleUpdateClip = async (input: any, studio: Studio) => {
   if (top !== undefined) updates.top = top;
   if (width !== undefined) updates.width = width;
   if (height !== undefined) updates.height = height;
-  if (start !== undefined)
-    updates.display = { ...updates.display, from: start * 1000000 };
+  if (start !== undefined) updates.display = { ...updates.display, from: start * 1000000 };
   if (fontSize !== undefined) updates.fontSize = fontSize;
   if (fontFamily !== undefined) updates.fontFamily = fontFamily;
   if (fill !== undefined) updates.fill = fill;
@@ -126,7 +114,7 @@ export const handleRemoveClip = async (input: any, studio: Studio) => {
   const id = input.targetId || input.clipId;
   const clip = studio.getClipById(id);
   if (clip) {
-    console.log('delete clip:', clip);
+    console.log("delete clip:", clip);
     await studio.removeClip(id);
   }
 };
@@ -141,7 +129,7 @@ export const handleSplitClip = async (input: any, studio: Studio) => {
       splitTime,
       studio,
       useTimelineStore,
-      useTimelineStore.getState().updateClip
+      useTimelineStore.getState().updateClip,
     );
   } else if (splitTime) {
     await studio.splitSelected(splitTime * 1_000_000);
@@ -157,7 +145,7 @@ export const handleTrimClip = async (input: any, studio: Studio) => {
       { from: input.trimFrom, to: 0 }, // This handler expects timeline and display, need to check logic
       { from: 0, to: 0 },
       studio,
-      useTimelineStore.getState().updateClip
+      useTimelineStore.getState().updateClip,
     );
   } else {
     await studio.trimSelected(input.trimFrom);
@@ -167,12 +155,7 @@ export const handleTrimClip = async (input: any, studio: Studio) => {
 export const handleAddTransition = async (input: any, studio: Studio) => {
   const { fromId, toId, transitionType } = input;
   if (fromId && toId && transitionType) {
-    await studio.addTransition(
-      transitionType || 'GridFlip',
-      2_000_000,
-      fromId,
-      toId
-    );
+    await studio.addTransition(transitionType || "GridFlip", 2_000_000, fromId, toId);
   }
 };
 
@@ -196,7 +179,7 @@ export const handleDuplicateClip = async (input: any, studio: Studio) => {
   const id = input.targetId || input.clipId;
   const clip = studio.getClipById(id);
   if (clip) {
-    console.log('duplicate clip:', clip);
+    console.log("duplicate clip:", clip);
     await duplicateClip(id, studio, useTimelineStore);
   } else {
     await studio.duplicateSelected();
@@ -209,12 +192,12 @@ export const handleSearchAndAddMedia = async (input: any, studio: Studio) => {
   console.log({ input });
   try {
     const response = await fetch(
-      `/api/pexels?query=${encodeURIComponent(query)}&type=${type || 'video'}`
+      `/api/pexels?query=${encodeURIComponent(query)}&type=${type || "video"}`,
     );
     const data = await response.json();
 
     let clip;
-    if (type === 'image') {
+    if (type === "image") {
       const imageUrl = data.photos?.[0]?.src?.large;
       if (imageUrl) {
         clip = await Image.fromUrl(imageUrl);
@@ -239,7 +222,7 @@ export const handleSearchAndAddMedia = async (input: any, studio: Studio) => {
       studio.addClip(clip);
     }
   } catch (error) {
-    console.error('Failed to search and add media:', error);
+    console.error("Failed to search and add media:", error);
   }
 };
 
@@ -248,9 +231,9 @@ export const handleGenerateVoiceover = async (input: any, studio: Studio) => {
   const from = fromTime ?? usePlaybackStore.getState().currentTime / 1000;
 
   try {
-    const response = await fetch('/api/elevenlabs/voiceover', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/elevenlabs/voiceover", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, voiceId }),
     });
     const data = await response.json();
@@ -267,7 +250,7 @@ export const handleGenerateVoiceover = async (input: any, studio: Studio) => {
       studio.addClip(clip);
     }
   } catch (error) {
-    console.error('Failed to generate voiceover:', error);
+    console.error("Failed to generate voiceover:", error);
   }
 };
 
@@ -281,15 +264,14 @@ export const handleGenerateCaptions = async (input: any, studio: Studio) => {
   const targetIds =
     clipIds ||
     studio.clips
-      .filter((c: IClip) => c.type === 'video' || c.type === 'audio')
+      .filter((c: IClip) => c.type === "video" || c.type === "audio")
       .map((c: IClip) => c.id);
 
   console.log({ clipIds, targetIds });
 
   try {
-    const fontName = 'Bangers-Regular';
-    const fontUrl =
-      'https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf';
+    const fontName = "Bangers-Regular";
+    const fontUrl = "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf";
 
     await fontManager.addFont({
       name: fontName,
@@ -305,9 +287,9 @@ export const handleGenerateCaptions = async (input: any, studio: Studio) => {
       if (!clip || !clip.src) continue;
 
       try {
-        const response = await fetch('/api/transcribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/transcribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: clip.src }),
         });
         const data = await response.json();
@@ -347,6 +329,6 @@ export const handleGenerateCaptions = async (input: any, studio: Studio) => {
       await studio.addClip(clipsToAdd, { trackId: captionTrackId });
     }
   } catch (error) {
-    console.error('Failed to generate captions:', error);
+    console.error("Failed to generate captions:", error);
   }
 };

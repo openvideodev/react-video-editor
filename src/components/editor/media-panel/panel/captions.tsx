@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Play, Trash2 } from 'lucide-react';
-import { useStudioStore } from '@/stores/studio-store';
-import { fontManager, jsonToClip, Log, type IClip } from 'openvideo';
-import { generateCaptionClips } from '@/lib/caption-generator';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
+import { useEffect, useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, Play, Trash2 } from "lucide-react";
+import { useStudioStore } from "@/stores/studio-store";
+import { fontManager, jsonToClip, Log, type IClip } from "openvideo";
+import { generateCaptionClips } from "@/lib/caption-generator";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 export default function PanelCaptions() {
   const { studio } = useStudioStore();
@@ -37,15 +37,13 @@ export default function PanelCaptions() {
     });
 
     const mediaClips = allClips.filter(
-      (clip: IClip) => clip.type === 'Video' || clip.type === 'Audio'
+      (clip: IClip) => clip.type === "Video" || clip.type === "Audio",
     );
     setMediaItems(mediaClips);
 
     // Find all captions
-    const captions = allClips.filter((clip: IClip) => clip.type === 'Caption');
-    const sorted = captions.sort(
-      (a: IClip, b: IClip) => a.display.from - b.display.from
-    );
+    const captions = allClips.filter((clip: IClip) => clip.type === "Caption");
+    const sorted = captions.sort((a: IClip, b: IClip) => a.display.from - b.display.from);
     setCaptionItems(sorted);
   };
 
@@ -58,8 +56,7 @@ export default function PanelCaptions() {
       // Find the currently active caption
       // We use the Ref because this closure is created once and we don't want to re-bind listener
       const activeItem = captionItemsRef.current.find(
-        (item) =>
-          currentTime >= item.display.from && currentTime < item.display.to
+        (item) => currentTime >= item.display.from && currentTime < item.display.to,
       );
 
       const newActiveId = activeItem ? activeItem.id : null;
@@ -72,16 +69,16 @@ export default function PanelCaptions() {
     };
 
     handleUpdate();
-    studio.on('clip:added', handleUpdate);
-    studio.on('clip:removed', handleUpdate);
-    studio.on('clip:updated', handleUpdate);
-    studio.on('currentTime', handleTimeUpdate);
+    studio.on("clip:added", handleUpdate);
+    studio.on("clip:removed", handleUpdate);
+    studio.on("clip:updated", handleUpdate);
+    studio.on("currentTime", handleTimeUpdate);
 
     return () => {
-      studio.off('clip:added', handleUpdate);
-      studio.off('clip:removed', handleUpdate);
-      studio.off('clip:updated', handleUpdate);
-      studio.off('currentTime', handleTimeUpdate);
+      studio.off("clip:added", handleUpdate);
+      studio.off("clip:removed", handleUpdate);
+      studio.off("clip:updated", handleUpdate);
+      studio.off("currentTime", handleTimeUpdate);
     };
   }, [studio]);
 
@@ -90,9 +87,8 @@ export default function PanelCaptions() {
 
     setIsGenerating(true);
     try {
-      const fontName = 'Bangers-Regular';
-      const fontUrl =
-        'https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf';
+      const fontName = "Bangers-Regular";
+      const fontUrl = "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf";
 
       await fontManager.addFont({
         name: fontName,
@@ -108,10 +104,10 @@ export default function PanelCaptions() {
           const audioUrl = (mediaClip as any).src;
           if (!audioUrl) continue;
 
-          const transcribeResponse = await fetch('/api/transcribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: audioUrl, model: 'nova-3' }),
+          const transcribeResponse = await fetch("/api/transcribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: audioUrl, model: "nova-3" }),
           });
 
           if (!transcribeResponse.ok) {
@@ -122,10 +118,7 @@ export default function PanelCaptions() {
           const transcriptionData = await transcribeResponse.json();
           if (!transcriptionData) continue;
 
-          const words =
-            transcriptionData.results?.main?.words ||
-            transcriptionData.words ||
-            [];
+          const words = transcriptionData.results?.main?.words || transcriptionData.words || [];
 
           // 2. Generate caption JSON
           const captionClipsJSON = await generateCaptionClips({
@@ -161,7 +154,7 @@ export default function PanelCaptions() {
         updateClips();
       }
     } catch (error) {
-      Log.error('Failed to generate captions:', error);
+      Log.error("Failed to generate captions:", error);
     } finally {
       setIsGenerating(false);
     }
@@ -181,11 +174,7 @@ export default function PanelCaptions() {
     });
   }
 
-  const handleSplitCaption = async (
-    id: string,
-    cursorPosition: number,
-    fullText: string
-  ) => {
+  const handleSplitCaption = async (id: string, cursorPosition: number, fullText: string) => {
     if (!studio) return;
 
     const clip = studio.getClipById(id);
@@ -222,23 +211,21 @@ export default function PanelCaptions() {
     const part1Text = wordsInText
       .slice(0, splitWordIndex)
       .map((w) => w.text)
-      .join(' ');
+      .join(" ");
     const part2Text = wordsInText
       .slice(splitWordIndex)
       .map((w) => w.text)
-      .join(' ');
+      .join(" ");
 
-    const clipJson = (clip as any).toJSON
-      ? (clip as any).toJSON()
-      : { ...clip };
+    const clipJson = (clip as any).toJSON ? (clip as any).toJSON() : { ...clip };
     const caption = clipJson.caption || {};
     const words = caption.words || [];
 
     const part1Words = words.slice(0, splitWordIndex);
     const part2Words = words.slice(splitWordIndex);
-    console.log('part1Words', part1Words);
-    console.log('part2Words', part2Words);
-    console.log('clipJson', clipJson);
+    console.log("part1Words", part1Words);
+    console.log("part2Words", part2Words);
+    console.log("clipJson", clipJson);
 
     if (part1Words.length === 0 || part2Words.length === 0) return;
     const lastWordPart1 = part1Words[part1Words.length - 1];
@@ -276,8 +263,7 @@ export default function PanelCaptions() {
         from: lastWordPart1.to * 1000 + clipJson.display.from,
         to: clipJson.display.to,
       },
-      duration:
-        clipJson.display.to - lastWordPart1.to * 1000 - clipJson.display.from,
+      duration: clipJson.display.to - lastWordPart1.to * 1000 - clipJson.display.from,
     };
 
     try {
@@ -299,16 +285,12 @@ export default function PanelCaptions() {
       await studio.addClip([clip1, clip2], { trackId });
       studio.removeClipById(id);
     } catch (error) {
-      Log.error('Failed to split caption clip:', error);
+      Log.error("Failed to split caption clip:", error);
     }
   };
 
   // En PanelCaptions, modifica handleUpdateCaption:
-  const handleUpdateCaption = async (
-    id: string,
-    text: string,
-    fullUpdate = false
-  ) => {
+  const handleUpdateCaption = async (id: string, text: string, fullUpdate = false) => {
     if (!studio) return;
 
     const clip = studio.getClipById(id);
@@ -322,25 +304,22 @@ export default function PanelCaptions() {
       // MODO RÁPIDO: solo actualizar text (para onChange)
       const captionClip = clip as any;
       captionClip.text = text;
-      captionClip.emit('propsChange', { text });
+      captionClip.emit("propsChange", { text });
       return;
     }
 
     // MODO COMPLETO: calcular words y timings (solo onBlur)
     const newWordsText = text.trim().split(/\s+/).filter(Boolean);
-    const clipJson = (clip as any).toJSON
-      ? (clip as any).toJSON()
-      : { ...clip };
+    const clipJson = (clip as any).toJSON ? (clip as any).toJSON() : { ...clip };
     const caption = clipJson.caption || {};
     const oldWords = caption.words || [];
-    const paragraphIndex = oldWords[0]?.paragraphIndex ?? '';
+    const paragraphIndex = oldWords[0]?.paragraphIndex ?? "";
 
     const isNewWordAdded = newWordsText.length > oldWords.length;
     let updatedWords;
 
     if (isNewWordAdded) {
-      const totalDurationMs =
-        (clipJson.display.to - clipJson.display.from) / 1000;
+      const totalDurationMs = (clipJson.display.to - clipJson.display.from) / 1000;
       const totalChars = newWordsText.reduce((acc, w) => acc + w.length, 0);
       const durationPerChar = totalChars > 0 ? totalDurationMs / totalChars : 0;
 
@@ -388,7 +367,7 @@ export default function PanelCaptions() {
       await studio.addClip([newClip], { trackId: track.id });
       studio.removeClipById(id);
     } catch (error) {
-      Log.error('Failed to update caption clip:', error);
+      Log.error("Failed to update caption clip:", error);
     }
   };
 
@@ -418,12 +397,8 @@ export default function PanelCaptions() {
                     key={item.id}
                     item={item}
                     isActive={item.id === activeCaptionId}
-                    onUpdate={(text, fullUpdate) =>
-                      handleUpdateCaption(item.id, text, fullUpdate)
-                    }
-                    onSplit={(pos, text) =>
-                      handleSplitCaption(item.id, pos, text)
-                    }
+                    onUpdate={(text, fullUpdate) => handleUpdateCaption(item.id, text, fullUpdate)}
+                    onSplit={(pos, text) => handleSplitCaption(item.id, pos, text)}
                     onDelete={() => handleDeleteCaption(item.id)}
                     onSeek={() => handleSeek(item.display.from)}
                   />
@@ -434,8 +409,7 @@ export default function PanelCaptions() {
         ) : (
           <div className="flex flex-col gap-6 p-4 py-6 items-center text-center">
             <div className="text-sm text-muted-foreground">
-              Recognize speech in the selected media and generate captions
-              automatically.
+              Recognize speech in the selected media and generate captions automatically.
             </div>
             <Button
               onClick={handleGenerateCaptions}
@@ -449,7 +423,7 @@ export default function PanelCaptions() {
                   Generating...
                 </>
               ) : (
-                'Generate Captions'
+                "Generate Captions"
               )}
             </Button>
           </div>
@@ -474,11 +448,11 @@ function CaptionItem({
   onDelete: () => void;
   onSeek: () => void;
 }) {
-  const [text, setText] = useState((item as any).text || '');
+  const [text, setText] = useState((item as any).text || "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setText((item as any).text || '');
+    setText((item as any).text || "");
   }, [(item as any).text]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -493,7 +467,7 @@ function CaptionItem({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const cursorPosition = textareaRef.current?.selectionStart || 0;
       onSplit(cursorPosition, text);
@@ -503,10 +477,8 @@ function CaptionItem({
   return (
     <div
       className={cn(
-        'group relative flex flex-col gap-2 rounded-md p-3 transition-colors border-l-2',
-        isActive
-          ? 'bg-zinc-700/10 border-zinc-300 border'
-          : 'hover:bg-zinc-700/10  border'
+        "group relative flex flex-col gap-2 rounded-md p-3 transition-colors border-l-2",
+        isActive ? "bg-zinc-700/10 border-zinc-300 border" : "hover:bg-zinc-700/10  border",
       )}
     >
       <div className="flex items-center justify-between">
@@ -514,14 +486,13 @@ function CaptionItem({
           className="text-[10px] font-mono text-muted-foreground cursor-pointer hover:text-white transition-colors"
           onClick={onSeek}
         >
-          {formatTime(item.display.from / 1_000_000)} -{' '}
-          {formatTime(item.display.to / 1_000_000)}
+          {formatTime(item.display.from / 1_000_000)} - {formatTime(item.display.to / 1_000_000)}
         </div>
 
         <div
           className={cn(
-            'flex items-center gap-1 opacity-0 transition-opacity',
-            isActive || 'group-hover:opacity-100'
+            "flex items-center gap-1 opacity-0 transition-opacity",
+            isActive || "group-hover:opacity-100",
           )}
         >
           <Button
@@ -567,9 +538,9 @@ function formatTime(seconds: number) {
   const m = Math.floor((seconds % 3600) / 60);
   const s = Math.floor(seconds % 60);
 
-  const hh = h > 0 ? `${h.toString().padStart(2, '0')}:` : '';
-  const mm = m.toString().padStart(2, '0');
-  const ss = s.toString().padStart(2, '0');
+  const hh = h > 0 ? `${h.toString().padStart(2, "0")}:` : "";
+  const mm = m.toString().padStart(2, "0");
+  const ss = s.toString().padStart(2, "0");
 
   return `${hh}${mm}:${ss}`;
 }

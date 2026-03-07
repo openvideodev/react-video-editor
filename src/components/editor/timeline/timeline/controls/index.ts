@@ -1,7 +1,7 @@
-import { Control, controlsUtils } from 'fabric';
-import { drawVerticalLine } from './render';
-import { changeWidth } from './resize-action';
-import { changeTrim } from './trim-action';
+import { Control, controlsUtils } from "fabric";
+import { drawVerticalLine } from "./render";
+import { changeWidth } from "./resize-action";
+import { changeTrim } from "./trim-action";
 // import { changeWidth } from "../resize/common";
 // import { drawVerticalLine } from "./draw";
 // import { resizeAudio } from "../resize/audio";
@@ -16,7 +16,7 @@ export const createResizeControls = () => ({
     y: 0,
     actionHandler: changeWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     render: drawVerticalLine,
     offsetX: -8,
   }),
@@ -25,7 +25,7 @@ export const createResizeControls = () => ({
     y: 0,
     actionHandler: changeWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     render: drawVerticalLine,
     offsetX: 8,
   }),
@@ -38,7 +38,7 @@ export const createAudioControls = () => ({
     // render: drawVerticalLine,
     // actionHandler: resizeAudio,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
   }),
   ml: new Control({
     x: -0.5,
@@ -46,7 +46,7 @@ export const createAudioControls = () => ({
     // render: drawVerticalLine,
     // actionHandler: resizeAudio,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
   }),
 });
 
@@ -57,7 +57,7 @@ export const createTrimControls = () => ({
     render: drawVerticalLine,
     actionHandler: changeTrim,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     offsetX: -8,
   }),
   ml: new Control({
@@ -66,7 +66,7 @@ export const createTrimControls = () => ({
     render: drawVerticalLine,
     actionHandler: changeTrim,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     offsetX: 8,
   }),
 });
@@ -77,7 +77,7 @@ export const createTransitionControls = () => ({
     y: 0,
     // actionHandler: resizeTransitionWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     // render: drawVerticalLine,
   }),
   ml: new Control({
@@ -85,7 +85,7 @@ export const createTransitionControls = () => ({
     y: 0,
     // actionHandler: resizeTransitionWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
-    actionName: 'resizing',
+    actionName: "resizing",
     // render: drawVerticalLine,
   }),
 });

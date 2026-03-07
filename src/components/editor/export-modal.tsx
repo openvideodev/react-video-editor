@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
-import { Compositor, Log } from 'openvideo';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { Compositor, Log } from "openvideo";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Loader2, Video, Music, Clock } from 'lucide-react';
-import { useStudioStore } from '@/stores/studio-store';
+} from "@/components/ui/select";
+import { Loader2, Video, Music, Clock } from "lucide-react";
+import { useStudioStore } from "@/stores/studio-store";
 
 interface ExportModalProps {
   open: boolean;
@@ -26,51 +26,51 @@ interface ExportModalProps {
 // ---------------------------------------------------------------------------
 
 const VIDEO_CODECS = [
-  { value: 'avc1.42E032', label: 'H.264 (AVC)' },
-  { value: 'hvc1.1.6.L123.B0', label: 'H.265 (HEVC)' },
-  { value: 'vp09.00.10.08', label: 'VP9' },
+  { value: "avc1.42E032", label: "H.264 (AVC)" },
+  { value: "hvc1.1.6.L123.B0", label: "H.265 (HEVC)" },
+  { value: "vp09.00.10.08", label: "VP9" },
 ];
 
 const AUDIO_CODECS = [
-  { value: 'aac', label: 'AAC' },
-  { value: 'opus', label: 'Opus' },
-  { value: 'mp3', label: 'MP3' },
-  { value: 'flac', label: 'FLAC' },
+  { value: "aac", label: "AAC" },
+  { value: "opus", label: "Opus" },
+  { value: "mp3", label: "MP3" },
+  { value: "flac", label: "FLAC" },
 ];
 
 const QUALITY_PRESETS = [
-  { value: '20000000', label: 'Ultra (20 Mbps)' },
-  { value: '10000000', label: 'High (10 Mbps)' },
-  { value: '5000000', label: 'Medium (5 Mbps)' },
-  { value: '2000000', label: 'Low (2 Mbps)' },
+  { value: "20000000", label: "Ultra (20 Mbps)" },
+  { value: "10000000", label: "High (10 Mbps)" },
+  { value: "5000000", label: "Medium (5 Mbps)" },
+  { value: "2000000", label: "Low (2 Mbps)" },
 ];
 
 // Which container formats work with which video codecs
 const VIDEO_FORMATS = [
-  { value: 'mp4', label: 'MP4', codecs: ['avc1.42E032', 'hvc1.1.6.L123.B0', 'vp09.00.10.08'] },
-  { value: 'webm', label: 'WebM', codecs: ['vp09.00.10.08'] },
-  { value: 'mkv', label: 'MKV', codecs: ['avc1.42E032', 'hvc1.1.6.L123.B0', 'vp09.00.10.08'] },
-  { value: 'mov', label: 'MOV', codecs: ['avc1.42E032', 'hvc1.1.6.L123.B0'] },
+  { value: "mp4", label: "MP4", codecs: ["avc1.42E032", "hvc1.1.6.L123.B0", "vp09.00.10.08"] },
+  { value: "webm", label: "WebM", codecs: ["vp09.00.10.08"] },
+  { value: "mkv", label: "MKV", codecs: ["avc1.42E032", "hvc1.1.6.L123.B0", "vp09.00.10.08"] },
+  { value: "mov", label: "MOV", codecs: ["avc1.42E032", "hvc1.1.6.L123.B0"] },
 ];
 
 const AUDIO_FORMATS = [
-  { value: 'mp3', label: 'MP3' },
-  { value: 'wav', label: 'WAV' },
-  { value: 'flac', label: 'FLAC' },
-  { value: 'ogg', label: 'OGG' },
+  { value: "mp3", label: "MP3" },
+  { value: "wav", label: "WAV" },
+  { value: "flac", label: "FLAC" },
+  { value: "ogg", label: "OGG" },
 ];
 
 const FRAME_RATES = [
-  { value: '24', label: '24 fps' },
-  { value: '25', label: '25 fps' },
-  { value: '30', label: '30 fps' },
-  { value: '50', label: '50 fps' },
-  { value: '60', label: '60 fps' },
+  { value: "24", label: "24 fps" },
+  { value: "25", label: "25 fps" },
+  { value: "30", label: "30 fps" },
+  { value: "50", label: "50 fps" },
+  { value: "60", label: "60 fps" },
 ];
 
 const SAMPLE_RATES = [
-  { value: '44100', label: '44.1 kHz' },
-  { value: '48000', label: '48 kHz' },
+  { value: "44100", label: "44.1 kHz" },
+  { value: "48000", label: "48 kHz" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -91,23 +91,23 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
 
   // Export settings
   const [includeVideo, setIncludeVideo] = useState(true);
-  const [videoCodec, setVideoCodec] = useState('avc1.42E032');
-  const [quality, setQuality] = useState('10000000');
-  const [format, setFormat] = useState('mp4');
+  const [videoCodec, setVideoCodec] = useState("avc1.42E032");
+  const [quality, setQuality] = useState("10000000");
+  const [format, setFormat] = useState("mp4");
   const [fps, setFps] = useState(String(studioOpts.fps || 30));
 
   const [includeAudio, setIncludeAudio] = useState(true);
-  const [audioCodec, setAudioCodec] = useState('aac');
-  const [audioSampleRate, setAudioSampleRate] = useState('48000');
+  const [audioCodec, setAudioCodec] = useState("aac");
+  const [audioSampleRate, setAudioSampleRate] = useState("48000");
 
   const maxDuration = studio?.getMaxDuration() || 0;
 
   // When video is disabled, switch to an audio-only format
   useEffect(() => {
-    if (!includeVideo && format === 'mp4') {
-      setFormat('mp3');
-    } else if (includeVideo && ['mp3', 'wav', 'flac', 'ogg'].includes(format)) {
-      setFormat('mp4');
+    if (!includeVideo && format === "mp4") {
+      setFormat("mp3");
+    } else if (includeVideo && ["mp3", "wav", "flac", "ogg"].includes(format)) {
+      setFormat("mp4");
     }
   }, [includeVideo]);
 
@@ -147,11 +147,11 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
   const handleDownload = (url?: string) => {
     const downloadUrl = url || exportBlobUrl;
     if (!downloadUrl) return;
-    const aEl = document.createElement('a');
+    const aEl = document.createElement("a");
     document.body.appendChild(aEl);
-    aEl.setAttribute('href', downloadUrl);
-    aEl.setAttribute('download', `openvideo-export-${Date.now()}.${format}`);
-    aEl.setAttribute('target', '_self');
+    aEl.setAttribute("href", downloadUrl);
+    aEl.setAttribute("download", `openvideo-export-${Date.now()}.${format}`);
+    aEl.setAttribute("target", "_self");
     aEl.click();
     setTimeout(() => {
       if (document.body.contains(aEl)) document.body.removeChild(aEl);
@@ -168,20 +168,20 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
 
     try {
       const json = studio.exportToJSON();
-      if (!json.clips || json.clips.length === 0) throw new Error('No clips to export');
+      if (!json.clips || json.clips.length === 0) throw new Error("No clips to export");
 
       const validClips = json.clips.filter((clipJSON: any) => {
-        if (['Text', 'Caption', 'Effect', 'Transition'].includes(clipJSON.type)) return true;
-        return clipJSON.src && clipJSON.src.trim() !== '';
+        if (["Text", "Caption", "Effect", "Transition"].includes(clipJSON.type)) return true;
+        return clipJSON.src && clipJSON.src.trim() !== "";
       });
-      if (validClips.length === 0) throw new Error('No valid clips to export');
+      if (validClips.length === 0) throw new Error("No valid clips to export");
 
       const settings = json.settings || {};
       const combinatorOpts: any = {
-        width: includeVideo ? (settings.width || studioOpts.width || 1920) : 0,
-        height: includeVideo ? (settings.height || studioOpts.height || 1080) : 0,
+        width: includeVideo ? settings.width || studioOpts.width || 1920 : 0,
+        height: includeVideo ? settings.height || studioOpts.height || 1080 : 0,
         fps: Number(fps),
-        bgColor: settings.bgColor || '#000000',
+        bgColor: settings.bgColor || "#000000",
         format,
         videoCodec: includeVideo ? videoCodec : undefined,
         bitrate: Number(quality),
@@ -194,7 +194,7 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
       if (includeVideo) await com.initPixiApp();
       setExportCombinator(com);
 
-      com.on('OutputProgress', (v) => setExportProgress(v));
+      com.on("OutputProgress", (v) => setExportProgress(v));
 
       await com.loadFromJSON({ ...json, clips: validClips });
       const stream = com.output();
@@ -205,12 +205,12 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
 
       setTimeout(() => {
         handleDownload(blobUrl);
-        toast.success('Rendering complete! Your download has started.');
+        toast.success("Rendering complete! Your download has started.");
         setTimeout(() => handleClose(), 1500);
       }, 500);
     } catch (error) {
-      Log.error('Export error:', error);
-      alert('Failed to export: ' + (error as Error).message);
+      Log.error("Export error:", error);
+      alert("Failed to export: " + (error as Error).message);
       setIsExporting(false);
       setIsConfiguring(true);
     }
@@ -226,8 +226,10 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
     </div>
   );
 
-  const selectCls = 'h-8 text-xs bg-muted border-border text-foreground hover:bg-muted/80 rounded-md';
-  const selectContentCls = 'bg-popover border-border text-popover-foreground backdrop-blur-xl text-xs';
+  const selectCls =
+    "h-8 text-xs bg-muted border-border text-foreground hover:bg-muted/80 rounded-md";
+  const selectContentCls =
+    "bg-popover border-border text-popover-foreground backdrop-blur-xl text-xs";
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
@@ -257,36 +259,62 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
                   </div>
                   <Switch checked={includeVideo} onCheckedChange={setIncludeVideo} />
                 </div>
-                <div className={`px-4 py-3 flex flex-col gap-3 transition-opacity ${!includeVideo ? 'opacity-30 pointer-events-none' : ''}`}>
+                <div
+                  className={`px-4 py-3 flex flex-col gap-3 transition-opacity ${!includeVideo ? "opacity-30 pointer-events-none" : ""}`}
+                >
                   <Row label="Format">
                     <Select value={format} onValueChange={setFormat}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {VIDEO_FORMATS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                        {VIDEO_FORMATS.map((f) => (
+                          <SelectItem key={f.value} value={f.value}>
+                            {f.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
                   <Row label="Codec">
                     <Select value={videoCodec} onValueChange={setVideoCodec}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {VIDEO_CODECS.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                        {VIDEO_CODECS.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>
+                            {c.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
                   <Row label="Quality">
                     <Select value={quality} onValueChange={setQuality}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {QUALITY_PRESETS.map((q) => <SelectItem key={q.value} value={q.value}>{q.label}</SelectItem>)}
+                        {QUALITY_PRESETS.map((q) => (
+                          <SelectItem key={q.value} value={q.value}>
+                            {q.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
                   <Row label="Frame Rate">
                     <Select value={fps} onValueChange={setFps}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {FRAME_RATES.map((fr) => <SelectItem key={fr.value} value={fr.value}>{fr.label}</SelectItem>)}
+                        {FRAME_RATES.map((fr) => (
+                          <SelectItem key={fr.value} value={fr.value}>
+                            {fr.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
@@ -302,30 +330,50 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
                   </div>
                   <Switch checked={includeAudio} onCheckedChange={setIncludeAudio} />
                 </div>
-                <div className={`px-4 py-3 flex flex-col gap-3 transition-opacity ${!includeAudio ? 'opacity-30 pointer-events-none' : ''}`}>
+                <div
+                  className={`px-4 py-3 flex flex-col gap-3 transition-opacity ${!includeAudio ? "opacity-30 pointer-events-none" : ""}`}
+                >
                   {!includeVideo && (
                     <Row label="Format">
                       <Select value={format} onValueChange={setFormat}>
-                        <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                        <SelectTrigger className={selectCls}>
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent className={selectContentCls}>
-                          {AUDIO_FORMATS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                          {AUDIO_FORMATS.map((f) => (
+                            <SelectItem key={f.value} value={f.value}>
+                              {f.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </Row>
                   )}
                   <Row label="Codec">
                     <Select value={audioCodec} onValueChange={setAudioCodec}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {AUDIO_CODECS.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                        {AUDIO_CODECS.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>
+                            {c.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
                   <Row label="Sample Rate">
                     <Select value={audioSampleRate} onValueChange={setAudioSampleRate}>
-                      <SelectTrigger className={selectCls}><SelectValue /></SelectTrigger>
+                      <SelectTrigger className={selectCls}>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent className={selectContentCls}>
-                        {SAMPLE_RATES.map((sr) => <SelectItem key={sr.value} value={sr.value}>{sr.label}</SelectItem>)}
+                        {SAMPLE_RATES.map((sr) => (
+                          <SelectItem key={sr.value} value={sr.value}>
+                            {sr.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </Row>
@@ -360,7 +408,9 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
           /* Progress view */
           <div className="flex flex-col p-6 gap-6">
             <div>
-              <DialogTitle className="text-sm font-semibold text-foreground">Exporting…</DialogTitle>
+              <DialogTitle className="text-sm font-semibold text-foreground">
+                Exporting…
+              </DialogTitle>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {format.toUpperCase()} · {studioOpts.width}×{studioOpts.height}
               </p>
@@ -369,12 +419,18 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
             {/* Summary pill grid */}
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: 'Format', value: format.toUpperCase() },
-                { label: 'FPS', value: fps },
-                { label: 'Resolution', value: includeVideo ? `${studioOpts.width}×${studioOpts.height}` : 'N/A' },
-                { label: 'Video', value: includeVideo ? 'On' : 'Off' },
-                { label: 'Audio', value: includeAudio ? 'On' : 'Off' },
-                { label: 'Sample', value: includeAudio ? `${Number(audioSampleRate) / 1000}k` : 'N/A' },
+                { label: "Format", value: format.toUpperCase() },
+                { label: "FPS", value: fps },
+                {
+                  label: "Resolution",
+                  value: includeVideo ? `${studioOpts.width}×${studioOpts.height}` : "N/A",
+                },
+                { label: "Video", value: includeVideo ? "On" : "Off" },
+                { label: "Audio", value: includeAudio ? "On" : "Off" },
+                {
+                  label: "Sample",
+                  value: includeAudio ? `${Number(audioSampleRate) / 1000}k` : "N/A",
+                },
               ].map(({ label, value }) => (
                 <div key={label} className="rounded-lg border border-border bg-card px-3 py-2">
                   <p className="text-[10px] text-muted-foreground mb-0.5">{label}</p>
@@ -389,13 +445,15 @@ export function ExportModal({ open, onOpenChange }: ExportModalProps) {
                 <span className="text-xs text-muted-foreground">Progress</span>
                 <span className="text-xs font-mono text-muted-foreground">
                   {Math.round(exportProgress * 100)}%
-                  {exportProgress > 0 && exportStartTime ? (() => {
-                    const elapsed = Date.now() - exportStartTime;
-                    const remaining = (elapsed / exportProgress - elapsed) / 1000;
-                    const mins = Math.floor(remaining / 60);
-                    const secs = Math.floor(remaining % 60);
-                    return ` · ${mins}m ${secs}s left`;
-                  })() : ' · preparing…'}
+                  {exportProgress > 0 && exportStartTime
+                    ? (() => {
+                        const elapsed = Date.now() - exportStartTime;
+                        const remaining = (elapsed / exportProgress - elapsed) / 1000;
+                        const mins = Math.floor(remaining / 60);
+                        const secs = Math.floor(remaining % 60);
+                        return ` · ${mins}m ${secs}s left`;
+                      })()
+                    : " · preparing…"}
                 </span>
               </div>
               <div className="relative h-1 w-full overflow-hidden rounded-full bg-muted">

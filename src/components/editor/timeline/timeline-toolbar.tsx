@@ -1,11 +1,6 @@
-import { usePlaybackStore } from '@/stores/playback-store';
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
+import { usePlaybackStore } from "@/stores/playback-store";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import {
   Pause,
   Play,
@@ -18,18 +13,18 @@ import {
   ArrowLeftToLine,
   ArrowRightToLine,
   Scissors,
-} from 'lucide-react';
-import { Slider } from '@/components/ui/slider';
-import { DEFAULT_FPS } from '@/stores/project-store';
-import { formatTimeCode } from '@/lib/time';
-import { EditableTimecode } from '@/components/ui/editable-timecode';
+} from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { DEFAULT_FPS } from "@/stores/project-store";
+import { formatTimeCode } from "@/lib/time";
+import { EditableTimecode } from "@/components/ui/editable-timecode";
 
 import {
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
   IconPlayerSkipBack,
   IconPlayerSkipForward,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
 
 export function TimelineToolbar({
   zoomLevel,
@@ -103,12 +98,7 @@ export function TimelineToolbar({
         <TooltipProvider delayDuration={500}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                className="size-7"
-                variant="ghost"
-                size="icon"
-                onClick={() => seek(0)}
-              >
+              <Button className="size-7" variant="ghost" size="icon" onClick={() => seek(0)}>
                 <IconPlayerSkipBack className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -124,18 +114,11 @@ export function TimelineToolbar({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              {isPlaying ? 'Pause (Space)' : 'Play (Space)'}
-            </TooltipContent>
+            <TooltipContent>{isPlaying ? "Pause (Space)" : "Play (Space)"}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                className="size-7"
-                variant="ghost"
-                size="icon"
-                onClick={() => seek(0)}
-              >
+              <Button className="size-7" variant="ghost" size="icon" onClick={() => seek(0)}>
                 <IconPlayerSkipForward className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -153,7 +136,7 @@ export function TimelineToolbar({
             />
             <div className="text-xs text-muted-foreground px-2">/</div>
             <div className="text-xs text-muted-foreground text-center">
-              {formatTimeCode(duration, 'MM:SS')}
+              {formatTimeCode(duration, "MM:SS")}
             </div>
           </div>
         </TooltipProvider>

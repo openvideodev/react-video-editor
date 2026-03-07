@@ -1,10 +1,4 @@
-import {
-  AlertTriangle,
-  LucideIcon,
-  LucideProps,
-  User,
-  VideoIcon,
-} from 'lucide-react';
+import { AlertTriangle, LucideIcon, LucideProps, User, VideoIcon } from "lucide-react";
 
 export type Icon = LucideIcon;
 
@@ -27,12 +21,7 @@ export const LogoIcons = {
     </svg>
   ),
   scenify: ({ ...props }: LucideProps) => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M16.357 13.6285L7.50539 8.78788C6.35744 8.16009 5.00018 9.06141 5.00018 10.4517V15.2922V20.1328C5.00018 21.5231 6.35744 22.4244 7.50539 21.7966L16.357 16.956C17.6189 16.2659 17.6189 14.3186 16.357 13.6285Z"
         fill="currentColor"

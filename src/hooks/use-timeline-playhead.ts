@@ -39,8 +39,7 @@ export function useTimelinePlayhead({
   const [hasDraggedRuler, setHasDraggedRuler] = useState(false);
   const lastMouseXRef = useRef<number>(0);
 
-  const playheadPosition =
-    isScrubbing && scrubTime !== null ? scrubTime : currentTime;
+  const playheadPosition = isScrubbing && scrubTime !== null ? scrubTime : currentTime;
 
   // --- Playhead Scrubbing Handlers ---
   const handlePlayheadMouseDown = useCallback(
@@ -81,18 +80,14 @@ export function useTimelinePlayhead({
       const rawX = e.clientX - rect.left;
 
       // Get the timeline content width based on duration and zoom
-      const timelineContentWidth =
-        duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
+      const timelineContentWidth = duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
 
       // Constrain x to be within the timeline content bounds
       const x = Math.max(0, Math.min(timelineContentWidth, rawX));
 
       const rawTime = Math.max(
         0,
-        Math.min(
-          duration,
-          x / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel),
-        ),
+        Math.min(duration, x / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel)),
       );
       // Use frame snapping for playhead scrubbing
       const projectFps = DEFAULT_FPS;
@@ -151,14 +146,7 @@ export function useTimelinePlayhead({
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [
-    isScrubbing,
-    scrubTime,
-    seek,
-    handleScrub,
-    isDraggingRuler,
-    hasDraggedRuler,
-  ]);
+  }, [isScrubbing, scrubTime, seek, handleScrub, isDraggingRuler, hasDraggedRuler]);
 
   // --- Playhead auto-scroll effect (only during playback) ---
   useEffect(() => {
@@ -170,13 +158,10 @@ export function useTimelinePlayhead({
     const rulerViewport = rulerScrollRef.current;
     if (!rulerViewport) return;
 
-    const playheadPx =
-      playheadPosition * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
+    const playheadPx = playheadPosition * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
     const viewportWidth = rulerViewport.clientWidth;
     const scrollMin = 0;
-    const scrollMax =
-      duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel -
-      viewportWidth;
+    const scrollMax = duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel - viewportWidth;
 
     // Only auto-scroll if playhead is completely out of view (no buffer)
     const needsScroll =
@@ -185,20 +170,10 @@ export function useTimelinePlayhead({
 
     if (needsScroll && onScrollChange) {
       // Position the playhead at the left edge of the viewport
-      const desiredScroll = Math.max(
-        scrollMin,
-        Math.min(scrollMax, playheadPx),
-      );
+      const desiredScroll = Math.max(scrollMin, Math.min(scrollMax, playheadPx));
       onScrollChange(desiredScroll);
     }
-  }, [
-    playheadPosition,
-    duration,
-    zoomLevel,
-    rulerScrollRef,
-    isScrubbing,
-    onScrollChange,
-  ]);
+  }, [playheadPosition, duration, zoomLevel, rulerScrollRef, isScrubbing, onScrollChange]);
 
   return {
     playheadPosition,

@@ -2,13 +2,7 @@
  * For example, toggling playback or seeking.
  */
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  MutableRefObject,
-} from 'react';
+import { useEffect, useRef, useState, useCallback, MutableRefObject } from "react";
 
 // Simple event emitter for action changes
 class ActionEmitter {
@@ -29,25 +23,25 @@ class ActionEmitter {
 const actionEmitter = new ActionEmitter();
 
 export type Action =
-  | 'toggle-play' // Toggle play/pause state
-  | 'stop-playback' // Stop playback
-  | 'seek-forward' // Seek forward in playback
-  | 'seek-backward' // Seek backward in playback
-  | 'frame-step-forward' // Step forward by one frame
-  | 'frame-step-backward' // Step backward by one frame
-  | 'jump-forward' // Jump forward by 5 seconds
-  | 'jump-backward' // Jump backward by 5 seconds
-  | 'goto-start' // Go to timeline start
-  | 'goto-end' // Go to timeline end
-  | 'split-element' // Split element at current time
-  | 'delete-selected' // Delete selected elements
-  | 'select-all' // Select all elements
-  | 'duplicate-selected' // Duplicate selected element
-  | 'toggle-snapping' // Toggle snapping
-  | 'undo' // Undo last action
-  | 'redo' // Redo last undone action
-  | 'copy-selected' // Copy selected elements to clipboard
-  | 'paste-selected'; // Paste elements from clipboard at playhead
+  | "toggle-play" // Toggle play/pause state
+  | "stop-playback" // Stop playback
+  | "seek-forward" // Seek forward in playback
+  | "seek-backward" // Seek backward in playback
+  | "frame-step-forward" // Step forward by one frame
+  | "frame-step-backward" // Step backward by one frame
+  | "jump-forward" // Jump forward by 5 seconds
+  | "jump-backward" // Jump backward by 5 seconds
+  | "goto-start" // Go to timeline start
+  | "goto-end" // Go to timeline end
+  | "split-element" // Split element at current time
+  | "delete-selected" // Delete selected elements
+  | "select-all" // Select all elements
+  | "duplicate-selected" // Duplicate selected element
+  | "toggle-snapping" // Toggle snapping
+  | "undo" // Undo last action
+  | "redo" // Redo last undone action
+  | "copy-selected" // Copy selected elements to clipboard
+  | "paste-selected"; // Paste elements from clipboard at playhead
 
 /**
  * Defines the arguments, if present for a given type that is required to be passed on
@@ -61,10 +55,10 @@ export type Action =
  * will know if you got something wrong if there is a type error in this file
  */
 type ActionArgsMap = {
-  'seek-forward': { seconds: number } | undefined; // Args needed for seeking forward (default: 1)
-  'seek-backward': { seconds: number } | undefined; // Args needed for seeking backward (default: 1)
-  'jump-forward': { seconds: number } | undefined; // Args needed for jumping forward (default: 5)
-  'jump-backward': { seconds: number } | undefined; // Args needed for jumping backward (default: 5)
+  "seek-forward": { seconds: number } | undefined; // Args needed for seeking forward (default: 1)
+  "seek-backward": { seconds: number } | undefined; // Args needed for seeking backward (default: 1)
+  "jump-forward": { seconds: number } | undefined; // Args needed for jumping forward (default: 5)
+  "jump-backward": { seconds: number } | undefined; // Args needed for jumping backward (default: 5)
 };
 
 type KeysWithValueUndefined<T> = {
@@ -80,9 +74,7 @@ export type ActionWithArgs = keyof ActionArgsMap;
  * Actions which optionally takes in arguments for their invocation
  */
 
-export type ActionWithOptionalArgs =
-  | ActionWithNoArgs
-  | KeysWithValueUndefined<ActionArgsMap>;
+export type ActionWithOptionalArgs = ActionWithNoArgs | KeysWithValueUndefined<ActionArgsMap>;
 
 /**
  * Actions which do not require arguments for their invocation
@@ -92,9 +84,7 @@ export type ActionWithNoArgs = Exclude<Action, ActionWithArgs>;
 /**
  * Resolves the argument type for a given Action
  */
-type ArgOfHoppAction<A extends Action> = A extends ActionWithArgs
-  ? ActionArgsMap[A]
-  : undefined;
+type ArgOfHoppAction<A extends Action> = A extends ActionWithArgs ? ActionArgsMap[A] : undefined;
 
 /**
  * Resolves the action function for a given Action, used by action handler function defs
@@ -117,10 +107,7 @@ function updateActiveActions() {
   actionEmitter.emit(newActions);
 }
 
-export function bindAction<A extends Action>(
-  action: A,
-  handler: ActionFunc<A>
-) {
+export function bindAction<A extends Action>(action: A, handler: ActionFunc<A>) {
   if (boundActions[action]) {
     boundActions[action]?.push(handler);
   } else {
@@ -131,14 +118,10 @@ export function bindAction<A extends Action>(
   updateActiveActions();
 }
 
-export type InvocationTriggers = 'keypress' | 'mouseclick';
+export type InvocationTriggers = "keypress" | "mouseclick";
 
 type InvokeActionFunc = {
-  (
-    action: ActionWithOptionalArgs,
-    args?: undefined,
-    trigger?: InvocationTriggers
-  ): void;
+  (action: ActionWithOptionalArgs, args?: undefined, trigger?: InvocationTriggers): void;
   <A extends ActionWithArgs>(action: A, args: ActionArgsMap[A]): void;
 };
 
@@ -152,19 +135,14 @@ type InvokeActionFunc = {
 export const invokeAction: InvokeActionFunc = <A extends Action>(
   action: A,
   args?: ArgOfHoppAction<A>,
-  trigger?: InvocationTriggers
+  trigger?: InvocationTriggers,
 ) => {
   boundActions[action]?.forEach((handler) => (handler as any)(args, trigger));
 };
 
-export function unbindAction<A extends Action>(
-  action: A,
-  handler: ActionFunc<A>
-) {
+export function unbindAction<A extends Action>(action: A, handler: ActionFunc<A>) {
   // 'any' assertion because TypeScript doesn't seem to be able to figure out the links.
-  boundActions[action] = boundActions[action]?.filter(
-    (x) => x !== handler
-  ) as any;
+  boundActions[action] = boundActions[action]?.filter((x) => x !== handler) as any;
 
   if (boundActions[action]?.length === 0) {
     delete boundActions[action];
@@ -193,7 +171,7 @@ export function isActionBound(action: Action): boolean {
 export function useActionHandler<A extends Action>(
   action: A,
   handler: ActionFunc<A>,
-  isActive: MutableRefObject<boolean> | boolean | undefined
+  isActive: MutableRefObject<boolean> | boolean | undefined,
 ) {
   const handlerRef = useRef(handler);
   const [isBound, setIsBound] = useState(false);
@@ -204,17 +182,13 @@ export function useActionHandler<A extends Action>(
   }, [handler]);
 
   // Create a stable handler wrapper
-  const stableHandler = useCallback(
-    (args: any, trigger?: InvocationTriggers) => {
-      (handlerRef.current as any)(args, trigger);
-    },
-    []
-  ) as ActionFunc<A>;
+  const stableHandler = useCallback((args: any, trigger?: InvocationTriggers) => {
+    (handlerRef.current as any)(args, trigger);
+  }, []) as ActionFunc<A>;
 
   useEffect(() => {
     const shouldBind =
-      isActive === undefined ||
-      (typeof isActive === 'boolean' ? isActive : isActive.current);
+      isActive === undefined || (typeof isActive === "boolean" ? isActive : isActive.current);
 
     if (shouldBind && !isBound) {
       bindAction(action, stableHandler);
@@ -234,7 +208,7 @@ export function useActionHandler<A extends Action>(
 
   // Handle ref-based isActive changes
   useEffect(() => {
-    if (isActive && typeof isActive === 'object' && 'current' in isActive) {
+    if (isActive && typeof isActive === "object" && "current" in isActive) {
       // Poll for ref changes
       const interval = setInterval(() => {
         const shouldBind = isActive.current;

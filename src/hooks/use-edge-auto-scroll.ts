@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface UseEdgeAutoScrollParams {
   isActive: boolean;
@@ -45,10 +45,7 @@ export function useEdgeAutoScroll({
 
       const viewportWidth = rulerViewport.clientWidth;
       const intrinsicContentWidth = rulerViewport.scrollWidth;
-      const effectiveContentWidth = Math.max(
-        contentWidth,
-        intrinsicContentWidth
-      );
+      const effectiveContentWidth = Math.max(contentWidth, intrinsicContentWidth);
       const scrollMax = Math.max(0, effectiveContentWidth - viewportWidth);
 
       let scrollSpeed = 0;
@@ -61,10 +58,7 @@ export function useEdgeAutoScroll({
         mouseXRelative > viewportWidth - edgeThreshold &&
         rulerViewport.scrollLeft < scrollMax
       ) {
-        const edgeDistance = Math.max(
-          0,
-          viewportWidth - edgeThreshold - mouseXRelative
-        );
+        const edgeDistance = Math.max(0, viewportWidth - edgeThreshold - mouseXRelative);
         const intensity = 1 - edgeDistance / edgeThreshold;
         scrollSpeed = maxScrollSpeed * intensity;
       }
@@ -72,7 +66,7 @@ export function useEdgeAutoScroll({
       if (scrollSpeed !== 0) {
         const newScrollLeft = Math.max(
           0,
-          Math.min(scrollMax, rulerViewport.scrollLeft + scrollSpeed)
+          Math.min(scrollMax, rulerViewport.scrollLeft + scrollSpeed),
         );
         rulerViewport.scrollLeft = newScrollLeft;
         tracksViewport.scrollLeft = newScrollLeft;

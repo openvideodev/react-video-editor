@@ -133,12 +133,9 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
       this.#inputController.stopAutoScroll();
       ModifyHandlers.handleClipModification(this, options);
     };
-    this.#onSelectionCreate = (e) =>
-      SelectionHandlers.handleSelectionCreate(this, e);
-    this.#onSelectionUpdate = (e) =>
-      SelectionHandlers.handleSelectionUpdate(this, e);
-    this.#onSelectionClear = (e) =>
-      SelectionHandlers.handleSelectionClear(this, e);
+    this.#onSelectionCreate = (e) => SelectionHandlers.handleSelectionCreate(this, e);
+    this.#onSelectionUpdate = (e) => SelectionHandlers.handleSelectionUpdate(this, e);
+    this.#onSelectionClear = (e) => SelectionHandlers.handleSelectionClear(this, e);
     this.#onMouseMove = (e) => this.handleMouseMove(e);
 
     this.init();
@@ -210,9 +207,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
    * Optional override installed by the Scrollbar subsystem.
    * PointerHandler checks this so it can delegate wheel events.
    */
-  get mouseWheelHandler():
-    | ((e: TPointerEventInfo<WheelEvent>) => void)
-    | undefined {
+  get mouseWheelHandler(): ((e: TPointerEventInfo<WheelEvent>) => void) | undefined {
     return this.#mouseWheelHandler;
   }
 
@@ -389,17 +384,11 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   public get totalTracksHeight() {
     return this.#tracks.reduce<number>((acc, track) => {
       let trackType: TrackType = "Video";
-      if (
-        track.type.toLowerCase() === "caption" ||
-        track.type.toLowerCase() === "text"
-      ) {
+      if (track.type.toLowerCase() === "caption" || track.type.toLowerCase() === "text") {
         trackType = "Text";
       } else if (track.type.toLowerCase() === "audio") {
         trackType = "Audio";
-      } else if (
-        track.type.toLowerCase() === "effect" ||
-        track.type.toLowerCase() === "filter"
-      ) {
+      } else if (track.type.toLowerCase() === "effect" || track.type.toLowerCase() === "filter") {
         trackType = "Effect";
       }
       return acc + getTrackHeight(trackType) + TIMELINE_CONSTANTS.TRACK_SPACING;
@@ -436,37 +425,25 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     return !!this.getTrackAt(y);
   }
 
-  public getTrackAt(
-    y: number,
-  ): { top: number; bottom: number; id: string } | undefined {
-    return this.#trackRegions.find(
-      (region) => y >= region.top && y <= region.bottom,
-    );
+  public getTrackAt(y: number): { top: number; bottom: number; id: string } | undefined {
+    return this.#trackRegions.find((region) => y >= region.top && y <= region.bottom);
   }
 
   public getTimelineX(canvasX: number): number {
     const vpt = this.canvas.viewportTransform;
-    return (
-      (canvasX - vpt[4]) /
-      (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale)
-    );
+    return (canvasX - vpt[4]) / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale);
   }
 
   public getCanvasX(timelineSeconds: number): number {
     const vpt = this.canvas.viewportTransform;
-    return (
-      timelineSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale +
-      vpt[4]
-    );
+    return timelineSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale + vpt[4];
   }
 
   /**
    * Returns the stable X position in the "infinite canvas" space (starts at 0, no scroll/offset)
    */
   public getInfiniteX(timelineSeconds: number): number {
-    return (
-      timelineSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale
-    );
+    return timelineSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale;
   }
 
   /**
@@ -491,10 +468,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     return null;
   }
 
-  public setTracks(
-    tracks: ITimelineTrack[],
-    clips: Record<string, IClip>,
-  ) {
+  public setTracks(tracks: ITimelineTrack[], clips: Record<string, IClip>) {
     this.#tracks = tracks;
     this.#clipsMap = clips;
     this.render();
@@ -503,12 +477,8 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   public updateTheme(themeStr: "dark" | "light") {
     const isDark = themeStr === "dark";
     const trackColor = isDark ? "#202020" : "#f4f4f5";
-    const scrollbarFill = isDark
-      ? "rgba(255, 255, 255, 0.3)"
-      : "rgba(0, 0, 0, 0.3)";
-    const scrollbarStroke = isDark
-      ? "rgba(255, 255, 255, 0.1)"
-      : "rgba(0, 0, 0, 0.1)";
+    const scrollbarFill = isDark ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)";
+    const scrollbarStroke = isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
 
     // Update existing tracks
     this.#trackObjects.forEach((track) => {
@@ -625,10 +595,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
       usedTrackIds.add(trackData.id);
 
       let trackType: TrackType = "Video";
-      if (
-        trackData.type.toLowerCase() === "caption" ||
-        trackData.type.toLowerCase() === "text"
-      ) {
+      if (trackData.type.toLowerCase() === "caption" || trackData.type.toLowerCase() === "text") {
         trackType = "Text";
       } else if (trackData.type.toLowerCase() === "audio") {
         trackType = "Audio";
@@ -646,9 +613,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
       let trackObj = this.#trackObjects.get(trackData.id);
       if (!trackObj) {
-        const themeStr = document.documentElement.classList.contains("dark")
-          ? "dark"
-          : "light";
+        const themeStr = document.documentElement.classList.contains("dark") ? "dark" : "light";
         trackObj = new Track({
           left: 0,
           top: currentY,
@@ -682,11 +647,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     let sepY = PADDING_TOP;
     this.renderSeparatorLine(0, sepY - GAP / 2, this.canvas.width || 2000);
     this.#trackRegions.forEach((region, index) => {
-      this.renderSeparatorLine(
-        index + 1,
-        region.bottom + GAP / 2,
-        this.canvas.width || 2000,
-      );
+      this.renderSeparatorLine(index + 1, region.bottom + GAP / 2, this.canvas.width || 2000);
     });
 
     // --- PASS 3: CLIPS ---
@@ -701,15 +662,9 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
         const startTimeSeconds = clip.display.from / MICROSECONDS_PER_SECOND;
         const durationSeconds = clip.duration / MICROSECONDS_PER_SECOND;
-        const startX =
-          startTimeSeconds *
-          TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
-          this.#timeScale;
+        const startX = startTimeSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale;
 
-        const width =
-          durationSeconds *
-          TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
-          this.#timeScale;
+        const width = durationSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale;
 
         if (
           clip.type === "Caption" ||
@@ -722,10 +677,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
           clip.type === "Placeholder"
         ) {
           let timelineClip = this.#clipObjects.get(clip.id);
-          const isMedia =
-            clip.type === "Video" ||
-            clip.type === "Image" ||
-            clip.type === "Audio";
+          const isMedia = clip.type === "Video" || clip.type === "Image" || clip.type === "Audio";
 
           const isTextual = clip.type === "Text" || clip.type === "Caption";
 
@@ -806,9 +758,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
                 ? { ...clip.trim }
                 : {
                     from: 0,
-                    to:
-                      clip.sourceDuration ||
-                      clip.duration * (clip.playbackRate || 1),
+                    to: clip.sourceDuration || clip.duration * (clip.playbackRate || 1),
                   },
               playbackRate: clip.playbackRate || 1,
               timeScale: this.#timeScale,
@@ -846,9 +796,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
   public selectClips(clipIds: string[]) {
     // Avoid infinite loops: check if selection is already correct
     const currentSelection = this.canvas.getActiveObjects();
-    const currentIds = currentSelection
-      .map((obj: any) => obj.elementId)
-      .filter(Boolean);
+    const currentIds = currentSelection.map((obj: any) => obj.elementId).filter(Boolean);
 
     // Sort to compare arrays regardless of order
     const sortedClipIds = [...clipIds].sort();
@@ -961,9 +909,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
   public emitSelectionChange() {
     const activeObjects = this.canvas.getActiveObjects();
-    const activeIds = activeObjects
-      .map((obj: any) => obj.elementId)
-      .filter(Boolean);
+    const activeIds = activeObjects.map((obj: any) => obj.elementId).filter(Boolean);
 
     this.emit("selection:changed", { selectedIds: activeIds });
   }
@@ -1007,10 +953,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
     // Notify clips about zoom change (affects thumbnails density)
     this.#clipObjects.forEach((clip) => {
-      if (
-        "onScrollChange" in clip &&
-        typeof (clip as any).onScrollChange === "function"
-      ) {
+      if ("onScrollChange" in clip && typeof (clip as any).onScrollChange === "function") {
         (clip as any).onScrollChange({
           scrollLeft: this.#scrollX,
           force: true,
@@ -1029,16 +972,11 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     vpt[4] = -this.#scrollX + this.#offsetX;
     vpt[5] = -this.#scrollY + this.#offsetY;
 
-    this.canvas.setViewportTransform(
-      vpt as [number, number, number, number, number, number],
-    );
+    this.canvas.setViewportTransform(vpt as [number, number, number, number, number, number]);
 
     // Notify clips about scroll change for lazy loading thumbnails
     this.#clipObjects.forEach((clip) => {
-      if (
-        "onScrollChange" in clip &&
-        typeof (clip as any).onScrollChange === "function"
-      ) {
+      if ("onScrollChange" in clip && typeof (clip as any).onScrollChange === "function") {
         (clip as any).onScrollChange({ scrollLeft: this.#scrollX });
       }
     });

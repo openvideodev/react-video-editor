@@ -1,14 +1,14 @@
-import { ActiveSelection } from 'fabric';
-import type Timeline from '../canvas';
+import { ActiveSelection } from "fabric";
+import type Timeline from "../canvas";
 
 export function handleSelectionCreate(timeline: Timeline, e: any) {
   const activeSelection = timeline.canvas.getActiveObject();
 
   if (activeSelection instanceof ActiveSelection) {
     activeSelection.set({
-      borderColor: 'rgba(255, 255, 255, 0.5)',
+      borderColor: "rgba(255, 255, 255, 0.5)",
       hasControls: false,
-      hoverCursor: 'default',
+      hoverCursor: "default",
       padding: 0,
       borderScaleFactor: 1,
     });
@@ -34,9 +34,9 @@ export function handleSelectionUpdate(timeline: Timeline, e: any) {
 
   if (activeSelection instanceof ActiveSelection) {
     activeSelection.set({
-      borderColor: 'transparent',
+      borderColor: "transparent",
       hasControls: false,
-      hoverCursor: 'default',
+      hoverCursor: "default",
     });
   }
 

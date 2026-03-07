@@ -1,11 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import {
-  ANIMATABLE_PROPERTIES,
-  AnimationProps,
-  AnimationOptions,
-  KeyframeData,
-} from "openvideo";
+import { ANIMATABLE_PROPERTIES, AnimationProps, AnimationOptions, KeyframeData } from "openvideo";
 import { getPresetTemplate } from "openvideo";
 import {
   Select,
@@ -17,11 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { NumberInput } from "@/components/ui/number-input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -48,9 +39,7 @@ export function AnimationPropertiesPicker() {
 
   const { clipId, animationId, mode } = floatingControlData || {};
   const clip = studio?.getClipById(clipId) as any;
-  const animation = animationId
-    ? clip?.animations.find((a: any) => a.id === animationId)
-    : null;
+  const animation = animationId ? clip?.animations.find((a: any) => a.id === animationId) : null;
   const clipDuration = clip?.duration || 0;
   const typeClip = clip?.type || "";
 
@@ -61,9 +50,9 @@ export function AnimationPropertiesPicker() {
     distance: 300,
     stagger: 0.05,
   });
-  const [keyframes, setKeyframes] = useState<
-    Record<string, Partial<AnimationProps>>
-  >(animation?.params || { "0%": {}, "100%": {} });
+  const [keyframes, setKeyframes] = useState<Record<string, Partial<AnimationProps>>>(
+    animation?.params || { "0%": {}, "100%": {} },
+  );
   const [duration, setDuration] = useState<number>(() => {
     if (animation?.options.duration) {
       return animation.options.duration / 1000;
@@ -73,15 +62,9 @@ export function AnimationPropertiesPicker() {
     }
     return 1000;
   });
-  const [delay, setDelay] = useState<number>(
-    (animation?.options.delay || 0) / 1000,
-  );
-  const [iterCount, setIterCount] = useState<number>(
-    animation?.options.iterCount || 1,
-  );
-  const [easing, setEasing] = useState<string>(
-    (animation?.options.easing as string) || "",
-  );
+  const [delay, setDelay] = useState<number>((animation?.options.delay || 0) / 1000);
+  const [iterCount, setIterCount] = useState<number>(animation?.options.iterCount || 1);
+  const [easing, setEasing] = useState<string>((animation?.options.easing as string) || "");
   const [mirrorEnabled, setMirrorEnabled] = useState<boolean>(false);
 
   // Initialize from animation
@@ -104,8 +87,7 @@ export function AnimationPropertiesPicker() {
       const isOut =
         animation.type.toLowerCase().includes("out") ||
         (currentDelayMicro > 0 &&
-          Math.abs(currentDelayMicro + currentDurationMicro - clipDuration) <
-            1000); // within 1ms tolerance
+          Math.abs(currentDelayMicro + currentDurationMicro - clipDuration) < 1000); // within 1ms tolerance
 
       if (animation.type === "keyframes") {
         setActiveTab("custom");
@@ -163,10 +145,7 @@ export function AnimationPropertiesPicker() {
     if (preset !== "custom" && preset !== "") {
       const template = getPresetTemplate(preset, presetParams);
       setKeyframes(template);
-    } else if (
-      preset === "" ||
-      (preset === "custom" && Object.keys(keyframes).length === 0)
-    ) {
+    } else if (preset === "" || (preset === "custom" && Object.keys(keyframes).length === 0)) {
       setKeyframes({ "0%": {}, "100%": {} });
     }
   }, [preset, presetParams]);
@@ -175,11 +154,7 @@ export function AnimationPropertiesPicker() {
     setPreset(value);
   };
 
-  const handlePropertyChange = (
-    keyframe: string,
-    property: PropertyKey,
-    value: number,
-  ) => {
+  const handlePropertyChange = (keyframe: string, property: PropertyKey, value: number) => {
     setKeyframes((prev) => ({
       ...prev,
       [keyframe]: {
@@ -189,11 +164,7 @@ export function AnimationPropertiesPicker() {
     }));
   };
 
-  const handlePropertyToggle = (
-    keyframe: string,
-    property: PropertyKey,
-    enabled: boolean,
-  ) => {
+  const handlePropertyToggle = (keyframe: string, property: PropertyKey, enabled: boolean) => {
     setKeyframes((prev) => {
       const newKeyframes = { ...prev };
       if (enabled) {
@@ -233,10 +204,7 @@ export function AnimationPropertiesPicker() {
       if (maxGap > 5) {
         newProgress = Math.round(gapStart + maxGap / 2);
       } else {
-        newProgress = Math.min(
-          existingProgress[existingProgress.length - 1] + 10,
-          100,
-        );
+        newProgress = Math.min(existingProgress[existingProgress.length - 1] + 10, 100);
       }
     }
 
@@ -428,11 +396,7 @@ export function AnimationPropertiesPicker() {
               <EasingOptions easing={easing} setEasing={setEasing} />
             </div>
           ) : (
-            <Tabs
-              value={activeTab}
-              onValueChange={handleTabChange}
-              className="w-full"
-            >
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="in">In</TabsTrigger>
                 <TabsTrigger value="out">Out</TabsTrigger>
@@ -453,9 +417,7 @@ export function AnimationPropertiesPicker() {
                 {(preset === "slideIn" || preset === "slideOut") && (
                   <div className="grid grid-cols-2 gap-2 p-2 bg-secondary/20 rounded-md">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-muted-foreground">
-                        Direction
-                      </label>
+                      <label className="text-[10px] text-muted-foreground">Direction</label>
                       <Select
                         value={presetParams.direction}
                         onValueChange={(val) =>
@@ -477,9 +439,7 @@ export function AnimationPropertiesPicker() {
                       </Select>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-muted-foreground">
-                        Distance (px)
-                      </label>
+                      <label className="text-[10px] text-muted-foreground">Distance (px)</label>
                       <NumberInput
                         value={presetParams.distance}
                         onChange={(val) =>
@@ -528,9 +488,7 @@ export function AnimationPropertiesPicker() {
                       key={keyframe}
                       keyframe={keyframe}
                       properties={keyframes[keyframe] || {}}
-                      onPropertyChange={(prop, val) =>
-                        handlePropertyChange(keyframe, prop, val)
-                      }
+                      onPropertyChange={(prop, val) => handlePropertyChange(keyframe, prop, val)}
                       onPropertyToggle={(prop, enabled) =>
                         handlePropertyToggle(keyframe, prop, enabled)
                       }
@@ -559,10 +517,7 @@ export function AnimationPropertiesPicker() {
                         Repeat edges to fill frame
                       </span>
                     </div>
-                    <Switch
-                      checked={mirrorEnabled}
-                      onCheckedChange={setMirrorEnabled}
-                    />
+                    <Switch checked={mirrorEnabled} onCheckedChange={setMirrorEnabled} />
                   </div>
                 )}
 
@@ -578,38 +533,21 @@ export function AnimationPropertiesPicker() {
                           Duration
                         </span>
                       </InputGroupAddon>
-                      <NumberInput
-                        value={duration}
-                        onChange={setDuration}
-                        className="p-0"
-                      />
+                      <NumberInput value={duration} onChange={setDuration} className="p-0" />
                       <InputGroupAddon align="inline-end">
-                        <span className="text-[10px] text-muted-foreground">
-                          ms
-                        </span>
+                        <span className="text-[10px] text-muted-foreground">ms</span>
                       </InputGroupAddon>
                     </InputGroup>
 
                     <InputGroup
-                      className={cn(
-                        activeTab !== "custom" &&
-                          "opacity-60 pointer-events-none",
-                      )}
+                      className={cn(activeTab !== "custom" && "opacity-60 pointer-events-none")}
                     >
                       <InputGroupAddon align="inline-start">
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          Delay
-                        </span>
+                        <span className="text-[10px] font-medium text-muted-foreground">Delay</span>
                       </InputGroupAddon>
-                      <NumberInput
-                        value={delay}
-                        onChange={setDelay}
-                        className="p-0"
-                      />
+                      <NumberInput value={delay} onChange={setDelay} className="p-0" />
                       <InputGroupAddon align="inline-end">
-                        <span className="text-[10px] text-muted-foreground">
-                          ms
-                        </span>
+                        <span className="text-[10px] text-muted-foreground">ms</span>
                       </InputGroupAddon>
                     </InputGroup>
                   </div>
@@ -626,11 +564,7 @@ export function AnimationPropertiesPicker() {
                         Iterations
                       </span>
                     </InputGroupAddon>
-                    <NumberInput
-                      value={iterCount}
-                      onChange={setIterCount}
-                      className="p-0"
-                    />
+                    <NumberInput value={iterCount} onChange={setIterCount} className="p-0" />
                   </InputGroup>
                 </div>
 
@@ -643,17 +577,11 @@ export function AnimationPropertiesPicker() {
           {/* Actions */}
           <div className="flex flex-col gap-2 pt-2 border-t mt-4">
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setFloatingControl("")}
-                className="flex-1"
-              >
+              <Button variant="outline" onClick={() => setFloatingControl("")} className="flex-1">
                 Cancel
               </Button>
               <Button
-                onClick={
-                  typeClip === "Caption" ? handleApplyToAllCaptions : handleSave
-                }
+                onClick={typeClip === "Caption" ? handleApplyToAllCaptions : handleSave}
                 className="flex-1"
               >
                 {mode === "add" ? "Add" : "Save"}
@@ -725,9 +653,7 @@ function KeyframeItem({
                 <div key={prop} className="flex items-center gap-2">
                   <Checkbox
                     checked={isEnabled}
-                    onCheckedChange={(checked) =>
-                      onPropertyToggle(prop, checked === true)
-                    }
+                    onCheckedChange={(checked) => onPropertyToggle(prop, checked === true)}
                   />
 
                   <span className="text-[10px] text-muted-foreground min-w-[60px]">
@@ -831,9 +757,7 @@ const PresetOptions = ({
             <>
               <SelectItem value="custom">Keyframes Only</SelectItem>
               {Array.from(
-                new Map(
-                  [...inPresets, ...outPresets].map((p) => [p.value, p]),
-                ).values(),
+                new Map([...inPresets, ...outPresets].map((p) => [p.value, p])).values(),
               ).map((p) => (
                 <SelectItem key={p.value} value={p.value}>
                   {p.label}

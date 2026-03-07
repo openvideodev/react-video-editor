@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface PanelState {
   toolsPanel: number;
@@ -36,11 +36,10 @@ export const usePanelStore = create<PanelState>()(
       setMainContent: (size) => set({ mainContent: size }),
       setTimeline: (size) => set({ timeline: size }),
       setCopilotPanel: (size) => set({ copilotPanel: size }),
-      toggleCopilot: () =>
-        set((state) => ({ isCopilotVisible: !state.isCopilotVisible })),
+      toggleCopilot: () => set((state) => ({ isCopilotVisible: !state.isCopilotVisible })),
     }),
     {
-      name: 'panel-sizes',
-    }
-  )
+      name: "panel-sizes",
+    },
+  ),
 );

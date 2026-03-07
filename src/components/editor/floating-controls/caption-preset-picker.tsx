@@ -17,10 +17,7 @@ const CaptionPresetPicker = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setFloatingControl("");
       }
     };
@@ -41,8 +38,7 @@ const CaptionPresetPicker = () => {
       preset.fontFamily = "Bangers-Regular";
     }
     if (preset.fontUrl === undefined) {
-      preset.fontUrl =
-        "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf";
+      preset.fontUrl = "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf";
     }
     if (preset.boxShadow === undefined) {
       preset.boxShadow = { color: "transparent", x: 0, y: 0, blur: 0 };

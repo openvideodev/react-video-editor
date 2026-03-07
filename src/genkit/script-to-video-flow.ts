@@ -1,6 +1,6 @@
-import { z } from 'genkit';
-import { ai } from './chat-flow';
-import { getScriptToVideoTools } from './script-to-video-tools';
+import { z } from "genkit";
+import { ai } from "./chat-flow";
+import { getScriptToVideoTools } from "./script-to-video-tools";
 
 const SYSTEM_PROMPT = `You are a script-to-video assistant. Your goal is to help users create and refine scripts for their videos and configure generation parameters.
 
@@ -40,7 +40,7 @@ Parameters Mapping for update_video_config:
 
 export const scriptToVideoFlow = ai.defineFlow(
   {
-    name: 'scriptToVideoFlow',
+    name: "scriptToVideoFlow",
     inputSchema: z.object({
       message: z.string(),
     }),
@@ -65,16 +65,16 @@ export const scriptToVideoFlow = ai.defineFlow(
     const toolsQueue: Array<{ name: string; arg: any; response?: any }> = [];
 
     for await (const chunk of stream) {
-      if (chunk.role === 'model' && chunk.content?.[0]?.reasoning) {
+      if (chunk.role === "model" && chunk.content?.[0]?.reasoning) {
         sendChunk(
           JSON.stringify({
-            event: 'reasoning',
+            event: "reasoning",
             text: chunk.content[0].reasoning,
-          })
+          }),
         );
       }
 
-      if (chunk.role === 'model' && chunk.content?.[0]?.toolRequest) {
+      if (chunk.role === "model" && chunk.content?.[0]?.toolRequest) {
         for (let idx = 0; idx < chunk.content.length; idx++) {
           const toolContent = chunk.content[idx];
           if (toolContent.toolRequest) {
@@ -85,15 +85,13 @@ export const scriptToVideoFlow = ai.defineFlow(
         }
       }
 
-      if (chunk.role === 'tool' && chunk.content?.[0]?.toolResponse) {
+      if (chunk.role === "tool" && chunk.content?.[0]?.toolResponse) {
         for (let idx = 0; idx < chunk.content.length; idx++) {
           const toolContent = chunk.content[idx];
           if (toolContent.toolResponse) {
             const name = toolContent.toolResponse.name;
             const responseOutput = toolContent.toolResponse.output;
-            const tool = toolsQueue.find(
-              (t) => t.name === name && t.response === undefined
-            );
+            const tool = toolsQueue.find((t) => t.name === name && t.response === undefined);
             if (tool) tool.response = responseOutput;
           }
         }
@@ -103,15 +101,15 @@ export const scriptToVideoFlow = ai.defineFlow(
     for (const tool of toolsQueue) {
       sendChunk(
         JSON.stringify({
-          event: 'tool',
+          event: "tool",
           name: tool.name,
           arg: tool.arg,
           response: tool.response,
-        })
+        }),
       );
     }
 
     const { text } = await response;
     return { reply: text };
-  }
+  },
 );

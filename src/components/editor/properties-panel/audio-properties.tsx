@@ -1,12 +1,8 @@
-import * as React from 'react';
-import { IClip } from 'openvideo';
-import { IconVolume, IconGauge, IconMusic } from '@tabler/icons-react';
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/components/ui/input-group';
-import { Slider } from '@/components/ui/slider';
+import * as React from "react";
+import { IClip } from "openvideo";
+import { IconVolume, IconGauge, IconMusic } from "@tabler/icons-react";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Slider } from "@/components/ui/slider";
 
 interface AudioPropertiesProps {
   clip: IClip;
@@ -39,9 +35,7 @@ export function AudioProperties({ clip }: AudioPropertiesProps) {
             <InputGroupInput
               type="number"
               value={Math.round((audioClip.volume ?? 1) * 100)}
-              onChange={(e) =>
-                handleUpdate({ volume: (parseInt(e.target.value) || 0) / 100 })
-              }
+              onChange={(e) => handleUpdate({ volume: (parseInt(e.target.value) || 0) / 100 })}
               className="text-sm p-0 text-center"
             />
             <InputGroupAddon align="inline-end" className="p-0 pr-2">
@@ -68,12 +62,7 @@ export function AudioProperties({ clip }: AudioPropertiesProps) {
             disabled
           />
           <InputGroup className="w-20">
-            <InputGroupInput
-              type="number"
-              value={0}
-              disabled
-              className="text-sm p-0 text-center"
-            />
+            <InputGroupInput type="number" value={0} disabled className="text-sm p-0 text-center" />
             <InputGroupAddon align="inline-end" className="p-0 pr-2">
               <span className="text-[10px] text-muted-foreground">st</span>
             </InputGroupAddon>

@@ -1,5 +1,5 @@
-import { Part } from 'genkit';
-import { ImportAsset } from './type';
+import { Part } from "genkit";
+import { ImportAsset } from "./type";
 
 // Context building is handled directly in the flow for better control
 
@@ -14,7 +14,7 @@ export function buildAssetInstruction(asset: ImportAsset, isSelected: boolean) {
   } = asset;
 
   const name = label || assetId;
-  const tag = isSelected ? '[SELECTED]' : '[EXISTING]';
+  const tag = isSelected ? "[SELECTED]" : "[EXISTING]";
 
   // Timeline (ms → s)
   const displayFrom = (display.from / 1000).toFixed(2);
@@ -29,7 +29,7 @@ ASSET_CONTEXT ${tag}
 `.trim();
 
   // TEXT
-  if (assetType === 'text' && text) {
+  if (assetType === "text" && text) {
     instruction += `
 - content: "${text}"
 - role: on-screen text element
@@ -37,7 +37,7 @@ ASSET_CONTEXT ${tag}
   }
 
   // VIDEO / AUDIO
-  if ((assetType === 'video' || assetType === 'audio') && trim) {
+  if ((assetType === "video" || assetType === "audio") && trim) {
     const trimFrom = (trim.from / 1000).toFixed(2);
     const trimTo = (trim.to / 1000).toFixed(2);
 
@@ -48,7 +48,7 @@ ASSET_CONTEXT ${tag}
   }
 
   // IMAGE
-  if (assetType === 'image') {
+  if (assetType === "image") {
     instruction += `
 - role: static visual element
 - behavior: displayed as a still image during its timeline range
@@ -63,39 +63,33 @@ ASSET_CONTEXT ${tag}
 }
 
 export function buildMessageContent(assets: ImportAsset[]): Part[] {
-  const sortedAssets = assets
-    .slice()
-    .sort((a, b) => a.display.from - b.display.from);
+  const sortedAssets = assets.slice().sort((a, b) => a.display.from - b.display.from);
   const content: Part[] = [];
 
   sortedAssets.forEach((asset) => {
     //const name = asset.label || asset.assetId;
 
-    if (asset.assetType === 'text' && asset.text) {
+    if (asset.assetType === "text" && asset.text) {
       content.push({ text: asset.text });
-    } else if (asset.assetType === 'video') {
-      const trimFrom = asset.trim
-        ? (asset.trim.from / 1000).toFixed(2)
-        : '0.00';
-      const trimTo = asset.trim ? (asset.trim.to / 1000).toFixed(2) : 'full';
+    } else if (asset.assetType === "video") {
+      const trimFrom = asset.trim ? (asset.trim.from / 1000).toFixed(2) : "0.00";
+      const trimTo = asset.trim ? (asset.trim.to / 1000).toFixed(2) : "full";
       content.push({
         text: `Video id: ${asset.assetId}. Use only the segment from ${trimFrom} to ${trimTo}`,
       });
       if (asset.url) {
-        content.push({ media: { contentType: 'video/mp4', url: asset.url } });
+        content.push({ media: { contentType: "video/mp4", url: asset.url } });
       }
-    } else if (asset.assetType === 'audio') {
-      const trimFrom = asset.trim
-        ? (asset.trim.from / 1000).toFixed(2)
-        : '0.00';
-      const trimTo = asset.trim ? (asset.trim.to / 1000).toFixed(2) : 'full';
+    } else if (asset.assetType === "audio") {
+      const trimFrom = asset.trim ? (asset.trim.from / 1000).toFixed(2) : "0.00";
+      const trimTo = asset.trim ? (asset.trim.to / 1000).toFixed(2) : "full";
       content.push({
         text: `Audio id: ${asset.assetId}. Use only the segment from ${trimFrom} to ${trimTo}`,
       });
       if (asset.url) {
-        content.push({ media: { contentType: 'audio/mp3', url: asset.url } });
+        content.push({ media: { contentType: "audio/mp3", url: asset.url } });
       }
-    } else if (asset.assetType === 'image') {
+    } else if (asset.assetType === "image") {
       content.push({
         text: `Image id: ${asset.assetId}. Display from ${(asset.display.from / 1000).toFixed(2)}s to ${(asset.display.to / 1000).toFixed(2)}s`,
       });

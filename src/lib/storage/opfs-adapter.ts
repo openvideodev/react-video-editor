@@ -1,9 +1,9 @@
-import { StorageAdapter } from './types';
+import { StorageAdapter } from "./types";
 
 export class OPFSAdapter implements StorageAdapter<File> {
   private directoryName: string;
 
-  constructor(directoryName = 'media') {
+  constructor(directoryName = "media") {
     this.directoryName = directoryName;
   }
 
@@ -20,17 +20,14 @@ export class OPFSAdapter implements StorageAdapter<File> {
       const fileHandle = await directory.getFileHandle(key);
       return await fileHandle.getFile();
     } catch (error) {
-      if ((error as Error).name === 'NotFoundError') {
+      if ((error as Error).name === "NotFoundError") {
         return null;
       }
       throw error;
     }
   }
 
-  async set(
-    key: string,
-    data: File | Blob | string | ArrayBuffer
-  ): Promise<void> {
+  async set(key: string, data: File | Blob | string | ArrayBuffer): Promise<void> {
     const directory = await this.getDirectory();
     const fileHandle = await directory.getFileHandle(key, { create: true });
     const writable = await fileHandle.createWritable();
@@ -44,7 +41,7 @@ export class OPFSAdapter implements StorageAdapter<File> {
       const directory = await this.getDirectory();
       await directory.removeEntry(key);
     } catch (error) {
-      if ((error as Error).name !== 'NotFoundError') {
+      if ((error as Error).name !== "NotFoundError") {
         throw error;
       }
     }
@@ -71,6 +68,6 @@ export class OPFSAdapter implements StorageAdapter<File> {
 
   // Helper method to check OPFS support
   static isSupported(): boolean {
-    return 'storage' in navigator && 'getDirectory' in navigator.storage;
+    return "storage" in navigator && "getDirectory" in navigator.storage;
   }
 }

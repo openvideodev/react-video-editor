@@ -4,7 +4,7 @@ export function addParagraphIndexToWords(asrJson: any) {
 
   const newWords = words.map((word: any) => {
     const paragraphIndex = paragraphs.findIndex(
-      (p: any) => word.start >= p.start && word.end <= p.end
+      (p: any) => word.start >= p.start && word.end <= p.end,
     );
 
     return {
@@ -50,14 +50,8 @@ export function buildParagraphsFromCaptions(captions: any[]) {
       ...w,
       absFrom: caption.display.from + (w.from || 0) * 1000,
       absTo: caption.display.from + (w.to || 0) * 1000,
-      start:
-        w.start !== undefined
-          ? w.start
-          : caption.display.from / 1000000 + w.from / 1000,
-      end:
-        w.end !== undefined
-          ? w.end
-          : caption.display.from / 1000000 + w.to / 1000,
+      start: w.start !== undefined ? w.start : caption.display.from / 1000000 + w.from / 1000,
+      end: w.end !== undefined ? w.end : caption.display.from / 1000000 + w.to / 1000,
     }));
 
     paragraph.words.push(...wordsWithAbsTiming);
@@ -70,6 +64,6 @@ export function buildParagraphsFromCaptions(captions: any[]) {
     .sort((a, b) => a.paragraphIndex - b.paragraphIndex)
     .map((p) => ({
       ...p,
-      text: p.words.map((w: any) => w.text).join(' '),
+      text: p.words.map((w: any) => w.text).join(" "),
     }));
 }

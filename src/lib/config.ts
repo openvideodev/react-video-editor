@@ -1,7 +1,7 @@
 export const config = {
   deepgram: {
-    url: process.env.DEEPGRAM_URL || 'https://api.deepgram.com/v1',
-    model: process.env.DEEPGRAM_MODEL || 'nova-2',
+    url: process.env.DEEPGRAM_URL || "https://api.deepgram.com/v1",
+    model: process.env.DEEPGRAM_MODEL || "nova-2",
     key: process.env.DEEPGRAM_API_KEY as string,
   },
   r2: {

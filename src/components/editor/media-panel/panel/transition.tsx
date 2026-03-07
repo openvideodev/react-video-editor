@@ -20,12 +20,8 @@ const PanelTransition = () => {
           <div
             key={effect.key}
             className="flex w-full items-center gap-2 flex-col group cursor-pointer"
-            onMouseEnter={() =>
-              setHovered((prev) => ({ ...prev, [effect.key]: true }))
-            }
-            onMouseLeave={() =>
-              setHovered((prev) => ({ ...prev, [effect.key]: false }))
-            }
+            onMouseEnter={() => setHovered((prev) => ({ ...prev, [effect.key]: true }))}
+            onMouseLeave={() => setHovered((prev) => ({ ...prev, [effect.key]: false }))}
             onClick={() => {
               if (!studio) return;
               studio.addTransition(effect.key, TRANSITION_DURATION_DEFAULT);
@@ -64,9 +60,7 @@ const PanelTransition = () => {
 
   return (
     <div className="py-4 h-full flex flex-col gap-4">
-      <ScrollArea className="flex-1 px-4">
-        {renderTransitionList(allTransitions)}
-      </ScrollArea>
+      <ScrollArea className="flex-1 px-4">{renderTransitionList(allTransitions)}</ScrollArea>
     </div>
   );
 };

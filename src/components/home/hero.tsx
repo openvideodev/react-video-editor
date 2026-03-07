@@ -23,20 +23,16 @@ const Hero = () => {
             The Open Source Video Editor
           </h1>
           <p className="max-sm:text-sm text-lg text-muted-foreground max-w-2xl px-4">
-            The simplest way to edit videos in your browser. No installs, no signups—just start creating.
+            The simplest way to edit videos in your browser. No installs, no signups—just start
+            creating.
           </p>
         </div>
         <div className="flex items-center justify-center gap-4 flex-wrap">
-          <Button
-            asChild
-            className="shadow-md h-12 rounded-full px-8"
-            size={"lg"}
-          >
+          <Button asChild className="shadow-md h-12 rounded-full px-8" size={"lg"}>
             <Link href="/projects" className="font-normal text-lg">
               Get Started
             </Link>
           </Button>
-
         </div>
         <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
           Open source • Browser-side rendering • Fully extensible

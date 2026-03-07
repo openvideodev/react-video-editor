@@ -1,62 +1,62 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useStudioStore } from '@/stores/studio-store';
-import { Text, Log } from 'openvideo';
+import { Button } from "@/components/ui/button";
+import { useStudioStore } from "@/stores/studio-store";
+import { Text, Log } from "openvideo";
 
 const TEXT_PRESETS = [
   {
-    name: 'Heading',
-    description: 'Heading',
+    name: "Heading",
+    description: "Heading",
     style: {
       fontSize: 80,
-      fontFamily: 'Inter',
-      fontWeight: 'bold',
-      fill: '#ffffff',
+      fontFamily: "Inter",
+      fontWeight: "bold",
+      fill: "#ffffff",
     },
   },
   {
-    name: 'Body text',
-    description: 'Body text',
+    name: "Body text",
+    description: "Body text",
     style: {
       fontSize: 40,
-      fontFamily: 'Inter',
-      fontWeight: 'normal',
-      fill: '#ffffff',
+      fontFamily: "Inter",
+      fontWeight: "normal",
+      fill: "#ffffff",
     },
   },
   {
-    name: 'Modern Bold',
-    description: 'MODERN',
+    name: "Modern Bold",
+    description: "MODERN",
     style: {
       fontSize: 60,
-      fontFamily: 'Montserrat',
-      fontWeight: '900',
-      fill: '#ffffff',
-      stroke: { color: '#000000', width: 2, join: 'round' },
+      fontFamily: "Montserrat",
+      fontWeight: "900",
+      fill: "#ffffff",
+      stroke: { color: "#000000", width: 2, join: "round" },
     },
   },
   {
-    name: 'Elegant Serif',
-    description: 'Serif Style',
+    name: "Elegant Serif",
+    description: "Serif Style",
     style: {
       fontSize: 60,
-      fontFamily: 'Playfair Display',
-      fontWeight: 'normal',
-      fontStyle: 'italic',
-      fill: '#ffffff',
+      fontFamily: "Playfair Display",
+      fontWeight: "normal",
+      fontStyle: "italic",
+      fill: "#ffffff",
     },
   },
   {
-    name: 'Neon Glow',
-    description: 'NEON',
+    name: "Neon Glow",
+    description: "NEON",
     style: {
       fontSize: 60,
-      fontFamily: 'Inter',
-      fontWeight: 'bold',
-      fill: '#00ffff',
+      fontFamily: "Inter",
+      fontWeight: "bold",
+      fill: "#00ffff",
       dropShadow: {
-        color: '#00ffff',
+        color: "#00ffff",
         alpha: 0.8,
         blur: 10,
         angle: 0,
@@ -65,13 +65,13 @@ const TEXT_PRESETS = [
     },
   },
   {
-    name: 'Handwritten',
-    description: 'Script',
+    name: "Handwritten",
+    description: "Script",
     style: {
       fontSize: 70,
-      fontFamily: 'Dancing Script',
-      fontWeight: 'normal',
-      fill: '#ffffff',
+      fontFamily: "Dancing Script",
+      fontWeight: "normal",
+      fill: "#ffffff",
     },
   },
 ];
@@ -103,27 +103,27 @@ export default function PanelText() {
     if (!studio) return;
 
     try {
-      const textClip = new Text(preset ? preset.description : 'Add Text pro', {
+      const textClip = new Text(preset ? preset.description : "Add Text pro", {
         fontSize: preset?.style.fontSize || 124,
-        fontFamily: preset?.style.fontFamily || 'Arial',
-        align: 'center',
-        fontWeight: preset?.style.fontWeight || 'bold',
-        fontStyle: (preset?.style as any)?.fontStyle || 'normal',
-        fill: preset?.style.fill || '#ffffff',
+        fontFamily: preset?.style.fontFamily || "Arial",
+        align: "center",
+        fontWeight: preset?.style.fontWeight || "bold",
+        fontStyle: (preset?.style as any)?.fontStyle || "normal",
+        fill: preset?.style.fill || "#ffffff",
         stroke: (preset?.style as any)?.stroke || undefined,
         dropShadow: (preset?.style as any)?.dropShadow || undefined,
         wordWrap: true,
         wordWrapWidth: 800,
         fontUrl: (preset?.style as any)?.fontUrl,
       });
-      textClip.name = preset ? preset.name : 'Text';
+      textClip.name = preset ? preset.name : "Text";
       await textClip.ready;
       textClip.display.from = 0;
       textClip.duration = 5e6;
       textClip.display.to = 5e6;
       await studio.addClip(textClip);
     } catch (error) {
-      Log.error('Failed to add text:', error);
+      Log.error("Failed to add text:", error);
     }
   };
 
@@ -145,10 +145,10 @@ export default function PanelText() {
               <span
                 style={{
                   fontFamily: preset.style.fontFamily,
-                  fontSize: '12px', // Scaled down for preview
+                  fontSize: "12px", // Scaled down for preview
                   fontWeight: preset.style.fontWeight,
                   color: preset.style.fill,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
                 className="line-clamp-2"
               >

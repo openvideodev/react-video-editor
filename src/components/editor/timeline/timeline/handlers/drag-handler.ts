@@ -1,12 +1,12 @@
-import { type FabricObject } from 'fabric';
-import type Timeline from '../canvas';
+import { type FabricObject } from "fabric";
+import type Timeline from "../canvas";
 import {
   getLineGuideStops,
   getObjectSnappingEdges,
   getGuides,
   drawGuides,
   clearAuxiliaryObjects,
-} from '../guidelines/utils';
+} from "../guidelines/utils";
 
 export function handleDragging(timeline: Timeline, options: any) {
   const target = options.target as FabricObject;
@@ -34,8 +34,8 @@ export function handleDragging(timeline: Timeline, options: any) {
   }
 
   guides.forEach((lineGuide) => {
-    if (lineGuide.orientation === 'V') {
-      target.set('left', lineGuide.lineGuide + lineGuide.offset);
+    if (lineGuide.orientation === "V") {
+      target.set("left", lineGuide.lineGuide + lineGuide.offset);
       target.setCoords();
     }
   });
@@ -56,7 +56,7 @@ export function handleDragging(timeline: Timeline, options: any) {
   timeline.clearSeparatorHighlights();
 
   if (potentialSeparator) {
-    potentialSeparator.highlight.set('fill', 'white');
+    potentialSeparator.highlight.set("fill", "white");
     timeline.setActiveSeparatorIndex(potentialSeparator.index);
   } else {
     timeline.setActiveSeparatorIndex(null);

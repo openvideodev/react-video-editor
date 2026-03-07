@@ -21,10 +21,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 5,
     fontFamily: "Bangers-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset1.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset1.webm",
   },
   {
     appearedColor: "#000000",
@@ -34,8 +32,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#e6e6e5",
     borderColor: "transparent",
     borderWidth: 0,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset2.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset2.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -46,8 +43,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     boxShadow: { color: "#ffffff", x: 15, y: 15, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset3.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset3.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -61,8 +57,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "ChelseaMarket-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/chelseamarket/v8/BCawqZsHqfr89WNP_IApC8tzKBhlLA4uKkWk.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset5.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset5.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -72,8 +67,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 5,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset6.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset6.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -86,10 +80,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     textTransform: "uppercase",
     fontFamily: "Roboto-Black",
     type: "word",
-    fontUrl:
-      "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtvAx05IsDqlA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset18.webm",
+    fontUrl: "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtvAx05IsDqlA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset18.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -103,10 +95,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Roboto-Black",
     type: "word",
     animation: "popCaption",
-    fontUrl:
-      "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtvAx05IsDqlA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset18.webm",
+    fontUrl: "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtvAx05IsDqlA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset18.webm",
   },
   {
     appearedColor: "#fcbf03",
@@ -120,8 +110,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "CabinCondensed-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwaYOjZ5HZl8Q.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset7.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset7.webm",
   },
   {
     appearedColor: "#fffd30",
@@ -134,10 +123,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     boxShadow: { color: "#fffd30", x: 15, y: 15, blur: 60 },
     animation: "charTypewriter",
     fontFamily: "Chivo-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/chivo/v12/va9I4kzIxd1KFoBvS-J3kbDP.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset8.webm",
+    fontUrl: "https://fonts.gstatic.com/s/chivo/v12/va9I4kzIxd1KFoBvS-J3kbDP.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset8.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -149,8 +136,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     boxShadow: { color: "#161616", x: 15, y: 15, blur: 30 },
     animation: "scaleCaption",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset10.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset10.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -163,10 +149,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     boxShadow: { color: "#ffffff", x: 15, y: 15, blur: 60 },
     animation: "popCaption",
     fontFamily: "Montserrat-SemiBold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_bZF7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset12.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_bZF7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset12.webm",
   },
   {
     appearedColor: "#b5b5b8",
@@ -176,8 +160,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#e6e6e5",
     borderColor: "transparent",
     borderWidth: 0,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset13.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset13.webm",
   },
   {
     appearedColor: "#827a7f",
@@ -188,8 +171,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 1 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset14.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset14.webm",
   },
   {
     appearedColor: "#ec41e2",
@@ -200,10 +182,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "FjallaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset15.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset15.webm",
   },
   {
     appearedColor: "#b7bb62",
@@ -214,10 +194,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset19.webm",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset19.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -229,8 +207,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     animation: "fadeCaption",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 1 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset20.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset20.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -241,8 +218,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset21.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset21.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -254,10 +230,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 1 },
     fontFamily: "Roboto-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset22.webm",
+    fontUrl: "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset22.webm",
   },
   {
     appearedColor: "#d30dbd",
@@ -268,11 +242,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset23.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset23.webm",
   },
   {
     appearedColor: "#000000",
@@ -285,10 +257,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     boxShadow: { color: "#000000", x: 1, y: 1, blur: 4 },
     textTransform: "uppercase",
     fontFamily: "FrancoisOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset25.webm",
+    fontUrl: "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset25.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -299,8 +269,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset26.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset26.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -313,10 +282,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 1, y: 1, blur: 4 },
     fontFamily: "FrancoisOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset27.webm",
+    fontUrl: "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset27.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -327,8 +294,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset28.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset28.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -339,8 +305,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset29.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset29.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -351,8 +316,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     animation: "fadeCaption",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset30.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset30.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -364,8 +328,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 2, y: 2, blur: 40 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset32.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset32.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -379,8 +342,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "EncodeSans-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/encodesans/v8/LDIcapOFNxEwR-Bd1O9uYNmnUQomAgE25imKSbHhROjLsZBWTSrQGGHjZtWP7FJCt2c.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset33.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset33.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -390,8 +352,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 10,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset34.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset34.webm",
   },
   {
     appearedColor: "#000000",
@@ -402,10 +363,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset35.webm",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset35.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -417,8 +376,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 1 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset36.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset36.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -431,10 +389,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 1 },
     textTransform: "uppercase",
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset37.webm",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset37.webm",
   },
   {
     appearedColor: "#000000",
@@ -445,12 +401,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
     textTransform: "uppercase",
     animation: "fadeByWord",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset38.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset38.webm",
   },
   {
     type: "word",
@@ -462,8 +416,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 10 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset39.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset39.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -475,8 +428,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     animation: "scaleCaption",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset40.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset40.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -488,10 +440,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     textTransform: "uppercase",
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset41.webm",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset41.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -502,10 +452,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset43.webm",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset43.webm",
   },
   {
     appearedColor: "#45efba",
@@ -516,11 +464,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset45.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset45.webm",
   },
   {
     type: "word",
@@ -534,10 +480,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 15, y: 15, blur: 60 },
     fontFamily: "Knewave-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/knewave/v9/sykz-yx0lLcxQaSItSq9-trEvlQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset48.webm",
+    fontUrl: "https://fonts.gstatic.com/s/knewave/v9/sykz-yx0lLcxQaSItSq9-trEvlQ.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset48.webm",
   },
   {
     appearedColor: "#ddd257",
@@ -548,12 +492,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
     textTransform: "uppercase",
     animation: "fadeCaption",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset49.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset49.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -564,8 +506,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset50.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset50.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -577,11 +518,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 2,
     textTransform: "uppercase",
     fontFamily: "FjallaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
     boxShadow: { color: "#ffffff", x: 4, y: 4, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset52.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset52.webm",
   },
   {
     type: "word",
@@ -595,11 +534,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     animation: "fadeCaption",
     textTransform: "uppercase",
     fontFamily: "FjallaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
     boxShadow: { color: "#ffffff", x: 4, y: 4, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset53.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset53.webm",
   },
   {
     type: "word",
@@ -612,11 +549,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "FjallaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
     boxShadow: { color: "#ffffff", x: 4, y: 4, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset54.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset54.webm",
   },
   {
     type: "word",
@@ -628,10 +563,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "FjallaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset55.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fjallaone/v8/Yq6R-LCAWCX3-6Ky7FAFnOZwkxgtUb8.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset55.webm",
   },
   {
     type: "word",
@@ -645,11 +578,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     animation: "fadeCaption",
     textTransform: "uppercase",
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
     boxShadow: { color: "#ffffff", x: 4, y: 4, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset56.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset56.webm",
   },
   {
     type: "word",
@@ -662,10 +593,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     textTransform: "uppercase",
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset57.webm",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset57.webm",
   },
   {
     type: "word",
@@ -681,8 +610,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "PermanentMarker-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/permanentmarker/v10/Fh4uPib9Iyv2ucM6pGQMWimMp004HaqIfrT5nlk.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset58.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset58.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -694,11 +622,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 60 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset59.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset59.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -709,10 +635,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "Atma-SemiBold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/atma/v8/uK_z4rqWc-Eoo7Z1Kjc9PvedRkM.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset60.webm",
+    fontUrl: "https://fonts.gstatic.com/s/atma/v8/uK_z4rqWc-Eoo7Z1Kjc9PvedRkM.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset60.webm",
   },
   {
     appearedColor: "#26ecea",
@@ -723,11 +647,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset61.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset61.webm",
   },
   {
     type: "word",
@@ -739,10 +661,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset64.webm",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset64.webm",
   },
   {
     type: "word",
@@ -755,10 +675,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     textTransform: "uppercase",
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset65.webm",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset65.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -770,10 +688,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 10,
     textTransform: "uppercase",
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset66.webm",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset66.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -784,10 +700,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset67.webm",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset67.webm",
   },
   {
     type: "word",
@@ -799,8 +713,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 15,
     animation: "scaleCaption",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset68.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset68.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -811,11 +724,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 5,
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset69.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset69.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -826,11 +737,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AlfaSlabOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh6dVretWvYmE.ttf",
     animation: "fadeCaption",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset70.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset70.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -841,11 +750,9 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "AnonymousPro-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/anonymouspro/v14/rP2Bp2a15UIB7Un-bOeISG3pLlw89CH98Ko.ttf",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset71.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset71.webm",
   },
   {
     type: "word",
@@ -857,13 +764,11 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
     animation: "scaleDownCaption",
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 30 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset72.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset72.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -874,12 +779,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
     textTransform: "uppercase",
     boxShadow: { color: "#000000", x: 10, y: 10, blur: 30 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset74.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset74.webm",
   },
   {
     type: "word",
@@ -891,12 +794,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "transparent",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
     textTransform: "uppercase",
     boxShadow: { color: "#ffffff", x: 4, y: 4, blur: 2 },
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset75.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset75.webm",
   },
   {
     type: "word",
@@ -908,12 +809,10 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
     animation: "fadeCaption",
     textTransform: "uppercase",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset76.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset76.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -924,10 +823,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset77.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset77.webm",
   },
   {
     type: "word",
@@ -941,8 +838,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Imbue10pt-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/imbue/v9/RLpXK5P16Ki3fXhj5cvGrqjocPk4n-gVX3M93TnrnvhoP8iXfOsNNK-Q4xY.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset78.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset78.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -954,10 +850,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset80.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset80.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 28 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -971,10 +865,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset81.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset81.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -987,8 +879,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "AndadaPro-Medium",
     fontUrl:
       "https://fonts.gstatic.com/s/andadapro/v7/HhyEU5Qi9-SuOEhPe4LtKoVCuWGURPcg3DP7BY8cFLzvIt2S.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset83.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset83.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
   },
   {
@@ -1000,10 +891,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Poppins-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset84.webm",
+    fontUrl: "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset84.webm",
   },
   {
     appearedColor: "#00fef8",
@@ -1016,10 +905,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "BebasNeue-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset86.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset86.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1032,10 +919,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "Rubik-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset87.webm",
+    fontUrl: "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset87.webm",
     animation: "captionAnimationKeyword4",
   },
   {
@@ -1049,10 +934,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "Poppins-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset88.webm",
+    fontUrl: "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset88.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1064,10 +947,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textTransform: "uppercase",
     fontFamily: "Poppins-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset89.webm",
+    fontUrl: "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset89.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1079,10 +960,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular", // "font Avenir Next"
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset90.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset90.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 100 },
   },
   {
@@ -1095,10 +974,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset92.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset92.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
   },
   {
@@ -1111,10 +988,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 3,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset93.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset93.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     animation: "upDownCaption",
   },
@@ -1129,8 +1004,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "CabinCondensed-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwaYOjZ5HZl8Q.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset95.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset95.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
   },
   {
@@ -1142,10 +1016,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "DMSans-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/dmsans/v6/rP2Cp2ywxg089UriASitOB-sClQX6Cg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset96.webm",
+    fontUrl: "https://fonts.gstatic.com/s/dmsans/v6/rP2Cp2ywxg089UriASitOB-sClQX6Cg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset96.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1158,8 +1030,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "CabinCondensed-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/cabincondensed/v14/nwpJtK6mNhBK2err_hqkYhHRqmwi3Mf97F15-K1oqQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset97.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset97.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1172,10 +1043,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderWidth: 0,
     textAlign: "left",
     fontFamily: "BebasNeue-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset98.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset98.webm",
     animation: "fadeCaption",
   },
 
@@ -1189,10 +1058,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular", // "font Avenir Next"
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset100.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset100.webm",
     animation: "upLeftCaption",
   },
   {
@@ -1204,10 +1071,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-Light",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_cJD7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset101.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_cJD7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset101.webm",
     animation: "upLeftCaption",
   },
   {
@@ -1221,8 +1086,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset103.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset103.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -1234,10 +1098,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#c95858",
     borderWidth: 5,
     fontFamily: "FredokaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset104.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset104.webm",
     boxShadow: { color: "#412424", x: 0, y: 0, blur: 60 },
   },
   {
@@ -1252,8 +1114,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Lemonada-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/lemonada/v14/0QI-MXFD9oygTWy_R-FFlwV-bgfR7QJGnex2mfWc3Z2pTg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset105.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset105.webm",
     animation: "fadeByWord",
   },
   {
@@ -1266,10 +1127,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Bangers-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset108.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset108.webm",
     boxShadow: { color: "#f7e848", x: 0, y: 0, blur: 60 },
   },
   {
@@ -1281,10 +1140,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset110.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset110.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
   },
@@ -1297,10 +1154,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "FredokaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset111.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset111.webm",
     boxShadow: { color: "#ff00bb", x: 0, y: 0, blur: 60 },
   },
   {
@@ -1312,10 +1167,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Neuton-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/neuton/v13/UMBTrPtMoH62xUZyyII7civlBw.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset112.webm",
+    fontUrl: "https://fonts.gstatic.com/s/neuton/v13/UMBTrPtMoH62xUZyyII7civlBw.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset112.webm",
   },
   {
     type: "word",
@@ -1327,10 +1180,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset113.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_dJE7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset113.webm",
     textTransform: "uppercase",
     animation: "scaleDownCaption",
   },
@@ -1343,10 +1194,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Bangers-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset114.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset114.webm",
     boxShadow: { color: "#ff00bb", x: 0, y: 0, blur: 60 },
   },
   {
@@ -1361,8 +1210,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset116.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset116.webm",
     animation: "fadeCaption",
     textTransform: "lowercase",
   },
@@ -1378,8 +1226,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Lemonada-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/lemonada/v14/0QI-MXFD9oygTWy_R-FFlwV-bgfR7QJGnex2mfWc3Z2pTg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset117.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset117.webm",
     animation: "fadeCaption",
   },
   {
@@ -1392,10 +1239,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#f24b34",
     borderWidth: 5,
     fontFamily: "LilitaOne",
-    fontUrl:
-      "https://fonts.gstatic.com/s/lilitaone/v8/i7dPIFZ9Zz-WBtRtedDbUEZ2RFq7AwU.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset118.webm",
+    fontUrl: "https://fonts.gstatic.com/s/lilitaone/v8/i7dPIFZ9Zz-WBtRtedDbUEZ2RFq7AwU.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset118.webm",
     boxShadow: { color: "#f24b34", x: 4, y: 2, blur: 1 },
   },
   {
@@ -1410,8 +1255,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset119.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset119.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     animation: "upDownCaption",
     textAlign: "right",
@@ -1433,10 +1277,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "BebasNeue-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset121.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bebasneue/v2/JTUSjIg69CK48gW7PXooxW5rygbi49c.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset121.webm",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 60 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -1450,10 +1292,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 5,
     fontFamily: "Montserrat-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_epG7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset122.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_epG7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset122.webm",
     textTransform: "uppercase",
     wordAnimation: {
       type: "scale",
@@ -1472,10 +1312,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Bangers-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset123.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bangers/v13/FeVQS0BTqb0h60ACL5la2bxii28.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset123.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
   },
@@ -1488,8 +1326,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#731ef5",
     borderColor: "#000000",
     borderWidth: 3,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset125.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset125.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     animation: "upDownCaption",
     preservedColorKeyWord: true,
@@ -1505,8 +1342,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset126.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset126.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
   },
 
@@ -1522,8 +1358,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset127.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset127.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     animation: "upDownCaption",
     preservedColorKeyWord: true,
@@ -1540,8 +1375,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "RobotoCondensed-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/robotocondensed/v19/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meKCMSbvtdYyQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset128.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset128.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -1563,10 +1397,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 3,
     fontFamily: "Rubik-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset129.webm",
+    fontUrl: "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset129.webm",
     boxShadow: { color: "#eb4d3d", x: 4, y: 4, blur: 10 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -1580,10 +1412,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular", // "font Avenir Next"
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset131.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset131.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
   },
   {
@@ -1597,8 +1427,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "RobotoSlab-Medium",
     fontUrl:
       "https://fonts.gstatic.com/s/robotoslab/v16/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjovoSWaG5iddG-1A.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset132.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset132.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
   },
   {
@@ -1610,10 +1439,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "FredokaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset133.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset133.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
     wordAnimation: {
       type: "scale",
@@ -1631,10 +1458,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "CaveatBrush-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/caveatbrush/v6/EYq0maZfwr9S9-ETZc3fKXtMW7mT03pdQw.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset134.webm",
+    fontUrl: "https://fonts.gstatic.com/s/caveatbrush/v6/EYq0maZfwr9S9-ETZc3fKXtMW7mT03pdQw.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset134.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
   },
 
@@ -1649,8 +1474,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "AguafinaScript-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/aguafinascript/v9/If2QXTv_ZzSxGIO30LemWEOmt1bHqs4pgicOrg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset135.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset135.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
     textTransform: "lowercase",
   },
@@ -1665,8 +1489,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "CabinCondensed-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/cabincondensed/v14/nwpJtK6mNhBK2err_hqkYhHRqmwi3Mf97F15-K1oqQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset136.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset136.webm",
   },
 
   {
@@ -1678,10 +1501,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "DMSerifText-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset137.webm",
+    fontUrl: "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset137.webm",
     boxShadow: { color: "#fde400", x: 0, y: 0, blur: 30 },
   },
   {
@@ -1694,10 +1515,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Rubik-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset138.webm",
+    fontUrl: "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset138.webm",
     boxShadow: { color: "#eb4d3d", x: 0, y: 0, blur: 60 },
     wordAnimation: {
       type: "scale",
@@ -1716,10 +1535,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "DMSerifText-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset139.webm",
+    fontUrl: "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset139.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     animation: "fadeByWord",
   },
@@ -1732,8 +1549,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset140.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset140.webm",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 10 },
     preservedColorKeyWord: true,
     wordAnimation: {
@@ -1752,10 +1568,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#f5c944",
     borderWidth: 2,
     fontFamily: "DMSerifText-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset141.webm",
+    fontUrl: "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset141.webm",
     boxShadow: { color: "#fd6000", x: 2, y: 2, blur: 4 },
   },
   {
@@ -1767,10 +1581,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "DMSerifText-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset142.webm",
+    fontUrl: "https://fonts.gstatic.com/s/dmseriftext/v5/rnCu-xZa_krGokauCeNq1wWyafOPXHIJErY.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset142.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
   },
   {
@@ -1785,8 +1597,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset143.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset143.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     textTransform: "uppercase",
   },
@@ -1800,10 +1611,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Chivo-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/chivo/v12/va9F4kzIxd1KFrjTZMZ_uqzGQC_-.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset144.webm",
+    fontUrl: "https://fonts.gstatic.com/s/chivo/v12/va9F4kzIxd1KFrjTZMZ_uqzGQC_-.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset144.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -1820,8 +1629,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset145.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset145.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     animation: "fadeByWord",
     preservedColorKeyWord: true,
@@ -1835,8 +1643,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 0,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset146.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset146.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     preservedColorKeyWord: true,
   },
@@ -1850,10 +1657,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 2,
     fontFamily: "Staatliches-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset147.webm",
+    fontUrl: "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset147.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     animation: ["slideLeftCaption", "fadeCaption"],
     preservedColorKeyWord: true,
@@ -1868,10 +1673,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 4,
     fontFamily: "Staatliches-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset148.webm",
+    fontUrl: "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset148.webm",
     boxShadow: { color: "#000000", x: 2, y: 2, blur: 30 },
     wordAnimation: {
       type: "scale",
@@ -1891,8 +1694,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset149.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset149.webm",
     boxShadow: { color: "#000000", x: 3, y: 3, blur: 10 },
   },
 
@@ -1905,8 +1707,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset150.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset150.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     preservedColorKeyWord: true,
   },
@@ -1919,8 +1720,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset151.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset151.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     animation: ["slideLeftCaption", "fadeCaption"],
     preservedColorKeyWord: true,
@@ -1935,10 +1735,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "FredokaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset152.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset152.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     preservedColorKeyWord: true,
   },
@@ -1952,8 +1750,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 6,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset153.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset153.webm",
     boxShadow: { color: "#000000", x: 3, y: 3, blur: 10 },
   },
   {
@@ -1965,8 +1762,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset154.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset154.webm",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 10 },
     preservedColorKeyWord: true,
   },
@@ -1980,10 +1776,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "FredokaOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset156.webm",
+    fontUrl: "https://fonts.gstatic.com/s/fredokaone/v8/k3kUo8kEI-tA1RRcTZGmTmHBA6aF8Bf_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset156.webm",
     boxShadow: { color: "#412424", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -1998,10 +1792,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SecularOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset157.webm",
+    fontUrl: "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset157.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -2013,10 +1805,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-ExtraBold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset159.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset159.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2030,10 +1820,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Montserrat-ExtraBold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset160.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset160.webm",
     animation: "fadeCaption",
   },
   {
@@ -2045,8 +1833,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset161.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset161.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 20 },
     textTransform: "uppercase",
     animation: "slideUpCaption",
@@ -2061,8 +1848,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#000000",
     borderColor: "#000000",
     borderWidth: 0,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset163.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset163.webm",
     textAlign: "left",
     animation: "slideLeftCaption",
     preservedColorKeyWord: true,
@@ -2079,8 +1865,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "JuliusSansOne-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/juliussansone/v9/1Pt2g8TAX_SGgBGUi0tGOYEga5W-xXEW6aGXHw.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset164.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset164.webm",
     preservedColorKeyWord: true,
   },
   {
@@ -2094,8 +1879,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "JuliusSansOne-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/juliussansone/v9/1Pt2g8TAX_SGgBGUi0tGOYEga5W-xXEW6aGXHw.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset165.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset165.webm",
     textTransform: "uppercase",
   },
   {
@@ -2108,8 +1892,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset166.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset166.webm",
     boxShadow: { color: "#000000", x: 2, y: 2, blur: 10 },
   },
   {
@@ -2121,10 +1904,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset167.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset167.webm",
     textTransform: "uppercase",
   },
   {
@@ -2139,8 +1920,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "CabinCondensed-Regular",
     fontUrl:
       "https://fonts.gstatic.com/s/cabincondensed/v14/nwpMtK6mNhBK2err_hqkYhHRqmwaYOjZ5HZl8Q.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset168.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset168.webm",
     preservedColorKeyWord: true,
   },
   {
@@ -2153,10 +1933,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SecularOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset169.webm",
+    fontUrl: "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset169.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 60 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2172,8 +1950,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset170.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset170.webm",
   },
   {
     appearedColor: "#ffffff",
@@ -2184,8 +1961,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset171.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset171.webm",
     boxShadow: { color: "#000000", x: 4, y: 4, blur: 25 },
     preservedColorKeyWord: true,
   },
@@ -2199,8 +1975,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 8,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset173.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset173.webm",
     boxShadow: { color: "#000000", x: -4, y: 4, blur: 10 },
     preservedColorKeyWord: true,
   },
@@ -2216,8 +1991,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Changa-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/changa/v14/2-c79JNi2YuVOUcOarRPgnNGooxCZ0q2QjDp9htf1ZM.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset175.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset175.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 40 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2233,10 +2007,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 4,
     fontFamily: "Bungee-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/bungee/v6/N0bU2SZBIuF2PU_ECn50Kd_PmA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset179.webm",
+    fontUrl: "https://fonts.gstatic.com/s/bungee/v6/N0bU2SZBIuF2PU_ECn50Kd_PmA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset179.webm",
     boxShadow: { color: "#000000", x: 3, y: 3, blur: 25 },
     textTransform: "uppercase",
     animation: "fadeByWord",
@@ -2261,8 +2033,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Changa-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/changa/v14/2-c79JNi2YuVOUcOarRPgnNGooxCZ0q2QjDp9htf1ZM.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset180.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset180.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 25 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2276,8 +2047,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#7e12ff",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset182.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset182.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 20 },
     preservedColorKeyWord: true,
   },
@@ -2294,8 +2064,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Black",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuBWYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset184.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset184.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 20 },
     textTransform: "uppercase",
     animation: "fadeByWord",
@@ -2310,8 +2079,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset185.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset185.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     animation: "slideFadeByWord",
     preservedColorKeyWord: true,
@@ -2325,8 +2093,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 0,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset187.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset187.webm",
     textAlign: "left",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
   },
@@ -2339,8 +2106,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 4,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset188.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset188.webm",
     boxShadow: { color: "#000000", x: -4, y: 4, blur: 20 },
   },
   {
@@ -2355,8 +2121,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-SemiBold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset189.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset189.webm",
     textTransform: "uppercase",
     animation: "fadeCaption",
     preservedColorKeyWord: true,
@@ -2371,10 +2136,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Lobster-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/lobster/v23/neILzCirqoswsqX9_oWsMqEzSJQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset190.webm",
+    fontUrl: "https://fonts.gstatic.com/s/lobster/v23/neILzCirqoswsqX9_oWsMqEzSJQ.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset190.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     animation: "fadeByWord",
   },
@@ -2390,8 +2153,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-SemiBold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset191.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset191.webm",
     preservedColorKeyWord: true,
   },
   {
@@ -2406,8 +2168,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "RobotoCondensed-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/robotocondensed/v19/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meKCMSbvtdYyQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset192.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset192.webm",
 
     preservedColorKeyWord: true,
   },
@@ -2421,10 +2182,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Pacifico-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/pacifico/v17/FwZY7-Qmy14u9lezJ96A4sijpFu_.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset194.webm",
+    fontUrl: "https://fonts.gstatic.com/s/pacifico/v17/FwZY7-Qmy14u9lezJ96A4sijpFu_.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset194.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     preservedColorKeyWord: true,
   },
@@ -2438,10 +2197,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SecularOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset195.webm",
+    fontUrl: "https://fonts.gstatic.com/s/secularone/v5/8QINdiTajsj_87rMuMdKypDlMul7LJpK.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset195.webm",
     boxShadow: { color: "#0e2beb", x: 0, y: 0, blur: 10 },
     textTransform: "uppercase",
   },
@@ -2455,8 +2212,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "#7e12ff",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset197.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset197.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     animation: "fadeCaption",
     preservedColorKeyWord: true,
@@ -2469,8 +2225,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#7e12ff",
     borderWidth: 8,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset198.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset198.webm",
     boxShadow: { color: "#7e12ff", x: 0, y: 0, blur: 50 },
     animation: "upLeftCaption",
   },
@@ -2484,8 +2239,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset199.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset199.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     preservedColorKeyWord: true,
   },
@@ -2498,8 +2252,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 2,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset200.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset200.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     preservedColorKeyWord: true,
   },
@@ -2513,10 +2266,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 2,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset201.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset201.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 30 },
     animation: "fadeByWord",
     preservedColorKeyWord: true,
@@ -2531,10 +2282,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Staatliches-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset202.webm",
+    fontUrl: "https://fonts.gstatic.com/s/staatliches/v6/HI_OiY8KO6hCsQSoAPmtMbectJG9O9PS.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset202.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     animation: "fadeByWord",
     preservedColorKeyWord: true,
@@ -2549,8 +2298,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 10,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset203.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset203.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     textTransform: "uppercase",
     animation: "fadeCaption",
@@ -2566,10 +2314,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 4,
     fontFamily: "Montserrat-ExtraBold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset204.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_c5H7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset204.webm",
     boxShadow: { color: "#000000", x: -4, y: 4, blur: 20 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2585,8 +2331,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "PlayfairDisplay-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/playfairdisplay/v25/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiukDQZNLo_U2r.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset205.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset205.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 50 },
     textTransform: "uppercase",
     wordAnimation: {
@@ -2608,8 +2353,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "RobotoCondensed-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/robotocondensed/v19/ieVi2ZhZI2eCN5jzbjEETS9weq8-32meKCMSbvtdYyQ.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset206.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset206.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 20 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2624,10 +2368,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "Rubik-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset207.webm",
+    fontUrl: "https://fonts.gstatic.com/s/rubik/v14/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-ro-1UE80V4bVkA.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset207.webm",
     boxShadow: { color: "#474747", x: 0, y: 0, blur: 100 },
     textTransform: "uppercase",
     wordAnimation: {
@@ -2649,8 +2391,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     fontFamily: "Inter-Bold",
     fontUrl:
       "https://fonts.gstatic.com/s/inter/v7/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYMZhrib2Bg-4.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset208.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset208.webm",
     boxShadow: { color: "#474747", x: 0, y: 0, blur: 10 },
     textTransform: "uppercase",
   },
@@ -2663,8 +2404,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 10,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset209.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset209.webm",
     boxShadow: { color: "#000000", x: -4, y: -4, blur: 25 },
     preservedColorKeyWord: true,
   },
@@ -2677,10 +2417,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "Poppins-Bold",
-    fontUrl:
-      "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset210.webm",
+    fontUrl: "https://fonts.gstatic.com/s/poppins/v15/pxiByp8kv8JHgFVrLCz7V1tvFP-KUEg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset210.webm",
     boxShadow: { color: "#474747", x: 0, y: 0, blur: 100 },
   },
 
@@ -2694,10 +2432,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "Montserrat-Black",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_epG7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset211.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_epG7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset211.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 15 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2713,10 +2449,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 0,
     fontFamily: "SigmarOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset212.webm",
+    fontUrl: "https://fonts.gstatic.com/s/sigmarone/v11/co3DmWZ8kjZuErj9Ta3dk6Pjp3Di8U0.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset212.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 8 },
     textTransform: "uppercase",
     preservedColorKeyWord: true,
@@ -2731,10 +2465,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 10,
     fontFamily: "Montserrat-Light",
-    fontUrl:
-      "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_cJD7g7J_950vCo.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset213.webm",
+    fontUrl: "https://fonts.gstatic.com/s/montserrat/v18/JTURjIg1_i6t8kCHKm45_cJD7g7J_950vCo.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset213.webm",
     boxShadow: { color: "#474747", x: 0, y: 0, blur: 10 },
     preservedColorKeyWord: true,
   },
@@ -2746,8 +2478,7 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     backgroundColor: "transparent",
     borderColor: "#000000",
     borderWidth: 10,
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset214.webm",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset214.webm",
     boxShadow: { color: "#000000", x: 0, y: 0, blur: 10 },
     wordAnimation: {
       type: "opacity",
@@ -2766,10 +2497,8 @@ export const STYLE_CAPTION_PRESETS: ICaptionsControlProps[] = [
     borderColor: "#000000",
     borderWidth: 5,
     fontFamily: "FrancoisOne-Regular",
-    fontUrl:
-      "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
-    previewUrl:
-      "https://cdn.designcombo.dev/caption_previews/dynamic-preset215.webm",
+    fontUrl: "https://fonts.gstatic.com/s/francoisone/v15/_Xmr-H4zszafZw3A-KPSZutNxgKQu_avAg.ttf",
+    previewUrl: "https://cdn.designcombo.dev/caption_previews/dynamic-preset215.webm",
     wordAnimation: {
       type: "opacity",
       application: "active",

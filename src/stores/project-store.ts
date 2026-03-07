@@ -23,8 +23,7 @@ export const useProjectStore = create<ProjectState>()(
       aspectRatio: DEFAULT_ASPECT_RATIO,
       fps: DEFAULT_FPS,
       initialStudioJSON: null,
-      setCanvasSize: (canvasSize, aspectRatio) =>
-        set({ canvasSize, aspectRatio }),
+      setCanvasSize: (canvasSize, aspectRatio) => set({ canvasSize, aspectRatio }),
       setFps: (fps) => set({ fps }),
       setInitialStudioJSON: (initialStudioJSON) => set({ initialStudioJSON }),
     }),

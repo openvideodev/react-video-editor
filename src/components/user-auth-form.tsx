@@ -95,9 +95,7 @@ export function UserAuthForm({ className, kind, ...props }: UserAuthFormProps) {
             />
           </div>
           <Button disabled={isLoading}>
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
+            {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
             {kind === "signin" ? "Sign In" : "Sign Up"} with Email
           </Button>
         </div>
@@ -107,18 +105,11 @@ export function UserAuthForm({ className, kind, ...props }: UserAuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
+          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <Button
-          variant="outline"
-          type="button"
-          disabled={isLoadingGitHub}
-          onClick={signinGit}
-        >
+        <Button variant="outline" type="button" disabled={isLoadingGitHub} onClick={signinGit}>
           {isLoadingGitHub ? (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           ) : (

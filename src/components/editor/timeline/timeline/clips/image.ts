@@ -1,8 +1,8 @@
-import { BaseTimelineClip, BaseClipProps } from './base';
-import { createResizeControls } from '../controls';
-import { Control, util } from 'fabric';
-import { editorFont } from '@/components/editor/constants';
-import { unitsToTimeMs } from '../utils/filmstrip';
+import { BaseTimelineClip, BaseClipProps } from "./base";
+import { createResizeControls } from "../controls";
+import { Control, util } from "fabric";
+import { editorFont } from "@/components/editor/constants";
+import { unitsToTimeMs } from "../utils/filmstrip";
 
 const MICROSECONDS_IN_SECOND = 1_000_000;
 
@@ -17,12 +17,12 @@ export class Image extends BaseTimelineClip {
     rx: 6,
     ry: 6,
     objectCaching: false,
-    borderColor: 'transparent',
-    stroke: 'transparent',
+    borderColor: "transparent",
+    stroke: "transparent",
     strokeWidth: 0,
-    fill: '#164e63',
+    fill: "#164e63",
     borderOpacityWhenMoving: 1,
-    hoverCursor: 'default',
+    hoverCursor: "default",
   };
 
   constructor(options: BaseClipProps) {
@@ -60,7 +60,7 @@ export class Image extends BaseTimelineClip {
       this.set({ dirty: true });
       this.canvas?.requestRenderAll();
     } catch (error) {
-      console.error('Failed to load image for timeline clip:', error);
+      console.error("Failed to load image for timeline clip:", error);
     }
   }
 
@@ -75,13 +75,7 @@ export class Image extends BaseTimelineClip {
 
     const count = Math.ceil(this.width / thumbnailWidth);
     for (let i = 0; i < count; i++) {
-      ctx.drawImage(
-        this._imgElement,
-        i * thumbnailWidth,
-        0,
-        thumbnailWidth,
-        thumbnailHeight
-      );
+      ctx.drawImage(this._imgElement, i * thumbnailWidth, 0, thumbnailWidth, thumbnailHeight);
     }
   }
 
@@ -96,12 +90,12 @@ export class Image extends BaseTimelineClip {
   }
 
   public drawIdentity(ctx: CanvasRenderingContext2D) {
-    const text = this.text || this.src?.split('/').pop() || '';
+    const text = this.text || this.src?.split("/").pop() || "";
     const durationUs = unitsToTimeMs(this.width, this.timeScale, 1);
     const seconds = Math.round(durationUs / MICROSECONDS_IN_SECOND);
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
-    const durationText = `${m}:${s.toString().padStart(2, '0')}`;
+    const durationText = `${m}:${s.toString().padStart(2, "0")}`;
 
     ctx.font = `600 11px ${editorFont.fontFamily}`;
     const paddingX = 6;
@@ -119,17 +113,15 @@ export class Image extends BaseTimelineClip {
       const bgWidth = metrics.width + paddingX * 2;
 
       // Draw background
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
       ctx.beginPath();
       ctx.roundRect(currentX, y, bgWidth, bgHeight, 4);
       ctx.fill();
 
       // Draw text
-      ctx.fillStyle = isDimmed
-        ? 'rgba(255, 255, 255, 0.5)'
-        : 'rgba(255, 255, 255, 0.9)';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
+      ctx.fillStyle = isDimmed ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.9)";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
       ctx.fillText(content, currentX + paddingX, y + paddingY + 1);
 
       currentX += bgWidth + blockGap;
@@ -142,9 +134,7 @@ export class Image extends BaseTimelineClip {
   }
 
   public updateSelected(ctx: CanvasRenderingContext2D) {
-    const borderColor = this.isSelected
-      ? '#ffffff'
-      : 'rgba(255, 255, 255, 0.1)';
+    const borderColor = this.isSelected ? "#ffffff" : "rgba(255, 255, 255, 0.1)";
     const borderWidth = 2;
     const radius = 6;
 
@@ -153,13 +143,7 @@ export class Image extends BaseTimelineClip {
 
     // Create a path for the outer rectangle
     ctx.beginPath();
-    ctx.roundRect(
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height,
-      radius
-    );
+    ctx.roundRect(-this.width / 2, -this.height / 2, this.width, this.height, radius);
 
     // Create a path for the inner rectangle (the hole)
     ctx.roundRect(
@@ -167,11 +151,11 @@ export class Image extends BaseTimelineClip {
       -this.height / 2 + borderWidth,
       this.width - borderWidth * 2,
       this.height - borderWidth * 2,
-      radius - borderWidth
+      radius - borderWidth,
     );
 
     // Use even-odd fill rule to create the border effect
-    ctx.fill('evenodd');
+    ctx.fill("evenodd");
     ctx.restore();
   }
 }

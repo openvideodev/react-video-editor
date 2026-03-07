@@ -20,10 +20,7 @@ import { useTimelineZoom } from "@/hooks/use-timeline-zoom";
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
-import {
-  TimelinePlayhead,
-  useTimelinePlayheadRuler,
-} from "./timeline-playhead";
+import { TimelinePlayhead, useTimelinePlayheadRuler } from "./timeline-playhead";
 import type { TimelineTrack } from "@/types/timeline";
 import { TimelineRuler } from "./timeline-ruler";
 import {
@@ -49,9 +46,7 @@ export function Timeline() {
   const { studio } = useStudioStore();
   const { theme, resolvedTheme } = useTheme();
 
-  const currentTheme = (theme === "system" ? resolvedTheme : theme) as
-    | "dark"
-    | "light";
+  const currentTheme = (theme === "system" ? resolvedTheme : theme) as "dark" | "light";
 
   const scrollbarColors = useMemo(() => {
     const isDark = currentTheme === "dark";
@@ -161,9 +156,7 @@ export function Timeline() {
       // Clear selected elements when clicking empty timeline area
 
       // Determine if we're clicking in ruler or tracks area
-      const isRulerClick = (e.target as HTMLElement).closest(
-        "[data-ruler-area]",
-      );
+      const isRulerClick = (e.target as HTMLElement).closest("[data-ruler-area]");
 
       let mouseX: number;
       let scrollLeft = 0;
@@ -200,8 +193,7 @@ export function Timeline() {
         0,
         Math.min(
           duration,
-          (mouseX + scrollLeft) /
-          (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel),
+          (mouseX + scrollLeft) / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel),
         ),
       );
 
@@ -279,8 +271,8 @@ export function Timeline() {
       handleWheel({
         ctrlKey: true,
         deltaY: delta,
-        preventDefault: () => { },
-        stopPropagation: () => { },
+        preventDefault: () => {},
+        stopPropagation: () => {},
       } as any);
     });
 
@@ -368,10 +360,7 @@ export function Timeline() {
       <TimelineStudioSync timelineCanvas={timelineCanvasRef.current} />
 
       {/* Timeline Container */}
-      <div
-        className="flex-1 flex flex-col overflow-hidden relative bg-card"
-        ref={timelineRef}
-      >
+      <div className="flex-1 flex flex-col overflow-hidden relative bg-card" ref={timelineRef}>
         <TimelinePlayhead
           duration={duration}
           zoomLevel={zoomLevel}
@@ -389,16 +378,11 @@ export function Timeline() {
         />
 
         {/* Timeline Header with Ruler */}
-        <div
-          style={{ opacity: duration === 0 ? 0 : 1 }}
-          className="flex sticky top-0"
-        >
+        <div style={{ opacity: duration === 0 ? 0 : 1 }} className="flex sticky top-0">
           {/* Track Labels Header */}
           <div className="w-16 shrink-0 bg-card border-r flex items-center justify-between h-6">
             {/* Empty space */}
-            <span className="text-sm font-medium text-muted-foreground opacity-0">
-              .
-            </span>
+            <span className="text-sm font-medium text-muted-foreground opacity-0">.</span>
           </div>
 
           {/* Timeline Ruler */}
@@ -482,11 +466,7 @@ export function Timeline() {
                         <TrackIcon track={track} />
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-4 p-0 h-6 w-4"
-                            >
+                            <Button variant="ghost" size="icon" className="size-4 p-0 h-6 w-4">
                               <Ellipsis className="size-3 text-muted-foreground" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -494,8 +474,7 @@ export function Timeline() {
                             <DropdownMenuItem
                               disabled={index === 0}
                               onClick={() => {
-                                const { moveTrack } =
-                                  useTimelineStore.getState();
+                                const { moveTrack } = useTimelineStore.getState();
                                 moveTrack(track.id, index - 1);
                               }}
                             >
@@ -505,8 +484,7 @@ export function Timeline() {
                             <DropdownMenuItem
                               disabled={index === tracks.length - 1}
                               onClick={() => {
-                                const { moveTrack } =
-                                  useTimelineStore.getState();
+                                const { moveTrack } = useTimelineStore.getState();
                                 moveTrack(track.id, index + 1);
                               }}
                             >
@@ -547,21 +525,13 @@ export function Timeline() {
 function TrackIcon({ track }: { track: TimelineTrack }) {
   return (
     <>
-      {track.type === "Image" && (
-        <Image className="w-4 h-4 shrink-0 text-muted-foreground" />
-      )}
+      {track.type === "Image" && <Image className="w-4 h-4 shrink-0 text-muted-foreground" />}
       {(track.type === "Video" || track.type === "Placeholder") && (
         <Video className="w-4 h-4 shrink-0 text-muted-foreground" />
       )}
-      {track.type === "Text" && (
-        <TypeIcon className="w-4 h-4 shrink-0 text-muted-foreground" />
-      )}
-      {track.type === "Caption" && (
-        <TypeIcon className="w-4 h-4 shrink-0 text-muted-foreground" />
-      )}
-      {track.type === "Audio" && (
-        <Music className="w-4 h-4 shrink-0 text-muted-foreground" />
-      )}
+      {track.type === "Text" && <TypeIcon className="w-4 h-4 shrink-0 text-muted-foreground" />}
+      {track.type === "Caption" && <TypeIcon className="w-4 h-4 shrink-0 text-muted-foreground" />}
+      {track.type === "Audio" && <Music className="w-4 h-4 shrink-0 text-muted-foreground" />}
       {track.type === "Effect" && (
         <SparklesIcon className="w-4 h-4 shrink-0 text-muted-foreground" />
       )}

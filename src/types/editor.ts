@@ -1,6 +1,6 @@
-export type BackgroundType = 'blur' | 'mirror' | 'color';
+export type BackgroundType = "blur" | "mirror" | "color";
 
-export type CanvasMode = 'preset' | 'original' | 'custom';
+export type CanvasMode = "preset" | "original" | "custom";
 
 export interface CanvasSize {
   width: number;

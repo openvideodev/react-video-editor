@@ -8,10 +8,10 @@ export interface UploadResult {
 
 export const uploadFile = async (file: File): Promise<UploadResult> => {
   // 1. Get presigned URL
-  const response = await fetch('/api/uploads/presign', {
-    method: 'POST',
+  const response = await fetch("/api/uploads/presign", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       fileNames: [file.name],
@@ -19,7 +19,7 @@ export const uploadFile = async (file: File): Promise<UploadResult> => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to get presigned URL');
+    throw new Error("Failed to get presigned URL");
   }
 
   const { uploads } = await response.json();
@@ -27,15 +27,15 @@ export const uploadFile = async (file: File): Promise<UploadResult> => {
 
   // 2. Upload to R2
   const uploadResponse = await fetch(uploadConfig.presignedUrl, {
-    method: 'PUT',
+    method: "PUT",
     body: file,
     headers: {
-      'Content-Type': file.type,
+      "Content-Type": file.type,
     },
   });
 
   if (!uploadResponse.ok) {
-    throw new Error('Failed to upload file to storage');
+    throw new Error("Failed to upload file to storage");
   }
 
   return uploadConfig;

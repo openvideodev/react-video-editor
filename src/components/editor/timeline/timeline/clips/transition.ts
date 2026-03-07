@@ -1,5 +1,5 @@
-import { BaseTimelineClip, BaseClipProps } from './base';
-import { Control, Path } from 'fabric';
+import { BaseTimelineClip, BaseClipProps } from "./base";
+import { Control, Path } from "fabric";
 
 export class Transition extends BaseTimelineClip {
   isSelected: boolean;
@@ -13,12 +13,12 @@ export class Transition extends BaseTimelineClip {
     rx: 4,
     ry: 4,
     objectCaching: false,
-    borderColor: 'transparent',
-    stroke: 'transparent',
+    borderColor: "transparent",
+    stroke: "transparent",
     strokeWidth: 0,
-    fill: '#ffffff', // White
+    fill: "#ffffff", // White
     borderOpacityWhenMoving: 1,
-    hoverCursor: 'default',
+    hoverCursor: "default",
   };
 
   constructor(options: BaseClipProps) {
@@ -30,20 +30,20 @@ export class Transition extends BaseTimelineClip {
 
     // Arrow Left Right icon (Lucide-like)
     this.arrowIcon = new Path(
-      'M 16 7 L 11 12 L 16 17 M 11 12 H 30 M 24 28 L 29 23 L 24 18 M 29 23 H 13',
+      "M 16 7 L 11 12 L 16 17 M 11 12 H 30 M 24 28 L 29 23 L 24 18 M 29 23 H 13",
       {
-        stroke: '#18181b', // Dark gray/black
+        stroke: "#18181b", // Dark gray/black
         strokeWidth: 1,
-        fill: 'transparent',
-        strokeLineCap: 'round',
-        strokeLineJoin: 'round',
-        originX: 'center',
-        originY: 'center',
+        fill: "transparent",
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
+        originX: "center",
+        originY: "center",
         scaleX: 0.6,
         scaleY: 0.6,
         top: 0,
         left: 0,
-      }
+      },
     );
   }
 
@@ -78,9 +78,7 @@ export class Transition extends BaseTimelineClip {
   }
 
   public updateSelected(ctx: CanvasRenderingContext2D) {
-    const borderColor = this.isSelected
-      ? 'rgba(200, 200, 200, 1.0)'
-      : 'rgba(0, 0, 0, 0.5)';
+    const borderColor = this.isSelected ? "rgba(200, 200, 200, 1.0)" : "rgba(0, 0, 0, 0.5)";
     const borderWidth = 2;
     const radius = 4;
     const size = 20;
@@ -95,14 +93,14 @@ export class Transition extends BaseTimelineClip {
       -size / 2 - borderWidth,
       size + borderWidth * 2,
       size + borderWidth * 2,
-      radius
+      radius,
     );
 
     // Create a path for the inner rectangle (the hole)
     ctx.roundRect(-size / 2, -size / 2, size, size, radius);
 
     // Use even-odd fill rule to create the border effect
-    ctx.fill('evenodd');
+    ctx.fill("evenodd");
     ctx.restore();
   }
 }

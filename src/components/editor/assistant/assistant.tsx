@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { ArrowUpIcon, Wand2, MessageCircle, SparkleIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useStudioStore } from '@/stores/studio-store';
-import { Studio } from 'openvideo';
-import { streamFlow } from '@genkit-ai/next/client';
-import * as ToolHandlers from './tools';
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { ArrowUpIcon, Wand2, MessageCircle, SparkleIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useStudioStore } from "@/stores/studio-store";
+import { Studio } from "openvideo";
+import { streamFlow } from "@genkit-ai/next/client";
+import * as ToolHandlers from "./tools";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
-} from '@/components/ui/input-group';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { usePlaybackStore } from '@/stores/playback-store';
-import { useTimelineStore } from '@/stores/timeline-store';
-import { IClip } from '@/types/timeline';
-import { chatFlow } from '@/genkit/chat-flow';
-import { ImportAsset } from '@/genkit/type';
-import { Icons } from '@/components/shared/icons';
+} from "@/components/ui/input-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePlaybackStore } from "@/stores/playback-store";
+import { useTimelineStore } from "@/stores/timeline-store";
+import { IClip } from "@/types/timeline";
+import { chatFlow } from "@/genkit/chat-flow";
+import { ImportAsset } from "@/genkit/type";
+import { Icons } from "@/components/shared/icons";
 
 interface Message {
-  role: 'user' | 'model';
+  role: "user" | "model";
   content: string;
   status?: string;
 }
@@ -35,17 +35,17 @@ interface Suggestion {
 }
 
 const SUGGESTIONS: Suggestion[] = [
-  { text: 'Search and add futurist city video' },
+  { text: "Search and add futurist city video" },
   { text: 'Generate voiceover "Welcome"' },
-  { text: 'Auto-caption video' },
-  { text: 'Make text yellow and bigger' },
+  { text: "Auto-caption video" },
+  { text: "Make text yellow and bigger" },
 ];
 
 export default function Assistant() {
   const { studio } = useStudioStore();
   const { clips, selectedClipIds, getClip, tracks } = useTimelineStore();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -57,15 +57,14 @@ export default function Assistant() {
         const trackId = track ? track.id : `unknown_track`;
 
         const assetType = clip.type.toLowerCase();
-        const textContent =
-          clip.text || (clip as any)._text || clip.caption?.text || '';
+        const textContent = clip.text || (clip as any)._text || clip.caption?.text || "";
 
         return {
           assetId: clip.id,
-          type: 'import',
-          assetType: assetType === 'caption' ? 'text' : assetType,
+          type: "import",
+          assetType: assetType === "caption" ? "text" : assetType,
           text: textContent,
-          url: clip.src || '',
+          url: clip.src || "",
           label: clip.name || `Clip ${clip.id}`,
           trackId,
           display: {
@@ -74,24 +73,22 @@ export default function Assistant() {
           },
           trim: clip.trim
             ? {
-              from: clip.trim.from / 1000,
-              to: clip.trim.to / 1000,
-            }
+                from: clip.trim.from / 1000,
+                to: clip.trim.to / 1000,
+              }
             : undefined,
         };
       });
     },
-    [tracks]
+    [tracks],
   );
 
   const existingAssets = useMemo(
     () => mapClipsToAssets(Object.values(clips)),
-    [clips, mapClipsToAssets]
+    [clips, mapClipsToAssets],
   );
   const selectedAssets = useMemo(() => {
-    const selectedClips = selectedClipIds
-      .map(getClip)
-      .filter(Boolean) as IClip[];
+    const selectedClips = selectedClipIds.map(getClip).filter(Boolean) as IClip[];
     return mapClipsToAssets(selectedClips);
   }, [selectedClipIds, getClip, mapClipsToAssets]);
 
@@ -99,9 +96,7 @@ export default function Assistant() {
   useEffect(() => {
     if (scrollRef.current) {
       setTimeout(() => {
-        const scrollElement = scrollRef.current?.closest(
-          '[data-radix-scroll-area-viewport]'
-        );
+        const scrollElement = scrollRef.current?.closest("[data-radix-scroll-area-viewport]");
         if (scrollElement) {
           scrollElement.scrollTop = scrollElement.scrollHeight;
         }
@@ -113,21 +108,21 @@ export default function Assistant() {
     const messageText = suggestionText || input.trim();
     if (!messageText || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: messageText };
+    const userMessage: Message = { role: "user", content: messageText };
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
+    setInput("");
     setIsLoading(true);
     setShowSuggestions(false);
 
     const assistantMessage: Message = {
-      role: 'model',
-      content: '',
-      status: 'running',
+      role: "model",
+      content: "",
+      status: "running",
     };
     setMessages((prev) => [...prev, assistantMessage]);
     try {
       const flow = streamFlow<typeof chatFlow>({
-        url: '/api/chat/editor',
+        url: "/api/chat/editor",
         input: {
           message: messageText,
           metadata: {
@@ -141,21 +136,18 @@ export default function Assistant() {
       for await (const chunkStr of flow.stream) {
         const chunk = JSON.parse(chunkStr);
 
-        if (chunk.event === 'reasoning') {
+        if (chunk.event === "reasoning") {
           setMessages((prev) => {
             const last = prev[prev.length - 1];
             // We could show reasoning in a special way, for now let's just mark it's thinking
-            return [...prev.slice(0, -1), { ...last, status: 'thinking' }];
+            return [...prev.slice(0, -1), { ...last, status: "thinking" }];
           });
         }
 
-        if (chunk.event === 'tool') {
-          console.log('Tool call from flow:', chunk, chunk.name, chunk.arg);
+        if (chunk.event === "tool") {
+          console.log("Tool call from flow:", chunk, chunk.name, chunk.arg);
           if (studio) {
-            handleToolAction(
-              { action: chunk.name, ...chunk.arg, ...chunk.response },
-              studio
-            );
+            handleToolAction({ action: chunk.name, ...chunk.arg, ...chunk.response }, studio);
           }
         }
       }
@@ -163,13 +155,13 @@ export default function Assistant() {
       const result = await flow.output;
       setMessages((prev) => [
         ...prev.slice(0, -1),
-        { role: 'model', content: result.reply, status: 'complete' },
+        { role: "model", content: result.reply, status: "complete" },
       ]);
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
       setMessages((prev) => [
         ...prev.slice(0, -1),
-        { role: 'model', content: 'Something went wrong.' },
+        { role: "model", content: "Something went wrong." },
       ]);
     } finally {
       setIsLoading(false);
@@ -177,59 +169,59 @@ export default function Assistant() {
   };
 
   const handleToolAction = async (input: any, studio: Studio) => {
-    console.log('handleToolAction', input);
+    console.log("handleToolAction", input);
     const { action } = input;
 
     try {
       switch (action) {
-        case 'add_clip':
-        case 'add_text':
-        case 'add_image':
-        case 'add_video':
-        case 'add_audio':
+        case "add_clip":
+        case "add_text":
+        case "add_image":
+        case "add_video":
+        case "add_audio":
           await ToolHandlers.handleAddClip(input, studio);
           break;
-        case 'update_clip':
-        case 'update_asset':
+        case "update_clip":
+        case "update_asset":
           await ToolHandlers.handleUpdateClip(input, studio);
           break;
-        case 'remove_clip':
-        case 'delete_asset':
+        case "remove_clip":
+        case "delete_asset":
           await ToolHandlers.handleRemoveClip(input, studio);
           break;
-        case 'split_clip':
-        case 'split_asset':
+        case "split_clip":
+        case "split_asset":
           await ToolHandlers.handleSplitClip(input, studio);
           break;
-        case 'add_transition':
+        case "add_transition":
           await ToolHandlers.handleAddTransition(input, studio);
           break;
-        case 'add_effect':
-        case 'apply_effect':
+        case "add_effect":
+        case "apply_effect":
           await ToolHandlers.handleAddEffect(input, studio);
           break;
-        case 'trim_clip':
-        case 'trim_asset':
+        case "trim_clip":
+        case "trim_asset":
           await ToolHandlers.handleTrimClip(input, studio);
           break;
-        case 'duplicate_clip':
-        case 'duplicate_asset':
+        case "duplicate_clip":
+        case "duplicate_asset":
           await ToolHandlers.handleDuplicateClip(input, studio);
           break;
-        case 'search_and_add_media':
+        case "search_and_add_media":
           await ToolHandlers.handleSearchAndAddMedia(input, studio);
           break;
-        case 'generate_voiceover':
+        case "generate_voiceover":
           await ToolHandlers.handleGenerateVoiceover(input, studio);
           break;
-        case 'seek_to_time':
+        case "seek_to_time":
           await ToolHandlers.handleSeekToTime(input, studio);
           break;
-        case 'generate_captions':
+        case "generate_captions":
           await ToolHandlers.handleGenerateCaptions(input, studio);
           break;
         default:
-          console.log('Unhandled tool action:', action);
+          console.log("Unhandled tool action:", action);
       }
     } catch (err) {
       console.error(`Failed to execute tool action: ${action}`, err);
@@ -243,10 +235,7 @@ export default function Assistant() {
   return (
     <div className="flex flex-col h-full bg-card text-foreground text-sm overflow-hidden">
       <ScrollArea className="flex-1 min-h-0 h-full">
-        <div
-          ref={scrollRef}
-          className="h-full  overflow-x-hidden p-4 md:p-6 space-y-2"
-        >
+        <div ref={scrollRef} className="h-full  overflow-x-hidden p-4 md:p-6 space-y-2">
           {messages.length === 0 ? (
             <div className="flex flex-1 h-full flex-col items-center justify-center space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
               <div className="flex items-center justify-center w-16 h-16">
@@ -254,12 +243,8 @@ export default function Assistant() {
               </div>
 
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-semibold">
-                  I'm ILO, your AI assistant
-                </h2>
-                <p className="text-muted-foreground">
-                  What can I help you with?
-                </p>
+                <h2 className="text-xl font-semibold">I'm ILO, your AI assistant</h2>
+                <p className="text-muted-foreground">What can I help you with?</p>
               </div>
 
               <div className="w-full max-w-md space-y-3">
@@ -281,24 +266,22 @@ export default function Assistant() {
                 <div
                   key={i}
                   className={cn(
-                    'flex gap-4 w-full group animate-in fade-in slide-in-from-bottom-2 duration-300',
-                    m.role === 'user'
-                      ? 'flex-row-reverse'
-                      : 'flex-row max-w-[90%]'
+                    "flex gap-4 w-full group animate-in fade-in slide-in-from-bottom-2 duration-300",
+                    m.role === "user" ? "flex-row-reverse" : "flex-row max-w-[90%]",
                   )}
                 >
                   <div
                     className={cn(
-                      'flex flex-col space-y-3 w-full min-w-0',
-                      m.role === 'user' ? 'items-end' : 'items-start'
+                      "flex flex-col space-y-3 w-full min-w-0",
+                      m.role === "user" ? "items-end" : "items-start",
                     )}
                   >
                     <div
                       className={cn(
-                        'py-3.5 rounded-3xl text-[15px] leading-relaxed shadow-sm transition-all min-w-0 flex flex-col',
-                        m.role === 'user'
-                          ? 'bg-foreground/10 rounded-tr-none font-medium px-5'
-                          : 'bg-card text-card-foreground rounded-tl-none w-full px-5'
+                        "py-3.5 rounded-3xl text-[15px] leading-relaxed shadow-sm transition-all min-w-0 flex flex-col",
+                        m.role === "user"
+                          ? "bg-foreground/10 rounded-tr-none font-medium px-5"
+                          : "bg-card text-card-foreground rounded-tl-none w-full px-5",
                       )}
                     >
                       <div className="w-full grid overflow-hidden">
@@ -308,8 +291,8 @@ export default function Assistant() {
                             h1: ({ className, ...props }) => (
                               <h1
                                 className={cn(
-                                  'scroll-m-20 text-4xl font-extrabold tracking-tight last:mb-0',
-                                  className
+                                  "scroll-m-20 text-4xl font-extrabold tracking-tight last:mb-0",
+                                  className,
                                 )}
                                 {...props}
                               />
@@ -317,8 +300,8 @@ export default function Assistant() {
                             h2: ({ className, ...props }) => (
                               <h2
                                 className={cn(
-                                  'mt-8 mb-4 scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0 last:mb-0',
-                                  className
+                                  "mt-8 mb-4 scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0 last:mb-0",
+                                  className,
                                 )}
                                 {...props}
                               />
@@ -326,48 +309,34 @@ export default function Assistant() {
                             h3: ({ className, ...props }) => (
                               <h3
                                 className={cn(
-                                  'mt-6 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0 last:mb-0',
-                                  className
+                                  "mt-6 mb-4 scroll-m-20 text-2xl font-semibold tracking-tight first:mt-0 last:mb-0",
+                                  className,
                                 )}
                                 {...props}
                               />
                             ),
                             p: ({ className, ...props }) => (
-                              <p
-                                className={cn(
-                                  'leading-7 not-first:mt-6',
-                                  className
-                                )}
-                                {...props}
-                              />
+                              <p className={cn("leading-7 not-first:mt-6", className)} {...props} />
                             ),
                             ul: ({ className, ...props }) => (
                               <ul
-                                className={cn(
-                                  'my-6 ml-6 list-disc [&>li]:mt-2',
-                                  className
-                                )}
+                                className={cn("my-6 ml-6 list-disc [&>li]:mt-2", className)}
                                 {...props}
                               />
                             ),
                             ol: ({ className, ...props }) => (
                               <ol
-                                className={cn(
-                                  'my-6 ml-6 list-decimal [&>li]:mt-2',
-                                  className
-                                )}
+                                className={cn("my-6 ml-6 list-decimal [&>li]:mt-2", className)}
                                 {...props}
                               />
                             ),
                             code: ({ className, children, ...props }) => {
-                              const isInline =
-                                !className?.includes('language-');
+                              const isInline = !className?.includes("language-");
                               return (
                                 <code
                                   className={cn(
-                                    isInline &&
-                                    'bg-muted px-1.5 py-0.5 rounded font-mono text-sm',
-                                    className
+                                    isInline && "bg-muted px-1.5 py-0.5 rounded font-mono text-sm",
+                                    className,
                                   )}
                                   {...props}
                                 >
@@ -378,8 +347,8 @@ export default function Assistant() {
                             pre: ({ className, ...props }) => (
                               <pre
                                 className={cn(
-                                  'overflow-x-auto rounded-lg bg-black p-4 text-white my-4',
-                                  className
+                                  "overflow-x-auto rounded-lg bg-black p-4 text-white my-4",
+                                  className,
                                 )}
                                 {...props}
                               />
@@ -422,7 +391,7 @@ export default function Assistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleSubmit();
               }

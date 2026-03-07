@@ -6,9 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const EFFECT_DURATION_DEFAULT = 5000000;
 const formatFilterName = (name: string) => {
-  return name
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (str) => str.toUpperCase());
+  return name.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase());
 };
 const gridClasses = `
   grid
@@ -23,12 +21,7 @@ type EffectCardProps = {
   onClick: () => void;
 };
 
-const EffectCard = ({
-  label,
-  staticSrc,
-  dynamicSrc,
-  onClick,
-}: EffectCardProps) => {
+const EffectCard = ({ label, staticSrc, dynamicSrc, onClick }: EffectCardProps) => {
   const [isDynamicLoaded, setIsDynamicLoaded] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 

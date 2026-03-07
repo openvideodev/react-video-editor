@@ -1,13 +1,9 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { type Tab, tabs, useMediaPanelStore } from './store';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useEffect, useRef, useState } from 'react';
+import { cn } from "@/lib/utils";
+import { type Tab, tabs, useMediaPanelStore } from "./store";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useEffect, useRef, useState } from "react";
 
 export function TabBar() {
   const { activeTab, setActiveTab } = useMediaPanelStore();
@@ -29,13 +25,13 @@ export function TabBar() {
     if (!element) return;
 
     checkScrollPosition();
-    element.addEventListener('scroll', checkScrollPosition);
+    element.addEventListener("scroll", checkScrollPosition);
 
     const resizeObserver = new ResizeObserver(checkScrollPosition);
     resizeObserver.observe(element);
 
     return () => {
-      element.removeEventListener('scroll', checkScrollPosition);
+      element.removeEventListener("scroll", checkScrollPosition);
       resizeObserver.disconnect();
     };
   }, []);
@@ -53,10 +49,10 @@ export function TabBar() {
             return (
               <div
                 className={cn(
-                  'flex items-center justify-center flex-none h-7.5 w-7.5 cursor-pointer rounded-sm transition-all duration-200',
+                  "flex items-center justify-center flex-none h-7.5 w-7.5 cursor-pointer rounded-sm transition-all duration-200",
                   isActive
-                    ? 'bg-white/10 text-white'
-                    : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+                    ? "bg-white/10 text-white"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-white",
                 )}
                 onClick={() => setActiveTab(tabKey)}
                 key={tabKey}

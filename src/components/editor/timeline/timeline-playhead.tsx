@@ -75,18 +75,14 @@ export function TimelinePlayhead({
 
   // Get dynamic track labels width, fallback to 0 if no tracks or no ref
   const trackLabelsWidth =
-    tracks.length > 0 && trackLabelsRef?.current
-      ? trackLabelsRef.current.offsetWidth
-      : 0;
+    tracks.length > 0 && trackLabelsRef?.current ? trackLabelsRef.current.offsetWidth : 0;
 
   // Calculate position locked to timeline content (accounting for scroll)
-  const timelinePosition =
-    playheadPosition * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
+  const timelinePosition = playheadPosition * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
   const rawLeftPosition = trackLabelsWidth + timelinePosition - scrollLeft;
 
   // Get the timeline content width and viewport width for right boundary
-  const timelineContentWidth =
-    duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
+  const timelineContentWidth = duration * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoomLevel;
   const tracksViewport = tracksScrollRef.current || rulerScrollRef.current;
   const viewportWidth = tracksViewport?.clientWidth || 1000;
 
@@ -97,10 +93,7 @@ export function TimelinePlayhead({
     trackLabelsWidth + viewportWidth, // Don't go beyond viewport
   );
 
-  const leftPosition = Math.max(
-    leftBoundary,
-    Math.min(rightBoundary, rawLeftPosition),
-  );
+  const leftPosition = Math.max(leftBoundary, Math.min(rightBoundary, rawLeftPosition));
 
   return (
     <div
@@ -149,10 +142,7 @@ export function useTimelinePlayheadRuler({
   tracksScrollRef,
   playheadRef,
   onScrollChange,
-}: Omit<
-  TimelinePlayheadProps,
-  "tracks" | "trackLabelsRef" | "timelineRef" | "scrollLeft"
-> & {
+}: Omit<TimelinePlayheadProps, "tracks" | "trackLabelsRef" | "timelineRef" | "scrollLeft"> & {
   scrollLeft?: number;
 }) {
   const currentTime = usePlaybackStore((state) => state.currentTime);

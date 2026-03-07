@@ -1,5 +1,5 @@
-import { detectLanguage } from './detect-language';
-import type { Paragraph, TranscriptObject, Word } from './types';
+import { detectLanguage } from "./detect-language";
+import type { Paragraph, TranscriptObject, Word } from "./types";
 
 const getWords = (deepgramResult: any): Word[] => {
   const alternative = deepgramResult?.results?.channels?.[0]?.alternatives?.[0];
@@ -44,7 +44,7 @@ const getParagraphs = (deepgramResult: any): Paragraph[] => {
 };
 
 export async function deepgramToCombo(
-  deepgramResult: any
+  deepgramResult: any,
 ): Promise<Partial<TranscriptObject> | null> {
   const alternative = deepgramResult?.results?.channels?.[0]?.alternatives?.[0];
   const text = alternative?.transcript;

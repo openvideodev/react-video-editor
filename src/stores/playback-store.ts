@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import type { PlaybackState, PlaybackControls } from '@/types/playback';
-import { useStudioStore } from '@/stores/studio-store';
+import { create } from "zustand";
+import type { PlaybackState, PlaybackControls } from "@/types/playback";
+import { useStudioStore } from "@/stores/studio-store";
 
 interface PlaybackStore extends PlaybackState, PlaybackControls {
   setDuration: (duration: number) => void;

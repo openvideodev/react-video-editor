@@ -1,8 +1,4 @@
-import {
-  IClip,
-  VALUES_FILTER_SPECIAL_LIMITS,
-  VALUES_FILTER_SPECIAL,
-} from "openvideo";
+import { IClip, VALUES_FILTER_SPECIAL_LIMITS, VALUES_FILTER_SPECIAL } from "openvideo";
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,11 +6,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Slider } from "@/components/ui/slider";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   ColorPicker,
   ColorPickerEyeDropper,
@@ -170,8 +162,7 @@ const EXTRA_PROPERTIES = {
 const rgbaArrayToHex = (rgba: number[]): string => {
   const [r, g, b] = rgba;
 
-  const toHex = (value: number) =>
-    Math.round(value).toString(16).padStart(2, "0");
+  const toHex = (value: number) => Math.round(value).toString(16).padStart(2, "0");
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toLowerCase();
 };
@@ -222,15 +213,8 @@ const PairProperty = ({
   );
 };
 
-const ReplacementsProperty = ({
-  value,
-  onChange,
-}: ReplacementsPropertyProps) => {
-  const handleColorChange = (
-    rowIndex: number,
-    colorIndex: number,
-    val: string,
-  ) => {
+const ReplacementsProperty = ({ value, onChange }: ReplacementsPropertyProps) => {
+  const handleColorChange = (rowIndex: number, colorIndex: number, val: string) => {
     const updated = [...value];
     updated[rowIndex] = [...updated[rowIndex]];
     updated[rowIndex][colorIndex] = val;
@@ -250,10 +234,7 @@ const ReplacementsProperty = ({
   return (
     <div className="flex flex-col gap-4">
       {value.map((colors, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="flex items-center gap-2 border p-2 rounded relative pt-6"
-        >
+        <div key={rowIndex} className="flex items-center gap-2 border p-2 rounded relative pt-6">
           {value.length > 1 && (
             <button
               className="absolute top-0 right-2 text-red-400 hover:text-red-500"
@@ -271,12 +252,7 @@ const ReplacementsProperty = ({
           ))}
         </div>
       ))}
-      <Button
-        onClick={addReplacement}
-        variant="outline"
-        size="sm"
-        className="w-full"
-      >
+      <Button onClick={addReplacement} variant="outline" size="sm" className="w-full">
         Add Replacement
       </Button>
     </div>
@@ -312,9 +288,7 @@ const MatrixProperty = ({ value, onChange }: MatrixPropertyProps) => {
                   min={0}
                   max={1}
                   step={0.01}
-                  onChange={(e) =>
-                    handleChange(i, parseFloat(e.target.value) || 0)
-                  }
+                  onChange={(e) => handleChange(i, parseFloat(e.target.value) || 0)}
                   className="text-sm p-0 text-center"
                 />
               </InputGroup>
@@ -326,21 +300,14 @@ const MatrixProperty = ({ value, onChange }: MatrixPropertyProps) => {
 };
 
 const StopsProperty = ({ value, config, onChange }: StopsPropertyProps) => {
-  const handleStopChange = (
-    index: number,
-    key: "color" | "offset" | "alpha",
-    val: any,
-  ) => {
+  const handleStopChange = (index: number, key: "color" | "offset" | "alpha", val: any) => {
     const updated = [...value];
     updated[index] = { ...updated[index], [key]: val };
     onChange(updated);
   };
 
   const addStop = () => {
-    onChange([
-      ...value,
-      { color: "#000000", offset: config.offset.min, alpha: config.alpha.min },
-    ]);
+    onChange([...value, { color: "#000000", offset: config.offset.min, alpha: config.alpha.min }]);
   };
 
   const removeStop = (index: number) => {
@@ -352,10 +319,7 @@ const StopsProperty = ({ value, config, onChange }: StopsPropertyProps) => {
   return (
     <div className="flex flex-col gap-4">
       {value.map((stop, index) => (
-        <div
-          key={index}
-          className="flex flex-col gap-2 border p-2 rounded relative pt-6"
-        >
+        <div key={index} className="flex flex-col gap-2 border p-2 rounded relative pt-6">
           {value.length > 2 && (
             <button
               className="absolute top-0 right-2 text-red-400 hover:text-red-500"
@@ -389,11 +353,7 @@ const StopsProperty = ({ value, config, onChange }: StopsPropertyProps) => {
                 max={config.offset.max}
                 step={config.offset.step}
                 onChange={(e) =>
-                  handleStopChange(
-                    index,
-                    "offset",
-                    parseFloat(e.target.value) || config.offset.min,
-                  )
+                  handleStopChange(index, "offset", parseFloat(e.target.value) || config.offset.min)
                 }
                 className="text-sm p-0 text-center"
               />
@@ -419,11 +379,7 @@ const StopsProperty = ({ value, config, onChange }: StopsPropertyProps) => {
                 max={config.alpha.max}
                 step={config.alpha.step}
                 onChange={(e) =>
-                  handleStopChange(
-                    index,
-                    "alpha",
-                    parseFloat(e.target.value) || config.alpha.min,
-                  )
+                  handleStopChange(index, "alpha", parseFloat(e.target.value) || config.alpha.min)
                 }
                 className="text-sm p-0 text-center"
               />
@@ -437,13 +393,7 @@ const StopsProperty = ({ value, config, onChange }: StopsPropertyProps) => {
     </div>
   );
 };
-const CoordinatesProperty = ({
-  value,
-  min,
-  max,
-  step,
-  onChange,
-}: CoordinatesPropertyProps) => {
+const CoordinatesProperty = ({ value, min, max, step, onChange }: CoordinatesPropertyProps) => {
   return (
     <div className="flex flex-col gap-4">
       {(["x", "y"] as const).map((axis) => (
@@ -491,11 +441,7 @@ const ColorProperty = ({ value, onChange }: ColorPropertyProps) => {
       <InputGroupAddon align="inline-start" className="relative p-0">
         <Popover modal>
           <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
-              size="icon-xs"
-              className="h-full w-8"
-            >
+            <InputGroupButton variant="ghost" size="icon-xs" className="h-full w-8">
               <div
                 className="h-4 ml-2 w-4 border border-white/10 shadow-sm"
                 style={{ backgroundColor: value }}
@@ -550,17 +496,10 @@ const PropertyRenderer = ({
   config: any;
   onChange: (val: any) => void;
 }) => {
-  const isCoordinates =
-    value && typeof value === "object" && "x" in value && "y" in value;
+  const isCoordinates = value && typeof value === "object" && "x" in value && "y" in value;
 
   if (property === "stops") {
-    return (
-      <StopsProperty
-        value={value || []}
-        config={config[0]}
-        onChange={onChange}
-      />
-    );
+    return <StopsProperty value={value || []} config={config[0]} onChange={onChange} />;
   }
 
   if (property === "matrix") {
@@ -620,13 +559,9 @@ export function EffectProperties({ clip }: EffectPropertiesProps) {
   const filterKey = effectClip.effect.key;
 
   const limits =
-    VALUES_FILTER_SPECIAL_LIMITS[
-      filterKey as keyof typeof VALUES_FILTER_SPECIAL_LIMITS
-    ];
-  const defaultValues =
-    VALUES_FILTER_SPECIAL[filterKey as keyof typeof VALUES_FILTER_SPECIAL];
-  const extraProperties =
-    EXTRA_PROPERTIES[filterKey as keyof typeof EXTRA_PROPERTIES] ?? {};
+    VALUES_FILTER_SPECIAL_LIMITS[filterKey as keyof typeof VALUES_FILTER_SPECIAL_LIMITS];
+  const defaultValues = VALUES_FILTER_SPECIAL[filterKey as keyof typeof VALUES_FILTER_SPECIAL];
+  const extraProperties = EXTRA_PROPERTIES[filterKey as keyof typeof EXTRA_PROPERTIES] ?? {};
 
   const handleUpdate = (property: string, value: any) => {
     effectClip.update({
@@ -658,8 +593,7 @@ export function EffectProperties({ clip }: EffectPropertiesProps) {
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-6">
         {Object.entries(limits).map(([property, config]) => {
-          const currentValue =
-            effectClip.effect.values?.[property] ?? defaultValues[property];
+          const currentValue = effectClip.effect.values?.[property] ?? defaultValues[property];
           return (
             <div key={property} className="flex flex-col gap-2">
               <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
@@ -676,12 +610,9 @@ export function EffectProperties({ clip }: EffectPropertiesProps) {
           );
         })}
         {Object.entries(extraProperties).map(([property, type]) => {
-          const currentValue =
-            effectClip.effect.values?.[property] ?? defaultValues?.[property];
+          const currentValue = effectClip.effect.values?.[property] ?? defaultValues?.[property];
           const optionsSelect =
-            property === "fillMode"
-              ? TYPES_GLITCH_FILTER
-              : TYPES_COLOR_GRADIENT_FILTER;
+            property === "fillMode" ? TYPES_GLITCH_FILTER : TYPES_COLOR_GRADIENT_FILTER;
 
           return (
             <div
@@ -709,9 +640,7 @@ export function EffectProperties({ clip }: EffectPropertiesProps) {
               {type === "select" && (
                 <Select
                   value={currentValue.toString()}
-                  onValueChange={(value) =>
-                    handleUpdate(property, Number(value))
-                  }
+                  onValueChange={(value) => handleUpdate(property, Number(value))}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a type" />
@@ -719,10 +648,7 @@ export function EffectProperties({ clip }: EffectPropertiesProps) {
                   <SelectContent>
                     <SelectGroup>
                       {optionsSelect.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value.toString()}
-                        >
+                        <SelectItem key={option.value} value={option.value.toString()}>
                           {option.label}
                         </SelectItem>
                       ))}

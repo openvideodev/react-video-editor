@@ -98,10 +98,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
                 {navLinks.map((link) => (
                   <NavigationMenuItem key={link.name}>
-                    <NavigationMenuLink
-                      asChild
-                      className={navigationMenuTriggerStyle()}
-                    >
+                    <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                       <Link href={link.href}>{link.name}</Link>
                     </NavigationMenuLink>
                   </NavigationMenuItem>
@@ -118,10 +115,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         <div className="md:hidden flex w-full items-center justify-between">
-          <Link
-            className="inline-flex items-center gap-2.5 font-bold tracking-tight"
-            href="/"
-          >
+          <Link className="inline-flex items-center gap-2.5 font-bold tracking-tight" href="/">
             <LogoIcons.scenify className="text-primary size-5" />
             <span>OpenVideo</span>
           </Link>
@@ -143,7 +137,9 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden border-t py-6 space-y-4 flex flex-col items-center bg-background absolute left-0 right-0 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <div className="w-full px-6 flex flex-col gap-4">
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-4">Components</div>
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-4">
+              Components
+            </div>
             <div className="grid grid-cols-1 gap-2">
               {components.map((c) => (
                 <Link
@@ -192,7 +188,7 @@ const ListItem = React.forwardRef<
           href={href!}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
+            className,
           )}
           {...props}
         >
@@ -200,9 +196,7 @@ const ListItem = React.forwardRef<
             {icon}
             <div className="text-sm font-medium leading-none">{title}</div>
           </div>
-          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
-            {children}
-          </p>
+          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">{children}</p>
         </Link>
       </NavigationMenuLink>
     </li>

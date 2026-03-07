@@ -1,6 +1,6 @@
-import { TransformActionHandler, controlsUtils } from 'fabric';
-import { resolveOrigin, isTransformCentered } from './utils';
-import { CENTER, LEFT, RIGHT } from './constants';
+import { TransformActionHandler, controlsUtils } from "fabric";
+import { resolveOrigin, isTransformCentered } from "./utils";
+import { CENTER, LEFT, RIGHT } from "./constants";
 // import { TIMELINE_CONSTANTS } from '../../utils';
 
 const { wrapWithFireEvent, getLocalPoint, wrapWithFixedAnchor } = controlsUtils;
@@ -14,38 +14,22 @@ const { wrapWithFireEvent, getLocalPoint, wrapWithFixedAnchor } = controlsUtils;
  * @param {number} y current mouse y position, canvas normalized
  * @return {Boolean} true if some change happened
  */
-export const changeObjectWidth: TransformActionHandler = (
-  _,
-  transform,
-  x,
-  y
-) => {
-  const localPoint = getLocalPoint(
-    transform,
-    transform.originX,
-    transform.originY,
-    x,
-    y
-  );
+export const changeObjectWidth: TransformActionHandler = (_, transform, x, y) => {
+  const localPoint = getLocalPoint(transform, transform.originX, transform.originY, x, y);
   //  make sure the control changes width ONLY from it's side of target
   if (
     resolveOrigin(transform.originX) === resolveOrigin(CENTER) ||
-    (resolveOrigin(transform.originX) === resolveOrigin(RIGHT) &&
-      localPoint.x < 0) ||
-    (resolveOrigin(transform.originX) === resolveOrigin(LEFT) &&
-      localPoint.x > 0)
+    (resolveOrigin(transform.originX) === resolveOrigin(RIGHT) && localPoint.x < 0) ||
+    (resolveOrigin(transform.originX) === resolveOrigin(LEFT) && localPoint.x > 0)
   ) {
     const { target } = transform,
-      strokePadding =
-        target.strokeWidth / (target.strokeUniform ? target.scaleX : 1),
+      strokePadding = target.strokeWidth / (target.strokeUniform ? target.scaleX : 1),
       multiplier = isTransformCentered(transform) ? 2 : 1,
       oldWidth = target.width;
 
-    let newWidth = Math.ceil(
-      Math.abs((localPoint.x * multiplier) / target.scaleX) - strokePadding
-    );
+    let newWidth = Math.ceil(Math.abs((localPoint.x * multiplier) / target.scaleX) - strokePadding);
 
-    const fromLeft = transform.corner === 'ml';
+    const fromLeft = transform.corner === "ml";
     if (target.left < 0) return false;
 
     if (fromLeft) {
@@ -58,8 +42,8 @@ export const changeObjectWidth: TransformActionHandler = (
         // adjust width to reach exactly 0.
         newWidth = oldWidth + target.left;
         const maxPossibleWidth = target.width + target.left;
-        target.set('width', maxPossibleWidth);
-        target.set('left', 0); // Correctly snap to 0
+        target.set("width", maxPossibleWidth);
+        target.set("left", 0); // Correctly snap to 0
         return true;
       }
     }
@@ -70,14 +54,11 @@ export const changeObjectWidth: TransformActionHandler = (
 
     if (newWidth < MIN_PIXELS) return false;
 
-    target.set('width', Math.max(newWidth, MIN_PIXELS));
+    target.set("width", Math.max(newWidth, MIN_PIXELS));
 
     return oldWidth !== target.width; // Return true if changed
   }
   return false;
 };
 
-export const changeWidth = wrapWithFireEvent(
-  'resizing',
-  wrapWithFixedAnchor(changeObjectWidth)
-);
+export const changeWidth = wrapWithFireEvent("resizing", wrapWithFixedAnchor(changeObjectWidth));

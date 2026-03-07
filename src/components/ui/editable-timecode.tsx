@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { formatTimeCode, parseTimeCode, TimeCode } from '@/lib/time';
-import { DEFAULT_FPS } from '@/stores/project-store';
+import { useState, useRef, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { formatTimeCode, parseTimeCode, TimeCode } from "@/lib/time";
+import { DEFAULT_FPS } from "@/stores/project-store";
 
 interface EditableTimecodeProps {
   time: number;
@@ -18,14 +18,14 @@ interface EditableTimecodeProps {
 export function EditableTimecode({
   time,
   duration,
-  format = 'MM:SS',
+  format = "MM:SS",
   fps = DEFAULT_FPS,
   onTimeChange,
   className,
   disabled = false,
 }: EditableTimecodeProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [hasError, setHasError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const enterPressedRef = useRef(false);
@@ -42,7 +42,7 @@ export function EditableTimecode({
 
   const cancelEditing = () => {
     setIsEditing(false);
-    setInputValue('');
+    setInputValue("");
     setHasError(false);
     enterPressedRef.current = false;
   };
@@ -56,24 +56,21 @@ export function EditableTimecode({
     }
 
     // Clamp time to valid range
-    const clampedTime = Math.max(
-      0,
-      duration ? Math.min(duration, parsedTime) : parsedTime
-    );
+    const clampedTime = Math.max(0, duration ? Math.min(duration, parsedTime) : parsedTime);
 
     onTimeChange?.(clampedTime);
     setIsEditing(false);
-    setInputValue('');
+    setInputValue("");
     setHasError(false);
     enterPressedRef.current = false;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       enterPressedRef.current = true;
       applyEdit();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       e.preventDefault();
       cancelEditing();
     }
@@ -109,11 +106,11 @@ export function EditableTimecode({
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         className={cn(
-          'text-xs bg-transparent border-none outline-none',
-          'focus:bg-background focus:border focus:border-primary focus:px-1 focus:rounded',
-          'tabular-nums text-foreground',
-          hasError && 'text-destructive focus:border-destructive',
-          className
+          "text-xs bg-transparent border-none outline-none",
+          "focus:bg-background focus:border focus:border-primary focus:px-1 focus:rounded",
+          "tabular-nums text-foreground",
+          hasError && "text-destructive focus:border-destructive",
+          className,
         )}
         style={{ width: `${formattedTime.length + 1}ch` }}
         placeholder={formattedTime}
@@ -125,12 +122,12 @@ export function EditableTimecode({
     <span
       onClick={startEditing}
       className={cn(
-        'text-xs tabular-nums text-foreground cursor-pointer',
-        'hover:bg-muted/50 hover:rounded px-1 -mx-1 transition-colors',
-        disabled && 'cursor-default hover:bg-transparent',
-        className
+        "text-xs tabular-nums text-foreground cursor-pointer",
+        "hover:bg-muted/50 hover:rounded px-1 -mx-1 transition-colors",
+        disabled && "cursor-default hover:bg-transparent",
+        className,
       )}
-      title={disabled ? undefined : 'Click to edit time'}
+      title={disabled ? undefined : "Click to edit time"}
     >
       {formattedTime}
     </span>

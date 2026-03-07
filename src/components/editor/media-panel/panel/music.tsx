@@ -1,18 +1,14 @@
-'use client';
+"use client";
 
-import { useStudioStore } from '@/stores/studio-store';
-import { Audio, Log } from 'openvideo';
-import { IconMusic } from '@tabler/icons-react';
-import { AudioItem } from './audio-item';
-import { useState, useEffect, useCallback } from 'react';
-import { Search, Loader2 } from 'lucide-react';
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/components/ui/input-group';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { debounce } from 'lodash';
+import { useStudioStore } from "@/stores/studio-store";
+import { Audio, Log } from "openvideo";
+import { IconMusic } from "@tabler/icons-react";
+import { AudioItem } from "./audio-item";
+import { useState, useEffect, useCallback } from "react";
+import { Search, Loader2 } from "lucide-react";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { debounce } from "lodash";
 
 interface Music {
   id: string;
@@ -29,17 +25,17 @@ interface Music {
 export default function PanelMusic() {
   const { studio } = useStudioStore();
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Music[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchMusic = async (query: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/audio/music', {
-        method: 'POST',
+      const response = await fetch("/api/audio/music", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           limit: 20,
@@ -54,7 +50,7 @@ export default function PanelMusic() {
         setSearchResults([]);
       }
     } catch (error) {
-      console.error('Failed to fetch music:', error);
+      console.error("Failed to fetch music:", error);
     } finally {
       setIsLoading(false);
     }
@@ -62,11 +58,11 @@ export default function PanelMusic() {
 
   const debouncedFetch = useCallback(
     debounce((query: string) => fetchMusic(query), 500),
-    []
+    [],
   );
 
   useEffect(() => {
-    fetchMusic('');
+    fetchMusic("");
   }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +79,7 @@ export default function PanelMusic() {
       audioClip.name = name;
       await studio.addClip(audioClip);
     } catch (error) {
-      Log.error('Failed to add audio:', error);
+      Log.error("Failed to add audio:", error);
     }
   };
 

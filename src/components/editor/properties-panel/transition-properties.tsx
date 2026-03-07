@@ -1,10 +1,6 @@
 import * as React from "react";
 import { IClip, getTransitionOptions } from "openvideo";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStudioStore } from "@/stores/studio-store";
@@ -23,18 +19,14 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const [loaded, setLoaded] = React.useState(LOADED_CACHE);
-  const [localDuration, setLocalDuration] = React.useState(
-    transitionClip.duration / 1_000_000,
-  );
+  const [localDuration, setLocalDuration] = React.useState(transitionClip.duration / 1_000_000);
 
   React.useEffect(() => {
     setLocalDuration(transitionClip.duration / 1_000_000);
   }, [transitionClip.duration]);
 
   React.useLayoutEffect(() => {
-    const viewport = scrollRef.current?.querySelector(
-      "[data-radix-scroll-area-viewport]",
-    );
+    const viewport = scrollRef.current?.querySelector("[data-radix-scroll-area-viewport]");
     if (viewport) {
       viewport.scrollTop = LAST_SCROLL_POS;
     }
@@ -52,27 +44,19 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const fromClip = studio?.timeline.getClipById(transitionClip.fromClipId);
   const toClip = studio?.timeline.getClipById(transitionClip.toClipId);
 
-  const minFromToDuration = Math.min(
-    fromClip?.duration ?? Infinity,
-    toClip?.duration ?? Infinity,
-  );
+  const minFromToDuration = Math.min(fromClip?.duration ?? Infinity, toClip?.duration ?? Infinity);
 
-  const maxDurationMicro =
-    minFromToDuration === Infinity ? 10_000_000 : minFromToDuration * 0.25;
+  const maxDurationMicro = minFromToDuration === Infinity ? 10_000_000 : minFromToDuration * 0.25;
   const minDurationMicro = 100_000; // 0.1s
 
   const handleUpdate = async (updates: any) => {
-    if (!studio || !transitionClip.fromClipId || !transitionClip.toClipId)
-      return;
+    if (!studio || !transitionClip.fromClipId || !transitionClip.toClipId) return;
 
     let newDuration = updates.duration ?? transitionClip.duration;
     const newKey = updates.key ?? transitionClip.transitionEffect.key;
 
     if (newDuration !== undefined || updates.key !== undefined) {
-      newDuration = Math.max(
-        minDurationMicro,
-        Math.min(maxDurationMicro, newDuration),
-      );
+      newDuration = Math.max(minDurationMicro, Math.min(maxDurationMicro, newDuration));
 
       const transitionStart = toClip!.display.from - newDuration / 2;
       const transitionEnd = transitionStart + newDuration;
@@ -146,8 +130,7 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const renderTransitionList = (list: typeof allTransitions) => (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(92px,1fr))] gap-2.5 justify-items-center">
       {list.map((effect) => {
-        const isReady =
-          loaded[effect.key]?.static && loaded[effect.key]?.dynamic;
+        const isReady = loaded[effect.key]?.static && loaded[effect.key]?.dynamic;
 
         return (
           <div
@@ -214,9 +197,7 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
             <Slider
               value={[localDuration]}
               onValueChange={(v) => setLocalDuration(v[0])}
-              onValueCommit={(v) =>
-                handleUpdate({ duration: v[0] * 1_000_000 })
-              }
+              onValueCommit={(v) => handleUpdate({ duration: v[0] * 1_000_000 })}
               max={maxDurationInSeconds}
               min={minDurationInSeconds}
               step={0.1}
@@ -246,9 +227,7 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
       <ScrollArea
         ref={scrollRef}
         onScrollCapture={() => {
-          const viewport = scrollRef.current?.querySelector(
-            "[data-radix-scroll-area-viewport]",
-          );
+          const viewport = scrollRef.current?.querySelector("[data-radix-scroll-area-viewport]");
           if (viewport) {
             LAST_SCROLL_POS = viewport.scrollTop;
           }

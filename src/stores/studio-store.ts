@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { Studio, IClip } from 'openvideo';
+import { create } from "zustand";
+import { Studio, IClip } from "openvideo";
 
 interface StudioState {
   studio: Studio | null;

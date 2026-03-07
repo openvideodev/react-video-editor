@@ -37,8 +37,7 @@ const ComponentsPage = () => {
     },
     {
       title: "Effects",
-      description:
-        "GPU-accelerated visual effects via custom GLSL shaders and cinematic filters.",
+      description: "GPU-accelerated visual effects via custom GLSL shaders and cinematic filters.",
       icon: <Zap size={18} />,
       href: "/components/effects",
     },
@@ -64,12 +63,10 @@ const ComponentsPage = () => {
         <Badge variant="secondary" className="px-4 py-2">
           Components
         </Badge>{" "}
-        <h2 className="text-4xl font-medium tracking-tight">
-          Open-source Video Components
-        </h2>
+        <h2 className="text-4xl font-medium tracking-tight">Open-source Video Components</h2>
         <p className="max-w-2xl mx-auto max-sm:text-sm text-muted-foreground text-lg">
-          Browse and preview the full library of animations, effects, transitions
-          and caption presets available in OpenVideo.
+          Browse and preview the full library of animations, effects, transitions and caption
+          presets available in OpenVideo.
         </p>
       </div>{" "}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">

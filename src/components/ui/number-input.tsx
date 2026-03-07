@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { InputGroupInput } from '@/components/ui/input-group';
-import { cn } from '@/lib/utils';
+import React, { useEffect, useState, useRef } from "react";
+import { InputGroupInput } from "@/components/ui/input-group";
+import { cn } from "@/lib/utils";
 
-interface NumberInputProps
-  extends Omit<React.ComponentProps<'input'>, 'value' | 'onChange' | 'type'> {
+interface NumberInputProps extends Omit<
+  React.ComponentProps<"input">,
+  "value" | "onChange" | "type"
+> {
   value: number;
   onChange: (value: number) => void;
   /** Minimum allowed value */
@@ -33,23 +35,21 @@ export const NumberInput = ({
   defaultValue = 0,
   ...props
 }: NumberInputProps) => {
-  const [localValue, setLocalValue] = useState<string>(
-    value?.toString() || '0'
-  );
+  const [localValue, setLocalValue] = useState<string>(value?.toString() || "0");
   const [isFocused, setIsFocused] = useState(false);
   const previousValueRef = useRef<number>(value);
 
   // Sync with external value only when not focused
   useEffect(() => {
     if (!isFocused) {
-      setLocalValue(value?.toString() || '0');
+      setLocalValue(value?.toString() || "0");
       previousValueRef.current = value;
     }
   }, [value, isFocused]);
 
   const applyValue = (inputValue: string) => {
     // If empty, use default value
-    if (inputValue.trim() === '') {
+    if (inputValue.trim() === "") {
       onChange(defaultValue);
       setLocalValue(defaultValue.toString());
       return;
@@ -85,16 +85,16 @@ export const NumberInput = ({
     const newValue = e.target.value;
 
     // Allow empty, numbers, negative sign, and decimal point
-    if (newValue === '' || newValue === '-' || /^-?\d*\.?\d*$/.test(newValue)) {
+    if (newValue === "" || newValue === "-" || /^-?\d*\.?\d*$/.test(newValue)) {
       setLocalValue(newValue);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       applyValue(localValue);
       (e.target as HTMLInputElement).blur();
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       // Revert to previous value
       setLocalValue(previousValueRef.current.toString());
       (e.target as HTMLInputElement).blur();
@@ -126,7 +126,7 @@ export const NumberInput = ({
       onKeyDown={handleKeyDown}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className={cn('text-sm', className)}
+      className={cn("text-sm", className)}
     />
   );
 };

@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { IconPlayerPause, IconPlayerPlay, IconPlus } from '@tabler/icons-react';
-import { useRef, useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { IconPlayerPause, IconPlayerPlay, IconPlus } from "@tabler/icons-react";
+import { useRef, useState, useEffect } from "react";
 
 export const AudioItem = ({
   item,
@@ -14,7 +14,7 @@ export const AudioItem = ({
   setPlayingId: (id: string | null) => void;
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [duration, setDuration] = useState<string>('--:--');
+  const [duration, setDuration] = useState<string>("--:--");
   const isPlaying = playingId === item.id;
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const AudioItem = ({
       const seconds = Math.round(audioRef.current.duration);
       const min = Math.floor(seconds / 60);
       const sec = seconds % 60;
-      setDuration(`${min}:${sec.toString().padStart(2, '0')}`);
+      setDuration(`${min}:${sec.toString().padStart(2, "0")}`);
     }
   };
 
@@ -72,9 +72,7 @@ export const AudioItem = ({
         onClick={() => onAdd(item.url, item.text)}
         className="flex flex-col min-w-0 flex-1 cursor-pointer"
       >
-        <span className="text-xs font-medium truncate mb-0.5 text-zinc-300">
-          {item.text}
-        </span>
+        <span className="text-xs font-medium truncate mb-0.5 text-zinc-300">{item.text}</span>
         <span className="text-[10px] text-muted-foreground">{duration}</span>
       </div>
     </div>

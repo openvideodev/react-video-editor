@@ -5,7 +5,7 @@ interface TimeRange {
 
 export interface ImportAsset {
   assetId: string;
-  type: 'import';
+  type: "import";
   assetType: string; // 'video', 'text', 'img', 'audio', etc.
   text: string;
   url: string;

@@ -6,7 +6,7 @@ export type Transcript = {
   targetLanguage: string;
   originalTranscript: any;
   translatedTranscript: any;
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   createdAt: Date;
   updatedAt: Date;
 };

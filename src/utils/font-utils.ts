@@ -1,4 +1,4 @@
-import { fonts } from '@/constants/fonts';
+import { fonts } from "@/constants/fonts";
 
 export interface FontStyle {
   id: string;
@@ -32,9 +32,9 @@ export const getGroupedFonts = (): FontFamily[] => {
     const mainFont =
       styles.find(
         (s) =>
-          s.postScriptName.toLowerCase().endsWith('-regular') ||
-          s.fullName.toLowerCase().endsWith(' regular') ||
-          s.style.toLowerCase() === 'regular'
+          s.postScriptName.toLowerCase().endsWith("-regular") ||
+          s.fullName.toLowerCase().endsWith(" regular") ||
+          s.style.toLowerCase() === "regular",
       ) || styles[0];
 
     return {

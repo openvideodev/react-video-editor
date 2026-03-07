@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { IconLoader2 } from '@tabler/icons-react';
-import { toast } from 'sonner';
-import { useGeneratedStore } from '@/stores/generated-store';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { IconLoader2 } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { useGeneratedStore } from "@/stores/generated-store";
 
 export const VoiceoverChatPanel = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const { addAsset } = useGeneratedStore();
 
@@ -15,14 +15,14 @@ export const VoiceoverChatPanel = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/elevenlabs/voiceover', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/elevenlabs/voiceover", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate voiceover');
+        throw new Error("Failed to generate voiceover");
       }
 
       const data = await response.json();
@@ -31,15 +31,15 @@ export const VoiceoverChatPanel = () => {
         id: crypto.randomUUID(),
         url: data.url,
         text: text,
-        type: 'voiceover',
+        type: "voiceover",
         createdAt: Date.now(),
       });
 
-      toast.success('Voiceover generated!');
-      setText(''); // Clear input on success
+      toast.success("Voiceover generated!");
+      setText(""); // Clear input on success
     } catch (error) {
       console.error(error);
-      toast.error('Failed to generate voiceover');
+      toast.error("Failed to generate voiceover");
     } finally {
       setLoading(false);
     }
@@ -64,11 +64,7 @@ export const VoiceoverChatPanel = () => {
             onClick={handleGenerate}
             disabled={loading || !text.trim()}
           >
-            {loading ? (
-              <IconLoader2 className="size-4 animate-spin" />
-            ) : (
-              'Generate'
-            )}
+            {loading ? <IconLoader2 className="size-4 animate-spin" /> : "Generate"}
           </Button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Canvas, Control, FabricObject, util } from 'fabric';
+import { Canvas, Control, FabricObject, util } from "fabric";
 
 export function drawVerticalLine(
   this: Control,
@@ -6,7 +6,7 @@ export function drawVerticalLine(
   left: number,
   top: number,
   styleOverride: any,
-  fabricObject: FabricObject
+  fabricObject: FabricObject,
 ) {
   const canvas = fabricObject.canvas as Canvas;
   if (!canvas) return;
@@ -19,8 +19,8 @@ export function drawVerticalLine(
   ctx.translate(left + xOffset, top);
 
   ctx.lineWidth = 2;
-  ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-  ctx.lineCap = 'round';
+  ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.lineCap = "round";
 
   // Draw a vertical line handle (e.g. 16px height)
   const height = 12;

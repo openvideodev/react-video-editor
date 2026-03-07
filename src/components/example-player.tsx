@@ -10,11 +10,7 @@ interface ExamplePlayerProps {
   onReady?: (studio: Studio) => void;
 }
 
-export function ExamplePlayer({
-  project,
-  onLoad,
-  onReady,
-}: ExamplePlayerProps) {
+export function ExamplePlayer({ project, onLoad, onReady }: ExamplePlayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const studioRef = useRef<Studio | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);

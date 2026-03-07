@@ -1,4 +1,4 @@
-import { StorageAdapter } from './types';
+import { StorageAdapter } from "./types";
 
 export class IndexedDBAdapter<T> implements StorageAdapter<T> {
   private dbName: string;
@@ -21,7 +21,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains(this.storeName)) {
-          db.createObjectStore(this.storeName, { keyPath: 'id' });
+          db.createObjectStore(this.storeName, { keyPath: "id" });
         }
       };
     });
@@ -29,7 +29,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
 
   async get(key: string): Promise<T | null> {
     const db = await this.getDB();
-    const transaction = db.transaction([this.storeName], 'readonly');
+    const transaction = db.transaction([this.storeName], "readonly");
     const store = transaction.objectStore(this.storeName);
 
     return new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
 
   async set(key: string, value: T): Promise<void> {
     const db = await this.getDB();
-    const transaction = db.transaction([this.storeName], 'readwrite');
+    const transaction = db.transaction([this.storeName], "readwrite");
     const store = transaction.objectStore(this.storeName);
 
     return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
 
   async remove(key: string): Promise<void> {
     const db = await this.getDB();
-    const transaction = db.transaction([this.storeName], 'readwrite');
+    const transaction = db.transaction([this.storeName], "readwrite");
     const store = transaction.objectStore(this.storeName);
 
     return new Promise((resolve, reject) => {
@@ -65,7 +65,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
 
   async list(): Promise<string[]> {
     const db = await this.getDB();
-    const transaction = db.transaction([this.storeName], 'readonly');
+    const transaction = db.transaction([this.storeName], "readonly");
     const store = transaction.objectStore(this.storeName);
 
     return new Promise((resolve, reject) => {
@@ -77,7 +77,7 @@ export class IndexedDBAdapter<T> implements StorageAdapter<T> {
 
   async clear(): Promise<void> {
     const db = await this.getDB();
-    const transaction = db.transaction([this.storeName], 'readwrite');
+    const transaction = db.transaction([this.storeName], "readwrite");
     const store = transaction.objectStore(this.storeName);
 
     return new Promise((resolve, reject) => {

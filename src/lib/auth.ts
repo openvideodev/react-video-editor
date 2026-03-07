@@ -6,7 +6,6 @@ import { resend } from "./resend";
 import { sendMagicLinkEmail } from "../../email/magic-link";
 import { prisma } from "./prisma";
 
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",

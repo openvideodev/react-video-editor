@@ -14,10 +14,8 @@ const Footer = () => {
             className="pointer-events-none w-full h-auto relative z-10"
             style={{
               filter: "brightness(30%)",
-              maskImage:
-                "linear-gradient(to top, transparent 0%, var(--foreground) 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to top, transparent 0%, var(--foreground) 100%)",
+              maskImage: "linear-gradient(to top, transparent 0%, var(--foreground) 100%)",
+              WebkitMaskImage: "linear-gradient(to top, transparent 0%, var(--foreground) 100%)",
             }}
           />
         </div>

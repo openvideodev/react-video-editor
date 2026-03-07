@@ -6,11 +6,7 @@ import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
 import { Video, Log, Placeholder } from "openvideo";
 import { Search, Film, Loader2 } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { cloneDeep, debounce } from "lodash";
 
 interface PexelsVideo {
@@ -81,9 +77,7 @@ export default function PanelVideos() {
     if (!studio) return;
     try {
       // Find the best quality mp4 link
-      const videoFile =
-        asset.video_files.find((f) => f.quality === "hd") ||
-        asset.video_files[0];
+      const videoFile = asset.video_files.find((f) => f.quality === "hd") || asset.video_files[0];
       if (!videoFile) throw new Error("No video file found");
 
       const src = videoFile.link;
@@ -196,9 +190,7 @@ export default function PanelVideos() {
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-[10px] text-white truncate font-medium">
-                    {video.user.name}
-                  </p>
+                  <p className="text-[10px] text-white truncate font-medium">{video.user.name}</p>
                 </div>
               </div>
             ))}

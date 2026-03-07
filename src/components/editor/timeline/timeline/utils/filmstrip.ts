@@ -1,5 +1,5 @@
-import { MICROSECONDS_PER_SECOND } from '@/types/timeline';
-import { TIMELINE_CONSTANTS } from '../../timeline-constants';
+import { MICROSECONDS_PER_SECOND } from "@/types/timeline";
+import { TIMELINE_CONSTANTS } from "../../timeline-constants";
 
 export interface Filmstrip {
   segmentIndex: number;
@@ -34,32 +34,20 @@ export const calculateThumbnailSegmentLayout = (thumbnailWidth: number) => {
 export const calculateOffscreenSegments = (
   offscreenWidth: number,
   trimFromSize: number,
-  segmentSize: number
+  segmentSize: number,
 ) => {
-  const offscreenSegments = Math.floor(
-    (offscreenWidth + trimFromSize) / segmentSize
-  );
+  const offscreenSegments = Math.floor((offscreenWidth + trimFromSize) / segmentSize);
   return offscreenSegments;
 };
 
-export function timeMsToUnits(
-  timeMs: number,
-  tScale: number,
-  playbackRate: number = 1
-) {
+export function timeMsToUnits(timeMs: number, tScale: number, playbackRate: number = 1) {
   return (
-    ((timeMs / MICROSECONDS_PER_SECOND) *
-      TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
-      tScale) /
+    ((timeMs / MICROSECONDS_PER_SECOND) * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * tScale) /
     playbackRate
   );
 }
 
-export function unitsToTimeMs(
-  units: number,
-  tScale: number,
-  playbackRate: number = 1
-) {
+export function unitsToTimeMs(units: number, tScale: number, playbackRate: number = 1) {
   return (
     (units / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * tScale)) *
     playbackRate *

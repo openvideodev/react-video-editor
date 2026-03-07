@@ -15,9 +15,7 @@ export const DEFAULT_CANVAS_PRESETS = [
 export function findBestCanvasPreset(aspectRatio: number): CanvasSize {
   // Calculate aspect ratio for each preset and find the closest match
   let bestMatch = DEFAULT_CANVAS_PRESETS[0]; // Default to 16:9 HD
-  let smallestDifference = Math.abs(
-    aspectRatio - bestMatch.width / bestMatch.height,
-  );
+  let smallestDifference = Math.abs(aspectRatio - bestMatch.width / bestMatch.height);
 
   for (const preset of DEFAULT_CANVAS_PRESETS) {
     const presetAspectRatio = preset.width / preset.height;

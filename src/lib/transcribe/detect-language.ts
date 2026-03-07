@@ -1,5 +1,5 @@
-import { detectAll } from 'tinyld';
-import type { LanguageDetectionResults } from './types';
+import { detectAll } from "tinyld";
+import type { LanguageDetectionResults } from "./types";
 
 export async function detectLanguage(text: string) {
   const tinyldResults = detectAll(text);
@@ -12,16 +12,16 @@ export async function detectLanguage(text: string) {
 
   const [mainLanguage] = results;
 
-  if (mainLanguage.language === 'und') {
-    mainLanguage.language = 'en';
-    mainLanguage.languageName = 'English';
+  if (mainLanguage.language === "und") {
+    mainLanguage.language = "en";
+    mainLanguage.languageName = "English";
   }
 
   return mainLanguage;
 }
 
 export function languageCodeToName(languageCode: string) {
-  const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
+  const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
 
   let translatedLanguageName: string | undefined;
 
@@ -29,5 +29,5 @@ export function languageCodeToName(languageCode: string) {
     translatedLanguageName = languageNames.of(languageCode);
   } catch (e) {}
 
-  return translatedLanguageName || 'Unknown';
+  return translatedLanguageName || "Unknown";
 }

@@ -1,0 +1,26 @@
+# License
+
+This project is licensed under a **dual license**:
+
+## Open Source License: GNU AGPL v3
+
+Unless you have a separate commercial license from the copyright holder, the **GNU Affero General Public License v3 (AGPL-3.0)** applies by default.
+
+**Key Points:**
+- You are free to use, modify, and distribute this software
+- Network use (SaaS) triggers the obligation to provide the corresponding source code to users interacting with the software over a network
+- Any modifications must also be licensed under AGPL v3
+- See the full license text in [LICENSE-AGPL3.md](LICENSE-AGPL3.md)
+
+## Commercial License
+
+For closed-source or commercial use without AGPL obligations, you must obtain a commercial license from the copyright holder.
+
+**Contact:**
+- hello@openvideo.dev
+
+---
+
+**Copyright (c) 2026 OpenVideoDev**
+
+For the complete terms and conditions of the GNU AGPL v3 license, please refer to [LICENSE-AGPL3.md](LICENSE-AGPL3.md) or visit <https://www.gnu.org/licenses/agpl-3.0.html>.

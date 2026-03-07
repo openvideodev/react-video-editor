@@ -60,8 +60,7 @@ export const groupWordsByWidth = (
 
       // Measure actual height of the text
       const metrics = ctx.measureText("AaFfLMZpPqQ");
-      const textHeight =
-        metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+      const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
       captions.push({
         text: currentText,
@@ -96,8 +95,7 @@ export const groupWordsByWidth = (
 
     // Measure actual height of the text
     const metrics = ctx.measureText("AaFfLMZpPqQ");
-    const textHeight =
-      metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
     captions.push({
       text: currentText,
@@ -121,9 +119,7 @@ export const groupWordsByWidth = (
 /**
  * Converts schema.json format to exported.json format compatible with Studio
  */
-export const convertSchemaToExported = async (
-  schemaJson: any,
-): Promise<any> => {
+export const convertSchemaToExported = async (schemaJson: any): Promise<any> => {
   const schema = schemaJson.schema || schemaJson;
   const clips: any[] = [];
 
@@ -165,23 +161,13 @@ export const convertSchemaToExported = async (
       // Add video clips from segment
       if (segment.clips && Array.isArray(segment.clips)) {
         for (const clip of segment.clips) {
-          if (
-            clip.type === "video" &&
-            clip.src &&
-            Array.isArray(clip.src) &&
-            clip.src.length > 0
-          ) {
+          if (clip.type === "video" && clip.src && Array.isArray(clip.src) && clip.src.length > 0) {
             // Convert milliseconds to microseconds
             const durationMs = clip.duration || segmentDurationMs;
             const durationUs = durationMs * 1000;
-            const fromMs =
-              clip.display?.from !== undefined
-                ? clip.display.from
-                : cumulativeTime;
+            const fromMs = clip.display?.from !== undefined ? clip.display.from : cumulativeTime;
             const toMs =
-              clip.display?.to !== undefined
-                ? clip.display.to
-                : cumulativeTime + durationMs;
+              clip.display?.to !== undefined ? clip.display.to : cumulativeTime + durationMs;
             const fromUs = fromMs * 1000;
             const toUs = toMs * 1000;
 
@@ -211,14 +197,9 @@ export const convertSchemaToExported = async (
             // Handle image clips - use segment duration if clip doesn't have display values
             const durationMs = clip.duration || segmentDurationMs;
             const durationUs = durationMs * 1000;
-            const fromMs =
-              clip.display?.from !== undefined
-                ? clip.display.from
-                : cumulativeTime;
+            const fromMs = clip.display?.from !== undefined ? clip.display.from : cumulativeTime;
             const toMs =
-              clip.display?.to !== undefined
-                ? clip.display.to
-                : cumulativeTime + durationMs;
+              clip.display?.to !== undefined ? clip.display.to : cumulativeTime + durationMs;
             const fromUs = fromMs * 1000;
             const toUs = toMs * 1000;
 
@@ -292,12 +273,7 @@ export const convertSchemaToExported = async (
             const words = captionData.results.main.words;
 
             // Group words by width
-            const captionChunks = groupWordsByWidth(
-              words,
-              800,
-              80,
-              "Bangers-Regular",
-            );
+            const captionChunks = groupWordsByWidth(words, 800, 80, "Bangers-Regular");
 
             // Create Caption clips for each chunk
             for (const chunk of captionChunks) {

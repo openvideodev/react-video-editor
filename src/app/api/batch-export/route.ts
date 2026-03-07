@@ -4,10 +4,7 @@ import path from "path";
 
 export async function GET() {
   try {
-    const presetsPath = path.join(
-      process.cwd(),
-      "../packages/openvideo/src/animation/presets.ts",
-    );
+    const presetsPath = path.join(process.cwd(), "../packages/openvideo/src/animation/presets.ts");
     const presetsContent = fs.readFileSync(presetsPath, "utf-8");
     const animationKeys = [
       ...presetsContent.matchAll(/animationRegistry\.register\("([^"]+)"/g),
@@ -19,10 +16,7 @@ export async function GET() {
 
     return NextResponse.json({ success: true, keys: animationKeys, template });
   } catch (error: any) {
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
@@ -54,9 +48,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Batch export error:", error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

@@ -11,18 +11,11 @@ interface TimelineRulerProps {
   scrollLeft: number;
 }
 
-export function TimelineRuler({
-  zoomLevel,
-  duration,
-  width,
-  scrollLeft,
-}: TimelineRulerProps) {
+export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: TimelineRulerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme, resolvedTheme } = useTheme();
 
-  const currentTheme = (theme === "system" ? resolvedTheme : theme) as
-    | "dark"
-    | "light";
+  const currentTheme = (theme === "system" ? resolvedTheme : theme) as "dark" | "light";
 
   const colors = useMemo(() => {
     const isDark = currentTheme === "dark";
@@ -66,12 +59,7 @@ export function TimelineRuler({
       const visibleStart = Math.max(0, scrollLeft);
       const visibleEnd = Math.min(scrollLeft + width, durationX);
       if (visibleEnd > visibleStart) {
-        ctx.fillRect(
-          visibleStart - scrollLeft,
-          0,
-          visibleEnd - visibleStart,
-          24,
-        );
+        ctx.fillRect(visibleStart - scrollLeft, 0, visibleEnd - visibleStart, 24);
       }
     }
 
@@ -115,9 +103,7 @@ export function TimelineRuler({
       if (m === 0 && s === 0) {
         return "0s";
       }
-      return m > 0
-        ? `${m}:${s.toString().padStart(2, "0")}`
-        : s.toString().padStart(2, "0");
+      return m > 0 ? `${m}:${s.toString().padStart(2, "0")}` : s.toString().padStart(2, "0");
     };
 
     // Sub ticks
@@ -134,8 +120,7 @@ export function TimelineRuler({
     }
 
     // Determine range to draw based on scrollLeft and width
-    const startTime =
-      Math.floor(scrollLeft / pixelsPerSecond / subInterval) * subInterval;
+    const startTime = Math.floor(scrollLeft / pixelsPerSecond / subInterval) * subInterval;
     const endTime = (scrollLeft + width) / pixelsPerSecond;
 
     const count = Math.ceil((endTime - startTime) / subInterval) + 1;

@@ -1,12 +1,12 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import {
   type ITimelineTrack,
   type IClip,
   MICROSECONDS_PER_SECOND,
   type TrackType,
-} from '@/types/timeline';
-import { generateUUID } from '@/utils/id';
-import { loadStudioData } from '@/components/editor/timeline/timeline/data';
+} from "@/types/timeline";
+import { generateUUID } from "@/utils/id";
+import { loadStudioData } from "@/components/editor/timeline/timeline/data";
 
 interface TimelineStore {
   // Normalized State
@@ -30,7 +30,7 @@ interface TimelineStore {
       displayFrom?: number;
       duration?: number;
       trim?: { from: number; to: number };
-    }
+    },
   ) => void;
   updateClips: (
     updates: Array<{
@@ -38,7 +38,7 @@ interface TimelineStore {
       displayFrom?: number;
       duration?: number;
       trim?: { from: number; to: number };
-    }>
+    }>,
   ) => void;
   removeClips: (clipIds: string[]) => void;
 
@@ -159,9 +159,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => {
           clips: updatedClips,
           _tracks: updatedTracks,
           tracks: updatedTracks,
-          selectedClipIds: state.selectedClipIds.filter(
-            (id) => !clipIds.includes(id)
-          ),
+          selectedClipIds: state.selectedClipIds.filter((id) => !clipIds.includes(id)),
         };
       });
     },
@@ -187,8 +185,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => {
       const { clips } = get();
       let maxTime = 0;
       Object.values(clips).forEach((clip) => {
-        const endTime =
-          (clip.display.from + clip.duration) / MICROSECONDS_PER_SECOND;
+        const endTime = (clip.display.from + clip.duration) / MICROSECONDS_PER_SECOND;
         if (endTime > maxTime) maxTime = endTime;
       });
       return maxTime;
@@ -204,7 +201,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => {
       };
       set((state) => {
         const updatedTracks = [...state._tracks];
-        if (typeof index === 'number') {
+        if (typeof index === "number") {
           updatedTracks.splice(index, 0, newTrack);
         } else {
           updatedTracks.unshift(newTrack);
@@ -262,9 +259,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => {
 
     toggleTrackMute: (trackId) => {
       set((state) => ({
-        tracks: state.tracks.map((t) =>
-          t.id === trackId ? { ...t, muted: !t.muted } : t
-        ),
+        tracks: state.tracks.map((t) => (t.id === trackId ? { ...t, muted: !t.muted } : t)),
       }));
     },
   };

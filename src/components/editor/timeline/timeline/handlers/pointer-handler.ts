@@ -102,9 +102,7 @@ export class PointerHandler {
 
   // ─── Private ───────────────────────────────────────────────────────────────
 
-  #extractPointer(
-    e: MouseEvent | PointerEvent | TouchEvent,
-  ): { x: number; y: number } {
+  #extractPointer(e: MouseEvent | PointerEvent | TouchEvent): { x: number; y: number } {
     const src = "clientX" in e ? e : (e as TouchEvent).touches[0];
     return { x: src.clientX, y: src.clientY };
   }
@@ -162,24 +160,15 @@ export class PointerHandler {
     const projectDuration = timeline.totalDuration;
     const durationPx = projectDuration * pixelsPerSecond * timeline.timeScale;
     const maxScrollX = Math.max(0, durationPx - canvas.width);
-    const maxScrollY = Math.max(
-      0,
-      timeline.totalTracksHeight + 15 - canvas.height,
-    );
+    const maxScrollY = Math.max(0, timeline.totalTracksHeight + 15 - canvas.height);
 
     // Use the timeline's public scroll getters
     const currentScrollX = timeline.scrollX;
     const currentScrollY = timeline.scrollY;
 
     if (this.#isSelectingArea) {
-      const newScrollX = Math.max(
-        0,
-        Math.min(maxScrollX, currentScrollX + deltaX),
-      );
-      const newScrollY = Math.max(
-        0,
-        Math.min(maxScrollY, currentScrollY + deltaY),
-      );
+      const newScrollX = Math.max(0, Math.min(maxScrollX, currentScrollX + deltaX));
+      const newScrollY = Math.max(0, Math.min(maxScrollY, currentScrollY + deltaY));
       const actualDeltaX = newScrollX - currentScrollX;
       const actualDeltaY = newScrollY - currentScrollY;
 
@@ -201,10 +190,7 @@ export class PointerHandler {
       }
     } else {
       const newScrollX = Math.max(0, currentScrollX + deltaX);
-      const newScrollY = Math.max(
-        0,
-        Math.min(maxScrollY, currentScrollY + deltaY),
-      );
+      const newScrollY = Math.max(0, Math.min(maxScrollY, currentScrollY + deltaY));
       const actualDeltaX = newScrollX - currentScrollX;
       const actualDeltaY = newScrollY - currentScrollY;
 

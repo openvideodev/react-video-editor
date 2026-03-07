@@ -1,5 +1,5 @@
-import { Upload, Plus, Image } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Upload, Plus, Image } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MediaDragOverlayProps {
   isVisible: boolean;
@@ -38,7 +38,7 @@ export function MediaDragOverlay({
         <p className="text-xs text-muted-foreground max-w-sm">
           {isProcessing
             ? `Processing your files (${progress}%)`
-            : 'Drag and drop videos, photos, and audio files here'}
+            : "Drag and drop videos, photos, and audio files here"}
         </p>
       </div>
 

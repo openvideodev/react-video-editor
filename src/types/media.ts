@@ -1,4 +1,4 @@
-export type MediaType = 'image' | 'video' | 'audio';
+export type MediaType = "image" | "video" | "audio";
 
 // What's stored in media library
 export interface MediaFile {

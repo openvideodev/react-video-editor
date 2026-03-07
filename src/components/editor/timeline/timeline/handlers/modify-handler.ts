@@ -1,13 +1,9 @@
-import { type FabricObject } from 'fabric';
-import type Timeline from '../canvas';
-import { clearAuxiliaryObjects } from '../guidelines/utils';
-import { generateUUID } from '@/utils/id';
-import {
-  type ITimelineTrack,
-  MICROSECONDS_PER_SECOND,
-  type TrackType,
-} from '@/types/timeline';
-import { TIMELINE_CONSTANTS } from '../../timeline-constants';
+import { type FabricObject } from "fabric";
+import type Timeline from "../canvas";
+import { clearAuxiliaryObjects } from "../guidelines/utils";
+import { generateUUID } from "@/utils/id";
+import { type ITimelineTrack, MICROSECONDS_PER_SECOND, type TrackType } from "@/types/timeline";
+import { TIMELINE_CONSTANTS } from "../../timeline-constants";
 
 const SNAP_OVERLAP_TOLERANCE_US = 10000; // 10ms tolerance for rounding errors during snap
 
@@ -15,11 +11,7 @@ const SNAP_OVERLAP_TOLERANCE_US = 10000; // 10ms tolerance for rounding errors d
  * Helper to safely update the local clips map in Timeline to reflect the new visual state
  * before the asynchronous store update comes back.
  */
-function updateClipTimeLocally(
-  timeline: Timeline,
-  clipId: string,
-  newDisplayFrom: number
-) {
+function updateClipTimeLocally(timeline: Timeline, clipId: string, newDisplayFrom: number) {
   const clip = timeline.clipsMap[clipId];
   if (!clip) return;
 
@@ -48,10 +40,7 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
   // ---------------------------------------------------------
   if (timeline.activeSeparatorIndex !== null) {
     // If it's an active selection, we skip separator logic to avoid issues (as requested to remove 3)
-    if (
-      targetAny.type === 'activeSelection' ||
-      target.type === 'activeSelection'
-    ) {
+    if (targetAny.type === "activeSelection" || target.type === "activeSelection") {
       timeline.clearSeparatorHighlights();
       timeline.setActiveSeparatorIndex(null);
       timeline.canvas.requestRenderAll();
@@ -63,9 +52,7 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
       const clipId = targetAny.elementId;
 
       const tracks = timeline.tracks;
-      const currentTrackIndex = tracks.findIndex((t) =>
-        t.clipIds.includes(clipId)
-      );
+      const currentTrackIndex = tracks.findIndex((t) => t.clipIds.includes(clipId));
 
       // Restore original Logic for Single Clip Separator Drop (plus the negative time fix)
       if (currentTrackIndex === -1) {
@@ -85,19 +72,17 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
       if (left < 0) left = 0;
       let newDisplayFrom = Math.round(
         (left / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-          MICROSECONDS_PER_SECOND
+          MICROSECONDS_PER_SECOND,
       );
       if (newDisplayFrom < 0) newDisplayFrom = 0;
 
       updateClipTimeLocally(timeline, clipId, newDisplayFrom);
 
-      let newTrackType: TrackType = 'Video';
-      if (clip.type === 'Audio') newTrackType = 'Audio';
-      else if (clip.type === 'Text' || clip.type === 'Caption')
-        newTrackType = 'Text';
-      else if (clip.type === 'Effect') newTrackType = 'Effect';
-      else if (clip.type === 'Video' || clip.type === 'Image')
-        newTrackType = 'Video';
+      let newTrackType: TrackType = "Video";
+      if (clip.type === "Audio") newTrackType = "Audio";
+      else if (clip.type === "Text" || clip.type === "Caption") newTrackType = "Text";
+      else if (clip.type === "Effect") newTrackType = "Effect";
+      else if (clip.type === "Video" || clip.type === "Image") newTrackType = "Video";
 
       const newTrackId = generateUUID();
       const newTrack: ITimelineTrack = {
@@ -131,11 +116,11 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
 
       timeline.setTracksInternal(newTracksList);
       timeline.render();
-      timeline.emit('timeline:updated', { tracks: newTracksList });
+      timeline.emit("timeline:updated", { tracks: newTracksList });
 
       // Also emit clip modification to save time?
       // Yes
-      timeline.emit('clip:modified', {
+      timeline.emit("clip:modified", {
         clipId,
         displayFrom: newDisplayFrom,
         duration: clip.duration, // use current duration
@@ -150,10 +135,7 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
   // ---------------------------------------------------------
   // 2. Handle Multi-selection Move (General)
   // ---------------------------------------------------------
-  if (
-    targetAny.type === 'activeSelection' ||
-    target.type === 'activeSelection'
-  ) {
+  if (targetAny.type === "activeSelection" || target.type === "activeSelection") {
     timeline.clearSeparatorHighlights();
     timeline.setActiveSeparatorIndex(null);
     timeline.canvas.requestRenderAll();
@@ -177,11 +159,11 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
 
       const proposedStart = Math.round(
         (left / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-          MICROSECONDS_PER_SECOND
+          MICROSECONDS_PER_SECOND,
       );
       const proposedDuration = Math.round(
         (width / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-          MICROSECONDS_PER_SECOND
+          MICROSECONDS_PER_SECOND,
       );
       const proposedEnd = proposedStart + proposedDuration;
 
@@ -217,15 +199,13 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
         updateClipTimeLocally(timeline, clipId, proposedStart);
 
         const clipInfo = timeline.clipsMap[clipId];
-        let newTrackType: TrackType = 'Video';
+        let newTrackType: TrackType = "Video";
         if (targetTrack) newTrackType = targetTrack.type;
         else if (clipInfo) {
-          if (clipInfo.type === 'Audio') newTrackType = 'Audio';
-          else if (clipInfo.type === 'Text' || clipInfo.type === 'Caption')
-            newTrackType = 'Text';
-          else if (clipInfo.type === 'Effect') newTrackType = 'Effect';
-          else if (clipInfo.type === 'Video' || clipInfo.type === 'Image')
-            newTrackType = 'Video';
+          if (clipInfo.type === "Audio") newTrackType = "Audio";
+          else if (clipInfo.type === "Text" || clipInfo.type === "Caption") newTrackType = "Text";
+          else if (clipInfo.type === "Effect") newTrackType = "Effect";
+          else if (clipInfo.type === "Video" || clipInfo.type === "Image") newTrackType = "Video";
         }
 
         const newTrackId = generateUUID();
@@ -245,21 +225,18 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
           }))
           .filter((t: ITimelineTrack) => t.clipIds.length > 0);
 
-        const targetTrackIndex = newTracksList.findIndex(
-          (t) => t.id === trackRegion.id
-        );
+        const targetTrackIndex = newTracksList.findIndex((t) => t.id === trackRegion.id);
 
-        const insertIndex =
-          targetTrackIndex !== -1 ? targetTrackIndex + 1 : newTracksList.length;
+        const insertIndex = targetTrackIndex !== -1 ? targetTrackIndex + 1 : newTracksList.length;
         newTracksList.splice(insertIndex, 0, newTrack);
 
         timeline.setTracksInternal(newTracksList);
         timeline.render();
 
-        timeline.emit('timeline:updated', { tracks: newTracksList });
+        timeline.emit("timeline:updated", { tracks: newTracksList });
 
         const trim = targetAny.trim;
-        timeline.emit('clip:modified', {
+        timeline.emit("clip:modified", {
           clipId,
           displayFrom: proposedStart,
           duration: proposedDuration,
@@ -267,9 +244,9 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
         });
       } else {
         // --- NO OVERLAP: MOVE ---
-        target.set('top', trackRegion.top);
+        target.set("top", trackRegion.top);
         target.setCoords();
-        timeline.emit('clip:movedToTrack', {
+        timeline.emit("clip:movedToTrack", {
           clipId: clipId,
           trackId: trackRegion.id,
         });
@@ -283,23 +260,18 @@ export function handleTrackRelocation(timeline: Timeline, options: any) {
     if (clipId) {
       const originalClip = timeline.clipsMap[clipId];
       if (originalClip) {
-        const startTimeSeconds =
-          originalClip.display.from / MICROSECONDS_PER_SECOND;
+        const startTimeSeconds = originalClip.display.from / MICROSECONDS_PER_SECOND;
         const originalLeft =
-          startTimeSeconds *
-          TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
-          timeline.timeScale;
+          startTimeSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale;
 
-        target.set('left', originalLeft);
+        target.set("left", originalLeft);
 
         const tracks = timeline.tracks;
         const originalTrack = tracks.find((t) => t.clipIds.includes(clipId));
         if (originalTrack) {
-          const originalRegion = timeline.trackRegions.find(
-            (r) => r.id === originalTrack.id
-          );
+          const originalRegion = timeline.trackRegions.find((r) => r.id === originalTrack.id);
           if (originalRegion) {
-            target.set('top', originalRegion.top);
+            target.set("top", originalRegion.top);
           }
         }
         target.setCoords();
@@ -320,7 +292,7 @@ export function handleClipModification(timeline: Timeline, options: any) {
 
   const targetAny = target as any;
 
-  if (targetAny.type === 'activeSelection' && targetAny._objects) {
+  if (targetAny.type === "activeSelection" && targetAny._objects) {
     const clips: Array<{ clipId: string; displayFrom: number }> = [];
 
     for (const obj of targetAny._objects) {
@@ -331,7 +303,7 @@ export function handleClipModification(timeline: Timeline, options: any) {
 
       let displayFrom = Math.round(
         (left / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-          MICROSECONDS_PER_SECOND
+          MICROSECONDS_PER_SECOND,
       );
 
       if (displayFrom < 0) displayFrom = 0;
@@ -343,7 +315,7 @@ export function handleClipModification(timeline: Timeline, options: any) {
     }
 
     if (clips.length > 0) {
-      timeline.emit('clips:modified', { clips });
+      timeline.emit("clips:modified", { clips });
     }
   } else {
     const clipId = targetAny.elementId;
@@ -354,25 +326,25 @@ export function handleClipModification(timeline: Timeline, options: any) {
 
     if (left < 0) {
       left = 0;
-      target.set('left', 0);
+      target.set("left", 0);
       target.setCoords();
     }
 
     let displayFrom = Math.round(
       (left / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-        MICROSECONDS_PER_SECOND
+        MICROSECONDS_PER_SECOND,
     );
 
     if (displayFrom < 0) displayFrom = 0;
 
     const duration = Math.round(
       (width / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * timeline.timeScale)) *
-        MICROSECONDS_PER_SECOND
+        MICROSECONDS_PER_SECOND,
     );
 
     const trim = targetAny.trim;
 
-    timeline.emit('clip:modified', {
+    timeline.emit("clip:modified", {
       clipId,
       displayFrom,
       duration,

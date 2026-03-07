@@ -1,4 +1,4 @@
-import { CanvasSize } from './editor';
+import { CanvasSize } from "./editor";
 
 export type BlurIntensity = 4 | 8 | 18;
 
@@ -20,7 +20,7 @@ export interface TProject {
   currentSceneId: string;
   mediaItems?: string[];
   backgroundColor?: string;
-  backgroundType?: 'color' | 'blur';
+  backgroundType?: "color" | "blur";
   blurIntensity?: BlurIntensity;
   fps?: number;
   bookmarks?: number[];
@@ -31,5 +31,5 @@ export interface TProject {
    * - "original": Using the first media item's dimensions
    * - "custom": User set a custom aspect ratio or dimensions
    */
-  canvasMode: 'preset' | 'original' | 'custom';
+  canvasMode: "preset" | "original" | "custom";
 }

@@ -1,5 +1,5 @@
-import { type TMat2D, type TPointerEventInfo, util } from 'fabric';
-import type Timeline from '../canvas';
+import { type TMat2D, type TPointerEventInfo, util } from "fabric";
+import type Timeline from "../canvas";
 
 type SizeProps = {
   min: number;
@@ -7,15 +7,13 @@ type SizeProps = {
 };
 
 const getObjectsBoundingRect = (timeline: Timeline) => {
-  const objects = timeline.canvas
-    .getObjects()
-    .filter((x: any) => x.studioClipId);
+  const objects = timeline.canvas.getObjects().filter((x: any) => x.studioClipId);
   if (objects.length === 0) {
     return { left: 0, top: 0, right: 0, bottom: 0 };
   }
 
   const { left, top, width, height } = util.makeBoundingBoxFromPoints(
-    objects.map((x) => x.getCoords()).flat(1)
+    objects.map((x) => x.getCoords()).flat(1),
   );
   return { left, top, right: left + width, bottom: top + height };
 };
@@ -26,7 +24,7 @@ const limitViewport = (
   offsetX = 0,
   offsetY = 0,
   extraMarginX = 50,
-  extraMarginY = 15
+  extraMarginY = 15,
 ): TMat2D => {
   const zoom = vpt[0];
 
@@ -35,8 +33,7 @@ const limitViewport = (
   const totalAreaLeft = Math.min(objectRect.left, -offsetX);
   const totalAreaTop = Math.min(objectRect.top, -offsetY);
   const totalAreaRight = objectRect.right + extraMarginX;
-  const totalAreaBottom =
-    Math.max(objectRect.bottom, timeline.totalTracksHeight) + extraMarginY;
+  const totalAreaBottom = Math.max(objectRect.bottom, timeline.totalTracksHeight) + extraMarginY;
 
   const totalWidth = totalAreaRight - totalAreaLeft;
   const totalHeight = totalAreaBottom - totalAreaTop;
@@ -92,10 +89,8 @@ export const makeMouseWheel =
       const oldZoom = timeline.timeScale;
       let newZoom = oldZoom * speed ** e.deltaY;
 
-      if (options.max != undefined && newZoom > options.max)
-        newZoom = options.max;
-      if (options.min != undefined && newZoom < options.min)
-        newZoom = options.min;
+      if (options.max != undefined && newZoom > options.max) newZoom = options.max;
+      if (options.min != undefined && newZoom < options.min) newZoom = options.min;
 
       if (oldZoom !== newZoom) {
         const vpt = timeline.canvas.viewportTransform.slice(0) as TMat2D;
@@ -116,7 +111,7 @@ export const makeMouseWheel =
           options.offsetX ?? 0,
           options.offsetY ?? 0,
           options.extraMarginX ?? 200,
-          options.extraMarginY ?? 200
+          options.extraMarginY ?? 200,
         );
 
         timeline.canvas.setViewportTransform(limitedVpt);
@@ -141,7 +136,7 @@ export const makeMouseWheel =
       options.offsetX ?? 0,
       options.offsetY ?? 0,
       options.extraMarginX ?? 200,
-      options.extraMarginY ?? 200
+      options.extraMarginY ?? 200,
     );
     timeline.canvas.setViewportTransform(limitedVpt);
     timeline.canvas.requestRenderAll();

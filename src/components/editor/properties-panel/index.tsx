@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { TextProperties } from './text-properties';
-import { ImageProperties } from './image-properties';
-import { VideoProperties } from './video-properties';
-import { AudioProperties } from './audio-properties';
-import { CaptionProperties } from './caption-properties';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { IClip } from 'openvideo';
-import { EffectProperties } from './effect-properties';
-import { TransitionProperties } from './transition-properties';
+import { useEffect, useState } from "react";
+import { TextProperties } from "./text-properties";
+import { ImageProperties } from "./image-properties";
+import { VideoProperties } from "./video-properties";
+import { AudioProperties } from "./audio-properties";
+import { CaptionProperties } from "./caption-properties";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { IClip } from "openvideo";
+import { EffectProperties } from "./effect-properties";
+import { TransitionProperties } from "./transition-properties";
 
 export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
   const [, setTick] = useState(0);
@@ -21,10 +21,10 @@ export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
       setTick((t) => t + 1);
     };
 
-    clip.on('propsChange', onPropsChange);
+    clip.on("propsChange", onPropsChange);
 
     return () => {
-      clip.off('propsChange', onPropsChange);
+      clip.off("propsChange", onPropsChange);
     };
   }, [selectedClips]);
 
@@ -40,19 +40,19 @@ export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
 
   const renderSpecificProperties = () => {
     switch (clip.type) {
-      case 'Text':
+      case "Text":
         return <TextProperties clip={clip} />;
-      case 'Caption':
+      case "Caption":
         return <CaptionProperties clip={clip} />;
-      case 'Image':
+      case "Image":
         return <ImageProperties clip={clip} />;
-      case 'Video':
+      case "Video":
         return <VideoProperties clip={clip} />;
-      case 'Audio':
+      case "Audio":
         return <AudioProperties clip={clip} />;
-      case 'Effect':
+      case "Effect":
         return <EffectProperties clip={clip} />;
-      case 'Transition':
+      case "Transition":
         return <TransitionProperties clip={clip} />;
       default:
         return null;
@@ -61,9 +61,7 @@ export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
 
   return (
     <ScrollArea className="h-full">
-      <div className="flex flex-col gap-4 p-4">
-        {renderSpecificProperties()}
-      </div>
+      <div className="flex flex-col gap-4 p-4">{renderSpecificProperties()}</div>
     </ScrollArea>
   );
 }

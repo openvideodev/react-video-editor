@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { IconLoader2 } from '@tabler/icons-react';
-import { toast } from 'sonner';
-import { useGeneratedStore } from '@/stores/generated-store';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { IconLoader2 } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { useGeneratedStore } from "@/stores/generated-store";
 
 export const SfxChatPanel = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const { addAsset } = useGeneratedStore();
 
@@ -15,14 +15,14 @@ export const SfxChatPanel = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/elevenlabs/sfx', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/elevenlabs/sfx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate SFX');
+        throw new Error("Failed to generate SFX");
       }
 
       const data = await response.json();
@@ -31,15 +31,15 @@ export const SfxChatPanel = () => {
         id: crypto.randomUUID(),
         url: data.url,
         text: text,
-        type: 'sfx',
+        type: "sfx",
         createdAt: Date.now(),
       });
 
-      toast.success('SFX generated!');
-      setText('');
+      toast.success("SFX generated!");
+      setText("");
     } catch (error) {
       console.error(error);
-      toast.error('Failed to generate SFX');
+      toast.error("Failed to generate SFX");
     } finally {
       setLoading(false);
     }
@@ -64,11 +64,7 @@ export const SfxChatPanel = () => {
             onClick={handleGenerate}
             disabled={loading || !text.trim()}
           >
-            {loading ? (
-              <IconLoader2 className="size-4 animate-spin" />
-            ) : (
-              'Generate'
-            )}
+            {loading ? <IconLoader2 className="size-4 animate-spin" /> : "Generate"}
           </Button>
         </div>
       </div>

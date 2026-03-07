@@ -1,13 +1,10 @@
-import { Canvas, FabricObject, Line, TBBox } from 'fabric';
+import { Canvas, FabricObject, Line, TBBox } from "fabric";
 
 const GUIDELINE_OFFSET = 10;
 
 // some objects are used to show the guides and the transitions
 // we need to remove them when the user moves the object
-export const clearAuxiliaryObjects = (
-  canvas: Canvas,
-  allObjects: FabricObject[]
-) => {
+export const clearAuxiliaryObjects = (canvas: Canvas, allObjects: FabricObject[]) => {
   //@ts-ignore
   allObjects.forEach((obj) => obj.isAlignmentAuxiliary && canvas.remove(obj));
 };
@@ -23,7 +20,7 @@ type LineGuides = LineGuide[];
 // get the alignment value and the boundingBox for each possible alignment position
 export const getLineGuideStops = (
   skipShapes: FabricObject[],
-  canvas: Canvas
+  canvas: Canvas,
 ): { vertical: LineGuide[]; horizontal: LineGuide[] } => {
   // objects can be aligned to canvas start, center and end of the canvas
   const vertical: LineGuides[] = [];
@@ -34,16 +31,11 @@ export const getLineGuideStops = (
     .getObjects()
     .filter((o) => o.visible && (o as any).elementId)
     .forEach((guideObject) => {
-      if (
-        skipShapes.includes(guideObject) ||
-        (guideObject as any).isAlignmentAuxiliary
-      ) {
+      if (skipShapes.includes(guideObject) || (guideObject as any).isAlignmentAuxiliary) {
         return;
       }
       const box = guideObject.getBoundingRect();
-      vertical.push(
-        getStopsForObject(box.left, box.width, box.top, box.height)
-      );
+      vertical.push(getStopsForObject(box.left, box.width, box.top, box.height));
     });
 
   return {
@@ -58,7 +50,7 @@ export const getGuides = (
   itemBounds: {
     vertical: { guide: number; offset: number; snap: string }[];
     horizontal: { guide: number; offset: number; snap: string }[];
-  }
+  },
 ): Guide[] => {
   const resultV: GuidelineResult[] = [];
   const resultH: GuidelineResult[] = [];
@@ -71,7 +63,7 @@ export const getGuides = (
         resultV.push({
           lineGuide: lineGuide.val,
           diff: diff,
-          orientation: 'V',
+          orientation: "V",
           snap: itemBound.snap,
           offset: itemBound.offset,
           targetDim: { start: lineGuide.start, end: lineGuide.end },
@@ -87,7 +79,7 @@ export const getGuides = (
         resultH.push({
           lineGuide: lineGuide.val,
           diff: diff,
-          orientation: 'H',
+          orientation: "H",
           snap: itemBound.snap,
           offset: itemBound.offset,
           targetDim: { start: lineGuide.start, end: lineGuide.end },
@@ -105,7 +97,7 @@ export const getGuides = (
     guides.push({
       lineGuide: minV.lineGuide,
       offset: minV.offset,
-      orientation: 'V',
+      orientation: "V",
       snap: minV.snap,
       targetDim: minV.targetDim,
     });
@@ -114,7 +106,7 @@ export const getGuides = (
     guides.push({
       lineGuide: minH.lineGuide,
       offset: minH.offset,
-      orientation: 'H',
+      orientation: "H",
       snap: minH.snap,
       targetDim: minH.targetDim,
     });
@@ -125,7 +117,7 @@ export const getGuides = (
 interface GuidelineResult {
   lineGuide: number;
   diff: number;
-  orientation: 'V' | 'H';
+  orientation: "V" | "H";
   snap: string;
   offset: number;
   targetDim: {
@@ -137,7 +129,7 @@ interface GuidelineResult {
 interface Guide {
   lineGuide: number;
   offset: number;
-  orientation: 'V' | 'H';
+  orientation: "V" | "H";
   snap: string;
   targetDim: {
     start: number;
@@ -150,7 +142,7 @@ interface Guide {
 export const drawGuides = (guides: Guide[], _: TBBox, canvas: Canvas) => {
   guides.forEach((lineGuide) => {
     const alignmentLineOptions = getAlignmentLineOptions(canvas.getZoom());
-    if (lineGuide.orientation === 'H') {
+    if (lineGuide.orientation === "H") {
       canvas.add(
         getAlignmentLine(
           [
@@ -159,10 +151,10 @@ export const drawGuides = (guides: Guide[], _: TBBox, canvas: Canvas) => {
             2000,
             lineGuide.lineGuide - alignmentLineOptions.strokeWidth / 2,
           ],
-          { ...alignmentLineOptions, stroke: '#ffffff' }
-        )
+          { ...alignmentLineOptions, stroke: "#ffffff" },
+        ),
       );
-    } else if (lineGuide.orientation === 'V') {
+    } else if (lineGuide.orientation === "V") {
       canvas.add(
         getAlignmentLine(
           [
@@ -171,8 +163,8 @@ export const drawGuides = (guides: Guide[], _: TBBox, canvas: Canvas) => {
             lineGuide.lineGuide - alignmentLineOptions.strokeWidth / 2,
             2000,
           ],
-          { ...alignmentLineOptions, stroke: '#ffffff' }
-        )
+          { ...alignmentLineOptions, stroke: "#ffffff" },
+        ),
       );
     }
   });
@@ -185,13 +177,10 @@ const getAlignmentLineOptions = (zoom: number) => {
   };
 };
 
-const getAlignmentLine = (
-  points: [number, number, number, number],
-  options: any
-) => {
+const getAlignmentLine = (points: [number, number, number, number], options: any) => {
   return new Line(points, {
     ...options,
-    strokeLineCap: 'square',
+    strokeLineCap: "square",
     excludeFromExport: true,
     isAlignmentAuxiliary: true,
     selectable: false,
@@ -202,7 +191,7 @@ const getAlignmentLine = (
 // guide: used to determine whether to trigger alignment
 // offset: offset between object and its boundingBox
 export const getObjectSnappingEdges = (
-  target: FabricObject
+  target: FabricObject,
 ): {
   vertical: { guide: number; offset: number; snap: string }[];
   horizontal: { guide: number; offset: number; snap: string }[];
@@ -213,24 +202,24 @@ export const getObjectSnappingEdges = (
       {
         guide: Math.round(rect.left),
         offset: Math.round(target.left - rect.left),
-        snap: 'start',
+        snap: "start",
       },
       {
         guide: Math.round(rect.left + rect.width),
         offset: Math.round(target.left - rect.left - rect.width),
-        snap: 'end',
+        snap: "end",
       },
     ],
     horizontal: [
       {
         guide: Math.round(rect.top),
         offset: Math.round(target.top - rect.top),
-        snap: 'start',
+        snap: "start",
       },
       {
         guide: Math.round(rect.top + rect.height),
         offset: Math.round(target.top - rect.top - rect.height),
-        snap: 'end',
+        snap: "end",
       },
     ],
   };
@@ -244,7 +233,7 @@ export const getStopsForObject = (
   start: number,
   distance: number,
   drawStart: number,
-  drawDistance: number
+  drawDistance: number,
 ) => {
   const stops = [start, start + distance];
   return stops.map((stop) => {

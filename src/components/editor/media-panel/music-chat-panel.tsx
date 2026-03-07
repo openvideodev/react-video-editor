@@ -1,20 +1,16 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { IconLoader2, IconClock, IconCheck } from '@tabler/icons-react';
-import { toast } from 'sonner';
-import { useGeneratedStore } from '@/stores/generated-store';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { IconLoader2, IconClock, IconCheck } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { useGeneratedStore } from "@/stores/generated-store";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const DURATIONS = [10, 20, 30, 60, 90, 120, 180, 300];
 
 export const MusicChatPanel = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState(30);
   const { addAsset } = useGeneratedStore();
@@ -24,14 +20,14 @@ export const MusicChatPanel = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/elevenlabs/music', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/elevenlabs/music", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, duration }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate music');
+        throw new Error("Failed to generate music");
       }
 
       const data = await response.json();
@@ -40,15 +36,15 @@ export const MusicChatPanel = () => {
         id: crypto.randomUUID(),
         url: data.url,
         text: text,
-        type: 'music',
+        type: "music",
         createdAt: Date.now(),
       });
 
-      toast.success('Music generated!');
-      setText('');
+      toast.success("Music generated!");
+      setText("");
     } catch (error) {
       console.error(error);
-      toast.error('Failed to generate music');
+      toast.error("Failed to generate music");
     } finally {
       setLoading(false);
     }
@@ -89,14 +85,13 @@ export const MusicChatPanel = () => {
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      'justify-start h-8 text-xs font-normal',
-                      duration === d && 'bg-secondary text-secondary-foreground'
+                      "justify-start h-8 text-xs font-normal",
+                      duration === d && "bg-secondary text-secondary-foreground",
                     )}
                     onClick={() => setDuration(d)}
                   >
                     <IconClock className="size-3 mr-2 opacity-70" />
-                    {d}s
-                    {duration === d && <IconCheck className="size-3 ml-auto" />}
+                    {d}s{duration === d && <IconCheck className="size-3 ml-auto" />}
                   </Button>
                 ))}
               </div>
@@ -109,11 +104,7 @@ export const MusicChatPanel = () => {
             onClick={handleGenerate}
             disabled={loading || !text.trim()}
           >
-            {loading ? (
-              <IconLoader2 className="size-4 animate-spin" />
-            ) : (
-              'Generate'
-            )}
+            {loading ? <IconLoader2 className="size-4 animate-spin" /> : "Generate"}
           </Button>
         </div>
       </div>

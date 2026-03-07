@@ -5,34 +5,12 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
-import {
-  Image,
-  Video,
-  Audio,
-  Log,
-  clipToJSON,
-  type IClip as StudioClip,
-} from "openvideo";
-import {
-  Upload,
-  Film,
-  Search,
-  X,
-  HardDrive,
-  Trash2,
-  Music,
-} from "lucide-react";
-import {
-  storageService,
-  type StorageStats,
-} from "@/lib/storage/storage-service";
+import { Image, Video, Audio, Log, clipToJSON, type IClip as StudioClip } from "openvideo";
+import { Upload, Film, Search, X, HardDrive, Trash2, Music } from "lucide-react";
+import { storageService, type StorageStats } from "@/lib/storage/storage-service";
 import type { MediaFile, MediaType } from "@/types/media";
 import { uploadFile } from "@/lib/upload-utils";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 interface VisualAsset {
   id: string;
   type: MediaType;
@@ -53,16 +31,10 @@ function detectFileType(file: File): MediaType {
   const mime = file.type.toLowerCase();
   const ext = file.name.split(".").pop()?.toLowerCase() || "";
 
-  if (
-    mime.startsWith("audio/") ||
-    ["mp3", "wav", "ogg", "flac", "aac", "m4a"].includes(ext)
-  ) {
+  if (mime.startsWith("audio/") || ["mp3", "wav", "ogg", "flac", "aac", "m4a"].includes(ext)) {
     return "audio";
   }
-  if (
-    mime.startsWith("video/") ||
-    ["mp4", "webm", "mov", "avi", "mkv"].includes(ext)
-  ) {
+  if (mime.startsWith("video/") || ["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
     return "video";
   }
   return "image";
@@ -100,25 +72,13 @@ function AssetCard({
   onDelete: (id: string) => void;
 }) {
   return (
-    <div
-      className="flex flex-col gap-1.5 group cursor-pointer"
-      onClick={() => onAdd(asset)}
-    >
+    <div className="flex flex-col gap-1.5 group cursor-pointer" onClick={() => onAdd(asset)}>
       <div className="relative aspect-square rounded-sm overflow-hidden bg-foreground/20 border border-transparent group-hover:border-primary/50 transition-all flex items-center justify-center">
         {asset.type === "image" ? (
-          <img
-            src={asset.src}
-            alt={asset.name}
-            className="max-w-full max-h-full object-contain"
-          />
+          <img src={asset.src} alt={asset.name} className="max-w-full max-h-full object-contain" />
         ) : asset.type === "audio" ? (
           <div className="w-full h-full flex items-center justify-center relative">
-            <Music
-              className="text-[#2dc28c]"
-              size={32}
-              fill="#2dc28c"
-              fillOpacity={0.2}
-            />
+            <Music className="text-[#2dc28c]" size={32} fill="#2dc28c" fillOpacity={0.2} />
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-black/40 relative">
@@ -210,9 +170,7 @@ export default function PanelUploads() {
         }
 
         // Load old localStorage entries for URL mapping
-        const oldEntries: VisualAsset[] = JSON.parse(
-          localStorage.getItem(STORAGE_KEY) || "[]",
-        );
+        const oldEntries: VisualAsset[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
         const urlMapping: Record<string, string> = {};
 
         // Generate new blob URLs from OPFS files
@@ -220,9 +178,7 @@ export default function PanelUploads() {
           const newBlobUrl = file.url || URL.createObjectURL(file.file);
 
           // Find matching old entry by ID or name to map URLs
-          const oldEntry = oldEntries.find(
-            (e) => e.id === file.id || e.name === file.name,
-          );
+          const oldEntry = oldEntries.find((e) => e.id === file.id || e.name === file.name);
 
           if (oldEntry?.src && oldEntry.src !== newBlobUrl) {
             urlMapping[oldEntry.src] = newBlobUrl;

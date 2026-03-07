@@ -1,11 +1,11 @@
-import { genkit, z } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
-import { getTools } from './tools';
-import { buildAssetInstruction, buildMessageContent } from './utils';
+import { genkit, z } from "genkit";
+import { googleAI } from "@genkit-ai/google-genai";
+import { getTools } from "./tools";
+import { buildAssetInstruction, buildMessageContent } from "./utils";
 
 export const ai = genkit({
   plugins: [googleAI()],
-  model: googleAI.model('gemini-2.5-flash'),
+  model: googleAI.model("gemini-2.5-flash"),
 });
 
 const SYSTEM_PROMPT = `You are a professional Multimodal Video Assistant.
@@ -29,17 +29,14 @@ RULES:
 
 export const chatFlow = ai.defineFlow(
   {
-    name: 'chatFlow',
+    name: "chatFlow",
     inputSchema: z.object({
       message: z.string(),
       metadata: z
         .object({
           existingAssets: z.array(z.any()).optional(),
           selectedAssets: z.array(z.any()).optional(),
-          currentTime: z
-            .number()
-            .optional()
-            .describe('Current playhead position in seconds'),
+          currentTime: z.number().optional().describe("Current playhead position in seconds"),
         })
         .optional(),
     }),
@@ -53,9 +50,9 @@ export const chatFlow = ai.defineFlow(
       ? metadata.selectedAssets
       : metadata?.existingAssets;
     const assetsContext = assets?.map(
-      (asset, index) => buildAssetInstruction(asset, index === 0) // marcamos el primero como seleccionado
+      (asset, index) => buildAssetInstruction(asset, index === 0), // marcamos el primero como seleccionado
     );
-    const context = (assetsContext || []).join('\n\n');
+    const context = (assetsContext || []).join("\n\n");
     const { stream, response } = ai.generateStream({
       system: SYSTEM_PROMPT,
       config: {
@@ -69,7 +66,7 @@ export const chatFlow = ai.defineFlow(
         ? {
             messages: [
               {
-                role: 'user',
+                role: "user",
                 content: buildMessageContent(assets),
               },
             ],
@@ -81,16 +78,16 @@ export const chatFlow = ai.defineFlow(
     const toolsQueue: Array<{ name: string; arg: any; response?: any }> = [];
 
     for await (const chunk of stream) {
-      if (chunk.role === 'model' && chunk.content?.[0]?.reasoning) {
+      if (chunk.role === "model" && chunk.content?.[0]?.reasoning) {
         sendChunk(
           JSON.stringify({
-            event: 'reasoning',
+            event: "reasoning",
             text: chunk.content[0].reasoning,
-          })
+          }),
         );
       }
 
-      if (chunk.role === 'model' && chunk.content?.[0]?.toolRequest) {
+      if (chunk.role === "model" && chunk.content?.[0]?.toolRequest) {
         for (let idx = 0; idx < chunk.content.length; idx++) {
           const toolContent = chunk.content[idx];
           if (toolContent.toolRequest) {
@@ -101,15 +98,13 @@ export const chatFlow = ai.defineFlow(
         }
       }
 
-      if (chunk.role === 'tool' && chunk.content?.[0]?.toolResponse) {
+      if (chunk.role === "tool" && chunk.content?.[0]?.toolResponse) {
         for (let idx = 0; idx < chunk.content.length; idx++) {
           const toolContent = chunk.content[idx];
           if (toolContent.toolResponse) {
             const name = toolContent.toolResponse.name;
             const responseOutput = toolContent.toolResponse.output;
-            const tool = toolsQueue.find(
-              (t) => t.name === name && t.response === undefined
-            );
+            const tool = toolsQueue.find((t) => t.name === name && t.response === undefined);
             if (tool) tool.response = responseOutput;
           }
         }
@@ -119,15 +114,15 @@ export const chatFlow = ai.defineFlow(
     for (const tool of toolsQueue) {
       sendChunk(
         JSON.stringify({
-          event: 'tool',
+          event: "tool",
           name: tool.name,
           arg: tool.arg,
           response: tool.response,
-        })
+        }),
       );
     }
 
     const { text } = await response;
     return { reply: text };
-  }
+  },
 );

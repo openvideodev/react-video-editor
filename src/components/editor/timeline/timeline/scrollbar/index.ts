@@ -1,11 +1,6 @@
 import { Canvas, util, type TMat2D, type TPointerEvent } from "fabric";
 import type Timeline from "../canvas";
-import type {
-  ScrollbarProps,
-  ScrollbarsProps,
-  ScrollbarXProps,
-  ScrollbarYProps,
-} from "./types";
+import type { ScrollbarProps, ScrollbarsProps, ScrollbarXProps, ScrollbarYProps } from "./types";
 
 export class Scrollbars {
   timeline: Timeline;
@@ -24,11 +19,7 @@ export class Scrollbars {
   offsetY = 0;
   scrollbarWidth = 8;
   scrollbarColor = "rgba(255, 255, 255, 0.3)";
-  onViewportChange?: (v: {
-    left: number;
-    scrollX: number;
-    scrollY: number;
-  }) => void;
+  onViewportChange?: (v: { left: number; scrollX: number; scrollY: number }) => void;
 
   private _bar?: { type: string; start: number; vpt: TMat2D };
   private _barViewport = {
@@ -85,11 +76,7 @@ export class Scrollbars {
       const b =
         p.x > this._barViewport.left &&
         p.x < this._barViewport.right &&
-        p.y >
-          canvas.height -
-            this.scrollbarSize -
-            this.scrollSpace -
-            this.padding &&
+        p.y > canvas.height - this.scrollbarSize - this.scrollSpace - this.padding &&
         p.y < canvas.height - this.scrollSpace + this.padding;
 
       if (b) return { type: "x", start: p.x, vpt };
@@ -99,8 +86,7 @@ export class Scrollbars {
       const b =
         p.y > this._barViewport.top &&
         p.y < this._barViewport.bottom &&
-        p.x >
-          canvas.width - this.scrollbarSize - this.scrollSpace - this.padding &&
+        p.x > canvas.width - this.scrollbarSize - this.scrollSpace - this.padding &&
         p.x < canvas.width - this.scrollSpace + this.padding;
 
       if (b) return { type: "y", start: p.y, vpt };
@@ -111,25 +97,18 @@ export class Scrollbars {
   mouseDownHandler(e: TPointerEvent) {
     this._bar = this.getScrollbar(e);
     if (!this._bar) {
-      return (Canvas.prototype as any).__onMouseDown.call(
-        this.timeline.canvas,
-        e,
-      );
+      return (Canvas.prototype as any).__onMouseDown.call(this.timeline.canvas, e);
     }
   }
 
   mouseMoveHandler(e: TPointerEvent) {
     if (!this._bar) {
-      return (Canvas.prototype as any)._onMouseMove.call(
-        this.timeline.canvas,
-        e,
-      );
+      return (Canvas.prototype as any)._onMouseMove.call(this.timeline.canvas, e);
     }
 
     const canvas = this.timeline.canvas;
     const p = canvas.getViewportPoint(e);
-    const s =
-      this._bar.type == "x" ? this._barViewport.sx : this._barViewport.sy;
+    const s = this._bar.type == "x" ? this._barViewport.sx : this._barViewport.sy;
     const n = this._bar.type == "x" ? 4 : 5;
     const end = this._bar.type == "x" ? p.x : p.y;
     const vpt = this._bar.vpt.slice(0) as TMat2D;
@@ -172,19 +151,13 @@ export class Scrollbars {
       left: Math.min(objectRect.left, -this.offsetX),
       top: Math.min(objectRect.top, -this.offsetY),
       right: objectRect.right + this.extraMarginX,
-      bottom:
-        Math.max(objectRect.bottom, this.timeline.totalTracksHeight) +
-        this.extraMarginY,
+      bottom: Math.max(objectRect.bottom, this.timeline.totalTracksHeight) + this.extraMarginY,
     };
 
-    if (objectRectWithMargin.left > mapRect.left)
-      objectRectWithMargin.left = mapRect.left;
-    if (objectRectWithMargin.top > mapRect.top)
-      objectRectWithMargin.top = mapRect.top;
-    if (objectRectWithMargin.bottom < mapRect.bottom)
-      objectRectWithMargin.bottom = mapRect.bottom;
-    if (objectRectWithMargin.right < mapRect.right)
-      objectRectWithMargin.right = mapRect.right;
+    if (objectRectWithMargin.left > mapRect.left) objectRectWithMargin.left = mapRect.left;
+    if (objectRectWithMargin.top > mapRect.top) objectRectWithMargin.top = mapRect.top;
+    if (objectRectWithMargin.bottom < mapRect.bottom) objectRectWithMargin.bottom = mapRect.bottom;
+    if (objectRectWithMargin.right < mapRect.right) objectRectWithMargin.right = mapRect.right;
 
     const ctx = canvas.contextTop;
     if (ctx) {
@@ -210,11 +183,7 @@ export class Scrollbars {
   private _lastScrollX = 0;
   private _lastScrollY = 0;
 
-  render(
-    ctx: CanvasRenderingContext2D,
-    mapRect: ScrollbarProps,
-    objectRect: ScrollbarProps,
-  ) {
+  render(ctx: CanvasRenderingContext2D, mapRect: ScrollbarProps, objectRect: ScrollbarProps) {
     const canvas = this.timeline.canvas;
     // Clear only scrollbar areas
     if (!this.hideX) {
@@ -264,9 +233,7 @@ export class Scrollbars {
     const scaleX = Math.min(mapWidth / objectWidth, 1);
     const w = canvas.width - this.scrollbarSize - this.scrollSpace * 2;
     const width = Math.max((w * scaleX) | 0, this.scrollbarMinWidth);
-    const left =
-      ((mapRect.left - objectRect.left) / (objectWidth - mapWidth)) *
-      (w - width);
+    const left = ((mapRect.left - objectRect.left) / (objectWidth - mapWidth)) * (w - width);
 
     const x = this.scrollSpace + left;
     const y = canvas.height - this.scrollbarSize - this.scrollSpace;
@@ -300,9 +267,7 @@ export class Scrollbars {
     const scaleY = Math.min(mapHeight / objectHeight, 1);
     const h = canvas.height - this.scrollbarSize - this.scrollSpace * 2;
     const height = Math.max((h * scaleY) | 0, this.scrollbarMinWidth);
-    const top =
-      ((mapRect.top - objectRect.top) / (objectHeight - mapHeight)) *
-      (h - height);
+    const top = ((mapRect.top - objectRect.top) / (objectHeight - mapHeight)) * (h - height);
 
     const x = canvas.width - this.scrollbarSize - this.scrollSpace;
     const y = this.scrollSpace + top;
@@ -317,10 +282,7 @@ export class Scrollbars {
     });
   }
 
-  drawRect(
-    ctx: CanvasRenderingContext2D,
-    props: { x: number; y: number; w: number; h: number },
-  ) {
+  drawRect(ctx: CanvasRenderingContext2D, props: { x: number; y: number; w: number; h: number }) {
     const { x, y, w, h } = props;
     const r = Math.min(w, h) / 2;
     ctx.beginPath();
@@ -339,9 +301,7 @@ export class Scrollbars {
   }
 
   getObjectsBoundingRect() {
-    const objects = this.timeline.canvas
-      .getObjects()
-      .filter((x: any) => x.studioClipId);
+    const objects = this.timeline.canvas.getObjects().filter((x: any) => x.studioClipId);
     if (objects.length === 0) {
       return { left: 0, top: 0, right: 0, bottom: 0 };
     }
@@ -361,8 +321,7 @@ export class Scrollbars {
     const totalAreaTop = Math.min(objectRect.top, -this.offsetY);
     const totalAreaRight = objectRect.right + this.extraMarginX;
     const totalAreaBottom =
-      Math.max(objectRect.bottom, this.timeline.totalTracksHeight) +
-      this.extraMarginY;
+      Math.max(objectRect.bottom, this.timeline.totalTracksHeight) + this.extraMarginY;
 
     const totalWidth = totalAreaRight - totalAreaLeft;
     const totalHeight = totalAreaBottom - totalAreaTop;

@@ -10,10 +10,10 @@ export default class ThumbnailCache {
   }
 
   public clearCacheButFallback(): void {
-    const fallback = this.cache.get('fallback');
+    const fallback = this.cache.get("fallback");
     this.cache.clear();
     if (fallback) {
-      this.cache.set('fallback', fallback);
+      this.cache.set("fallback", fallback);
     }
   }
 

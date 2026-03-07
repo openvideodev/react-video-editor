@@ -110,13 +110,7 @@ export class Video extends BaseTimelineClip {
     this.canvas?.requestRenderAll();
   }
 
-  public onScrollChange({
-    scrollLeft,
-    force,
-  }: {
-    scrollLeft: number;
-    force?: boolean;
-  }) {
+  public onScrollChange({ scrollLeft, force }: { scrollLeft: number; force?: boolean }) {
     // No-op for thumbnail loading now, as we load all at once.
     // We might want to use scrollLeft for culling in drawFilmstrip if we wanted to optimization,
     // but the requirement is to simplify.
@@ -253,13 +247,7 @@ export class Video extends BaseTimelineClip {
     // Apply rounded rectangle clipping to ensure ALL content stays within bounds
     const radius = this.rx || 6;
     ctx.beginPath();
-    ctx.roundRect(
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height,
-      radius,
-    );
+    ctx.roundRect(-this.width / 2, -this.height / 2, this.width, this.height, radius);
     ctx.clip();
 
     // Draw background fill manually (instead of using super._render with pattern)
@@ -284,36 +272,28 @@ export class Video extends BaseTimelineClip {
     const thumbnailHeight = height;
 
     const oneSourceSecWidth =
-      (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.timeScale) /
-      (this.playbackRate || 1);
+      (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.timeScale) / (this.playbackRate || 1);
 
     let minX = Infinity;
     let maxX = -Infinity;
     if (oneSourceSecWidth >= thumbnailWidth) {
-      const startSourceSec = Math.floor(
-        this.trim.from / MICROSECONDS_IN_SECOND,
-      );
+      const startSourceSec = Math.floor(this.trim.from / MICROSECONDS_IN_SECOND);
       const endSourceSec = Math.ceil(this.trim.to / MICROSECONDS_IN_SECOND);
 
       for (let sec = startSourceSec; sec <= endSourceSec; sec++) {
         const sourceTimeUs = sec * MICROSECONDS_IN_SECOND;
         const relativeSourceTimeUs = sourceTimeUs - this.trim.from;
         const relativeVisualTimeSec =
-          relativeSourceTimeUs /
-          MICROSECONDS_IN_SECOND /
-          (this.playbackRate || 1);
+          relativeSourceTimeUs / MICROSECONDS_IN_SECOND / (this.playbackRate || 1);
 
         const xStart =
-          relativeVisualTimeSec *
-          TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
-          this.timeScale;
+          relativeVisualTimeSec * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.timeScale;
         const xEnd = xStart + oneSourceSecWidth;
 
         if (xEnd < 0 || xStart > this.width) continue;
 
         const img =
-          this._thumbnailCache.getThumbnail(sec) ||
-          this._thumbnailCache.getThumbnail("fallback");
+          this._thumbnailCache.getThumbnail(sec) || this._thumbnailCache.getThumbnail("fallback");
         if (img) {
           const tileCount = Math.ceil(oneSourceSecWidth / thumbnailWidth);
 
@@ -354,11 +334,7 @@ export class Video extends BaseTimelineClip {
         const x = i * thumbnailWidth;
         if (x >= this.width) break;
 
-        const timeOffsetUs = unitsToTimeMs(
-          x,
-          this.timeScale,
-          this.playbackRate || 1,
-        );
+        const timeOffsetUs = unitsToTimeMs(x, this.timeScale, this.playbackRate || 1);
         const absoluteTimeUs = timeOffsetUs + this.trim.from;
         const secKey = Math.floor(absoluteTimeUs / MICROSECONDS_IN_SECOND);
 
@@ -432,9 +408,7 @@ export class Video extends BaseTimelineClip {
       ctx.roundRect(currentX, y, bgWidth, bgHeight, 4);
       ctx.fill();
 
-      ctx.fillStyle = isDimmed
-        ? "rgba(255, 255, 255, 0.5)"
-        : "rgba(255, 255, 255, 0.9)";
+      ctx.fillStyle = isDimmed ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.9)";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillText(content, currentX + paddingX, y + paddingY + 1);
@@ -457,13 +431,7 @@ export class Video extends BaseTimelineClip {
     ctx.fillStyle = borderColor;
 
     ctx.beginPath();
-    ctx.roundRect(
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height,
-      radius,
-    );
+    ctx.roundRect(-this.width / 2, -this.height / 2, this.width, this.height, radius);
 
     ctx.roundRect(
       -this.width / 2 + borderWidth,

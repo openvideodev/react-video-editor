@@ -1,12 +1,8 @@
-import { clipToJSON, Effect, IClip, jsonToClip, Studio } from 'openvideo';
-import { generateUUID } from '@/utils/id';
-import { usePlaybackStore } from '@/stores/playback-store';
+import { clipToJSON, Effect, IClip, jsonToClip, Studio } from "openvideo";
+import { generateUUID } from "@/utils/id";
+import { usePlaybackStore } from "@/stores/playback-store";
 
-export const duplicateClip = async (
-  clipId: string,
-  studio: Studio | null,
-  timelineStore: any
-) => {
+export const duplicateClip = async (clipId: string, studio: Studio | null, timelineStore: any) => {
   if (!studio) return;
 
   const state = timelineStore.getState();
@@ -44,7 +40,7 @@ export const duplicateClip = async (
 export const deleteClip = async (
   clipId: string,
   studio: any,
-  removeClips: (ids: string[]) => void
+  removeClips: (ids: string[]) => void,
 ) => {
   removeClips([clipId]);
   if (studio) {
@@ -57,7 +53,7 @@ export const splitClip = async (
   splitTime: number,
   studio: Studio | null,
   timelineStore: any,
-  updateClip: (id: string, updates: any) => void
+  updateClip: (id: string, updates: any) => void,
 ) => {
   const splitTimeUs = splitTime * 1000;
 
@@ -109,9 +105,7 @@ export const splitClip = async (
   const newClipId = generateUUID();
   newClip.id = newClipId;
 
-  const track = timelineStore
-    .getState()
-    .tracks.find((t: any) => t.clipIds.includes(clipId));
+  const track = timelineStore.getState().tracks.find((t: any) => t.clipIds.includes(clipId));
   if (track) {
     await studio.addClip(newClip, { trackId: track.id });
     studio.selectClipsByIds([newClipId]);
@@ -131,8 +125,8 @@ export const trimClip = async (
       displayFrom?: number;
       duration?: number;
       trim?: { from: number; to: number };
-    }
-  ) => void
+    },
+  ) => void,
 ) => {
   if (!studio) return;
 
@@ -147,13 +141,10 @@ export const trimClip = async (
   // Default to current trim if not provided
   const currentTrimFromUs = currentClip.trim?.from ?? 0;
   const currentTrimToUs =
-    currentClip.trim?.to ??
-    ((currentClip as any).sourceDuration || currentClip.duration);
+    currentClip.trim?.to ?? ((currentClip as any).sourceDuration || currentClip.duration);
 
-  const newTrimFromUs =
-    timeline.from !== undefined ? timeline.from * 1000 : currentTrimFromUs;
-  const newTrimToUs =
-    timeline.to !== undefined ? timeline.to * 1000 : currentTrimToUs;
+  const newTrimFromUs = timeline.from !== undefined ? timeline.from * 1000 : currentTrimFromUs;
+  const newTrimToUs = timeline.to !== undefined ? timeline.to * 1000 : currentTrimToUs;
 
   // 2. Calculate Duration based on Trim and PlaybackRate
   // The user specified that the timeline range (trim) should predominate for duration
@@ -194,7 +185,7 @@ export const trimClip = async (
 export const applyEffectClip = async (
   name: string,
   timeline: { from: number; to: number },
-  addClip: (clip: IClip, options?: any) => Promise<void>
+  addClip: (clip: IClip, options?: any) => Promise<void>,
 ) => {
   const from = timeline.from * 1000;
   const to = timeline.to * 1000;

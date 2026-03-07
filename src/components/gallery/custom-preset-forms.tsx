@@ -79,9 +79,7 @@ export const CustomShaderForm = ({
           value={fragment}
           onChange={(e) => setFragment(e.target.value)}
           placeholder={
-            type === "Effect"
-              ? "void main() { ... }"
-              : "vec4 transition(vec2 p) { ... }"
+            type === "Effect" ? "void main() { ... }" : "vec4 transition(vec2 p) { ... }"
           }
           className="font-mono h-64 text-xs"
         />
@@ -95,18 +93,10 @@ export const CustomShaderForm = ({
         </Button>
       </div>
       <div className="flex gap-2">
-        <Button
-          onClick={() => onApply({ label, fragment })}
-          variant="outline"
-          className="flex-1"
-        >
+        <Button onClick={() => onApply({ label, fragment })} variant="outline" className="flex-1">
           Apply
         </Button>
-        <Button
-          onClick={() => onSave({ label, fragment })}
-          className="flex-1"
-          disabled={isSaving}
-        >
+        <Button onClick={() => onSave({ label, fragment })} className="flex-1" disabled={isSaving}>
           {isSaving ? "Saving..." : "Save"}
         </Button>
       </div>
@@ -305,10 +295,7 @@ export const CustomCaptionForm = ({
         {/* Basic Settings */}
         <div className="space-y-2 max-w-[200px]">
           <Label>Mode</Label>
-          <Select
-            value={config.type}
-            onValueChange={(v: any) => update({ type: v })}
-          >
+          <Select value={config.type} onValueChange={(v: any) => update({ type: v })}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -348,10 +335,7 @@ export const CustomCaptionForm = ({
             </div>
             <div className="space-y-2">
               <Label className="text-[10px]">Align</Label>
-              <Select
-                value={config.textAlign}
-                onValueChange={(v) => update({ textAlign: v })}
-              >
+              <Select value={config.textAlign} onValueChange={(v) => update({ textAlign: v })}>
                 <SelectTrigger className="h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -435,9 +419,7 @@ export const CustomCaptionForm = ({
           <div className="flex items-center gap-2">
             <Checkbox
               checked={config.preservedColorKeyWord}
-              onCheckedChange={(v) =>
-                update({ preservedColorKeyWord: v === true })
-              }
+              onCheckedChange={(v) => update({ preservedColorKeyWord: v === true })}
             />
             <Label className="text-[10px]">Preserve Keyword Color</Label>
           </div>
@@ -449,10 +431,7 @@ export const CustomCaptionForm = ({
             <Label className="text-xs font-bold uppercase text-muted-foreground">
               Default Animation
             </Label>
-            <Switch
-              checked={isAnimationEnabled}
-              onCheckedChange={setIsAnimationEnabled}
-            />
+            <Switch checked={isAnimationEnabled} onCheckedChange={setIsAnimationEnabled} />
           </div>
           {isAnimationEnabled && (
             <div className="space-y-2">
@@ -494,9 +473,7 @@ export const CustomCaptionForm = ({
               <Label className="text-[10px]">Shadow X</Label>
               <NumberInput
                 value={config.boxShadow?.x || 0}
-                onChange={(v) =>
-                  update({ boxShadow: { ...config.boxShadow!, x: v } })
-                }
+                onChange={(v) => update({ boxShadow: { ...config.boxShadow!, x: v } })}
                 className="h-8"
               />
             </div>
@@ -504,9 +481,7 @@ export const CustomCaptionForm = ({
               <Label className="text-[10px]">Shadow Y</Label>
               <NumberInput
                 value={config.boxShadow?.y || 0}
-                onChange={(v) =>
-                  update({ boxShadow: { ...config.boxShadow!, y: v } })
-                }
+                onChange={(v) => update({ boxShadow: { ...config.boxShadow!, y: v } })}
                 className="h-8"
               />
             </div>
@@ -514,9 +489,7 @@ export const CustomCaptionForm = ({
               <Label className="text-[10px]">Blur</Label>
               <NumberInput
                 value={config.boxShadow?.blur || 0}
-                onChange={(v) =>
-                  update({ boxShadow: { ...config.boxShadow!, blur: v } })
-                }
+                onChange={(v) => update({ boxShadow: { ...config.boxShadow!, blur: v } })}
                 className="h-8"
               />
             </div>
@@ -529,10 +502,7 @@ export const CustomCaptionForm = ({
             <Label className="text-xs font-bold uppercase text-muted-foreground">
               Active Word Animation
             </Label>
-            <Switch
-              checked={isWordAnimationEnabled}
-              onCheckedChange={setIsWordAnimationEnabled}
-            />
+            <Switch checked={isWordAnimationEnabled} onCheckedChange={setIsWordAnimationEnabled} />
           </div>
           {isWordAnimationEnabled && (
             <div className="grid grid-cols-2 gap-4">
@@ -645,21 +615,16 @@ export const CustomAnimationForm = ({
   onSave: (data: any) => void;
   isSaving?: boolean;
 }) => {
-  const [keyframes, setKeyframes] = useState<
-    Record<string, Partial<AnimationProps>>
-  >({ "0%": {}, "100%": {} });
+  const [keyframes, setKeyframes] = useState<Record<string, Partial<AnimationProps>>>({
+    "0%": {},
+    "100%": {},
+  });
   const [duration, setDuration] = useState(1000);
   const [easing, setEasing] = useState("easeOutQuad");
 
-  const sortedKeys = Object.keys(keyframes).sort(
-    (a, b) => parseInt(a) - parseInt(b),
-  );
+  const sortedKeys = Object.keys(keyframes).sort((a, b) => parseInt(a) - parseInt(b));
 
-  const handlePropertyToggle = (
-    kf: string,
-    prop: PropertyKey,
-    enabled: boolean,
-  ) => {
+  const handlePropertyToggle = (kf: string, prop: PropertyKey, enabled: boolean) => {
     setKeyframes((prev) => {
       const next = { ...prev };
       if (enabled) {
@@ -752,21 +717,13 @@ export const CustomAnimationForm = ({
             <Label className="text-xs font-bold uppercase text-muted-foreground mr-auto">
               Keyframes
             </Label>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="h-6 w-6"
-              onClick={addKeyframe}
-            >
+            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={addKeyframe}>
               <IconPlus className="size-4" />
             </Button>
           </div>
 
           {sortedKeys.map((kf) => (
-            <div
-              key={kf}
-              className="border rounded-md p-3 space-y-3 bg-secondary/10"
-            >
+            <div key={kf} className="border rounded-md p-3 space-y-3 bg-secondary/10">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold">{kf}</span>
                 {kf !== "0%" && kf !== "100%" && (
@@ -782,55 +739,43 @@ export const CustomAnimationForm = ({
               </div>
 
               <div className="space-y-2">
-                {(Object.keys(ANIMATABLE_PROPERTIES) as PropertyKey[]).map(
-                  (prop) => {
-                    const isEnabled = prop in (keyframes[kf] || {});
-                    const config = ANIMATABLE_PROPERTIES[prop];
-                    return (
-                      <div key={prop} className="flex items-center gap-2">
-                        <Checkbox
-                          checked={isEnabled}
-                          onCheckedChange={(c) =>
-                            handlePropertyToggle(kf, prop, c === true)
-                          }
-                        />
-                        <span className="text-[10px] text-muted-foreground min-w-[60px] truncate">
-                          {config.label}
-                        </span>
-                        {isEnabled && (
-                          <div className="flex-1 flex items-center gap-2">
-                            <Slider
-                              value={[
-                                (keyframes[kf] as any)[prop] ?? config.default,
-                              ]}
-                              min={config.min}
-                              max={config.max}
-                              step={config.step}
-                              onValueChange={([v]) =>
-                                handlePropertyChange(kf, prop, v)
-                              }
-                              className="flex-1"
-                            />
-                            <span className="text-[10px] w-8 text-right">
-                              {(keyframes[kf] as any)[prop]}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  },
-                )}
+                {(Object.keys(ANIMATABLE_PROPERTIES) as PropertyKey[]).map((prop) => {
+                  const isEnabled = prop in (keyframes[kf] || {});
+                  const config = ANIMATABLE_PROPERTIES[prop];
+                  return (
+                    <div key={prop} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={isEnabled}
+                        onCheckedChange={(c) => handlePropertyToggle(kf, prop, c === true)}
+                      />
+                      <span className="text-[10px] text-muted-foreground min-w-[60px] truncate">
+                        {config.label}
+                      </span>
+                      {isEnabled && (
+                        <div className="flex-1 flex items-center gap-2">
+                          <Slider
+                            value={[(keyframes[kf] as any)[prop] ?? config.default]}
+                            min={config.min}
+                            max={config.max}
+                            step={config.step}
+                            onValueChange={([v]) => handlePropertyChange(kf, prop, v)}
+                            className="flex-1"
+                          />
+                          <span className="text-[10px] w-8 text-right">
+                            {(keyframes[kf] as any)[prop]}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button
-            onClick={() => onApply(buildData())}
-            variant="outline"
-            className="flex-1"
-          >
+          <Button onClick={() => onApply(buildData())} variant="outline" className="flex-1">
             Apply
           </Button>
           <Button onClick={() => onSave(buildData())} className="flex-1">

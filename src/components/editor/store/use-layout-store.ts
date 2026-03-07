@@ -14,8 +14,7 @@ const useLayoutStore = create<LayoutStore>((set) => ({
   setFloatingControl: (control: string, data: any = null) =>
     set({ floatingControl: control, floatingControlData: data }),
   openTransitionDialog: false,
-  setOpenTransitionDialog: (open: boolean) =>
-    set({ openTransitionDialog: open }),
+  setOpenTransitionDialog: (open: boolean) => set({ openTransitionDialog: open }),
 }));
 
 export default useLayoutStore;

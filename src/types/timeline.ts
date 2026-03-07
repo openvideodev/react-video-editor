@@ -1,15 +1,15 @@
-import { MediaType } from '@/types/media';
-import { generateUUID } from '@/utils/id';
+import { MediaType } from "@/types/media";
+import { generateUUID } from "@/utils/id";
 
 export type TrackType =
-  | 'Video'
-  | 'Audio'
-  | 'Image'
-  | 'Text'
-  | 'Caption'
-  | 'Effect'
-  | 'Transition'
-  | 'Placeholder';
+  | "Video"
+  | "Audio"
+  | "Image"
+  | "Text"
+  | "Caption"
+  | "Effect"
+  | "Transition"
+  | "Placeholder";
 
 // Display interface from Studio schema
 export interface IDisplay {

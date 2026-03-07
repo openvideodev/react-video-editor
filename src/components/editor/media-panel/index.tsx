@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { TabBar } from './tabbar';
-import { useMediaPanelStore, type Tab } from './store';
-import { Separator } from '@/components/ui/separator';
-import PanelUploads from './panel/uploads';
-import PanelImages from './panel/images';
-import PanelVideos from './panel/videos';
-import PanelEffect from './panel/effects';
-import PanelTransition from './panel/transition';
-import PanelText from './panel/text';
-import PanelCaptions from './panel/captions';
-import PanelMusic from './panel/music';
-import PanelVoiceovers from './panel/voiceovers';
-import PanelSFX from './panel/sfx';
-import PanelElements from './panel/elements';
-import { PropertiesPanel } from '../properties-panel';
-import type { IClip } from 'openvideo';
-import { useEffect, useState } from 'react';
-import { useStudioStore } from '@/stores/studio-store';
+import { TabBar } from "./tabbar";
+import { useMediaPanelStore, type Tab } from "./store";
+import { Separator } from "@/components/ui/separator";
+import PanelUploads from "./panel/uploads";
+import PanelImages from "./panel/images";
+import PanelVideos from "./panel/videos";
+import PanelEffect from "./panel/effects";
+import PanelTransition from "./panel/transition";
+import PanelText from "./panel/text";
+import PanelCaptions from "./panel/captions";
+import PanelMusic from "./panel/music";
+import PanelVoiceovers from "./panel/voiceovers";
+import PanelSFX from "./panel/sfx";
+import PanelElements from "./panel/elements";
+import { PropertiesPanel } from "../properties-panel";
+import type { IClip } from "openvideo";
+import { useEffect, useState } from "react";
+import { useStudioStore } from "@/stores/studio-store";
 
 const viewMap: Record<Tab, React.ReactNode> = {
   uploads: <PanelUploads />,
@@ -53,14 +53,14 @@ export function MediaPanel() {
       setShowProperties(false);
     };
 
-    studio.on('selection:created', handleSelection);
-    studio.on('selection:updated', handleSelection);
-    studio.on('selection:cleared', handleClear);
+    studio.on("selection:created", handleSelection);
+    studio.on("selection:updated", handleSelection);
+    studio.on("selection:cleared", handleClear);
 
     return () => {
-      studio.off('selection:created', handleSelection);
-      studio.off('selection:updated', handleSelection);
-      studio.off('selection:cleared', handleClear);
+      studio.off("selection:created", handleSelection);
+      studio.off("selection:updated", handleSelection);
+      studio.off("selection:cleared", handleClear);
     };
   }, [studio]);
 

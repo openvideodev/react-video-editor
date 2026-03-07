@@ -1,6 +1,6 @@
-import { createClient } from '@deepgram/sdk';
-import { deepgramToCombo } from './deepgram-to-combo';
-import type { TranscriptObject } from './types';
+import { createClient } from "@deepgram/sdk";
+import { deepgramToCombo } from "./deepgram-to-combo";
+import type { TranscriptObject } from "./types";
 
 export interface TranscribeOptions {
   /**
@@ -55,24 +55,24 @@ export interface TranscribeOptions {
  * ```
  */
 export async function transcribe(
-  options: TranscribeOptions
+  options: TranscribeOptions,
 ): Promise<Partial<TranscriptObject> | null> {
   const {
     url,
     apiKey = process.env.DEEPGRAM_API_KEY || process.env.DEPPGRAM_KEY,
     language,
-    model = 'nova-3',
+    model = "nova-3",
     smartFormat = true,
     paragraphs = true,
     words = true,
   } = options;
 
   if (!url) {
-    throw new Error('Audio URL is required');
+    throw new Error("Audio URL is required");
   }
 
   if (!apiKey) {
-    throw new Error('Deepgram API key is required');
+    throw new Error("Deepgram API key is required");
   }
 
   // Create Deepgram client
@@ -87,18 +87,18 @@ export async function transcribe(
   };
 
   // Add language if provided
-  if (language && language !== 'auto') {
+  if (language && language !== "auto") {
     deepgramOptions.language = language;
   }
 
   // Transcribe audio
   const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
     { url },
-    deepgramOptions
+    deepgramOptions,
   );
 
   if (error) {
-    throw new Error(error.message || 'Failed to transcribe audio');
+    throw new Error(error.message || "Failed to transcribe audio");
   }
 
   // Convert Deepgram result to Combo format
@@ -107,7 +107,7 @@ export async function transcribe(
   return parsed;
 }
 
-export { deepgramToCombo } from './deepgram-to-combo';
-export { detectLanguage } from './detect-language';
+export { deepgramToCombo } from "./deepgram-to-combo";
+export { detectLanguage } from "./detect-language";
 // Export types
-export * from './types';
+export * from "./types";

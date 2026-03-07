@@ -1,4 +1,4 @@
-declare module 'gl-transitions';
+declare module "gl-transitions";
 
 interface ImportMeta {
   env: {

@@ -14,11 +14,7 @@ export type ScrollbarsProps = {
   offsetY?: number;
   scrollbarWidth?: number;
   scrollbarColor?: string;
-  onViewportChange?: (v: {
-    left: number;
-    scrollX: number;
-    scrollY: number;
-  }) => void;
+  onViewportChange?: (v: { left: number; scrollX: number; scrollY: number }) => void;
   onZoom?: (zoom: number) => void;
 };
 
@@ -28,6 +24,6 @@ export type ScrollbarProps = {
   right: number;
   bottom: number;
 };
-export type ScrollbarXProps = Pick<ScrollbarProps, 'left' | 'right'>;
+export type ScrollbarXProps = Pick<ScrollbarProps, "left" | "right">;
 
-export type ScrollbarYProps = Pick<ScrollbarProps, 'top' | 'bottom'>;
+export type ScrollbarYProps = Pick<ScrollbarProps, "top" | "bottom">;

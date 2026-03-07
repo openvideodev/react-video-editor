@@ -6,11 +6,7 @@ import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
 import { Image, Log } from "openvideo";
 import { Search, Image as ImageIcon, Loader2 } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { VisualsChatPanel } from "../visuals-chat-panel";
 import { debounce } from "lodash";
 
