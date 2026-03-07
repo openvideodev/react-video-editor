@@ -16,8 +16,7 @@ export interface TProject {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
-  scenes: Scene[];
-  currentSceneId: string;
+  data?: any; // The single scene data (TimelineTrack[])
   mediaItems?: string[];
   backgroundColor?: string;
   backgroundType?: "color" | "blur";

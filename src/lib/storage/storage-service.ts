@@ -2,13 +2,7 @@ import type { TProject } from "@/types/project";
 import type { MediaFile } from "@/types/media";
 import { IndexedDBAdapter } from "./indexeddb-adapter";
 import { OPFSAdapter } from "./opfs-adapter";
-import type {
-  MediaFileData,
-  StorageConfig,
-  SerializedProject,
-  SerializedScene,
-  TimelineData,
-} from "./types";
+import type { MediaFileData, StorageConfig, SerializedProject, TimelineData } from "./types";
 import type { TimelineTrack } from "@/types/timeline";
 import type { SavedSoundsData, SavedSound, SoundEffect } from "@/types/sounds";
 
@@ -62,39 +56,20 @@ class StorageService {
   }
 
   // Helper to get project-specific timeline adapter
-  private getProjectTimelineAdapter({
-    projectId,
-    sceneId,
-  }: {
-    projectId: string;
-    sceneId?: string;
-  }) {
-    const dbName = sceneId
-      ? `${this.config.timelineDb}-${projectId}-${sceneId}`
-      : `${this.config.timelineDb}-${projectId}`;
-
+  private getProjectTimelineAdapter({ projectId }: { projectId: string }) {
+    const dbName = `${this.config.timelineDb}-${projectId}`;
     return new IndexedDBAdapter<TimelineData>(dbName, "timeline", this.config.version);
   }
 
   // Project operations
   async saveProject({ project }: { project: TProject }): Promise<void> {
-    // Convert TProject to serializable format
-    const serializedScenes: SerializedScene[] = project.scenes.map((scene) => ({
-      id: scene.id,
-      name: scene.name,
-      isMain: scene.isMain,
-      createdAt: scene.createdAt.toISOString(),
-      updatedAt: scene.updatedAt.toISOString(),
-    }));
-
     const serializedProject: SerializedProject = {
       id: project.id,
       name: project.name,
       thumbnail: project.thumbnail,
       createdAt: project.createdAt.toISOString(),
       updatedAt: project.updatedAt.toISOString(),
-      scenes: serializedScenes,
-      currentSceneId: project.currentSceneId,
+      data: project.data,
       backgroundColor: project.backgroundColor,
       backgroundType: project.backgroundType,
       blurIntensity: project.blurIntensity,
@@ -112,16 +87,6 @@ class StorageService {
 
     if (!serializedProject) return null;
 
-    // Now convert serialized scenes back to Scene objects
-    const scenes =
-      serializedProject.scenes?.map((scene) => ({
-        id: scene.id,
-        name: scene.name,
-        isMain: scene.isMain,
-        createdAt: new Date(scene.createdAt),
-        updatedAt: new Date(scene.updatedAt),
-      })) || [];
-
     // Convert back to TProject format
     const project = {
       id: serializedProject.id,
@@ -129,8 +94,7 @@ class StorageService {
       thumbnail: serializedProject.thumbnail,
       createdAt: new Date(serializedProject.createdAt),
       updatedAt: new Date(serializedProject.updatedAt),
-      scenes,
-      currentSceneId: serializedProject.currentSceneId || "",
+      data: serializedProject.data,
       backgroundColor: serializedProject.backgroundColor,
       backgroundType: serializedProject.backgroundType,
       blurIntensity: serializedProject.blurIntensity,
@@ -304,15 +268,12 @@ class StorageService {
   async saveTimeline({
     projectId,
     tracks,
-    sceneId,
   }: {
     projectId: string;
     tracks: TimelineTrack[];
-    sceneId?: string;
   }): Promise<void> {
     const timelineAdapter = this.getProjectTimelineAdapter({
       projectId,
-      sceneId,
     });
     const timelineData: TimelineData = {
       tracks,
@@ -321,16 +282,9 @@ class StorageService {
     await timelineAdapter.set("timeline", timelineData);
   }
 
-  async loadTimeline({
-    projectId,
-    sceneId,
-  }: {
-    projectId: string;
-    sceneId?: string;
-  }): Promise<TimelineTrack[] | null> {
+  async loadTimeline({ projectId }: { projectId: string }): Promise<TimelineTrack[] | null> {
     const timelineAdapter = this.getProjectTimelineAdapter({
       projectId,
-      sceneId,
     });
     const timelineData = await timelineAdapter.get("timeline");
     return timelineData ? timelineData.tracks : null;

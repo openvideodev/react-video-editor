@@ -290,7 +290,7 @@ export const CustomCaptionForm = ({
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="max-h-full h-full pr-4">
       <div className="space-y-6 p-1 pb-4">
         {/* Basic Settings */}
         <div className="space-y-2 max-w-[200px]">
@@ -687,7 +687,7 @@ export const CustomAnimationForm = ({
   });
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="max-h-full h-full pr-4">
       <div className="space-y-6 p-1 pb-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">

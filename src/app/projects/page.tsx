@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { storageService } from "@/lib/storage/storage-service";
 import { TProject } from "@/types/project";
 import { generateUUID } from "@/utils/id";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 import {
   Plus,
   Video,
@@ -119,6 +120,7 @@ export default function ProjectsPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const session = authClient.useSession();
 
   useEffect(() => {
     loadProjects();
@@ -127,10 +129,13 @@ export default function ProjectsPage() {
   const loadProjects = async () => {
     setIsLoading(true);
     try {
-      const loaded = await storageService.loadAllProjects();
+      const response = await fetch("/api/projects");
+      if (!response.ok) throw new Error("Failed to load projects");
+      const loaded = await response.json();
       setProjects(loaded);
     } catch (e) {
       console.error("Failed to load projects", e);
+      toast.error("Failed to load projects from server");
     } finally {
       setIsLoading(false);
     }
@@ -138,41 +143,56 @@ export default function ProjectsPage() {
 
   const handleCreateProject = async () => {
     const sceneId = generateUUID();
-    const newProject: TProject = {
-      id: generateUUID(),
+    const projectId = generateUUID();
+
+    // Check if user is logged in
+    if (!session.data) {
+      toast.error("You must be logged in to create a project");
+      return;
+    }
+
+    const newProject = {
+      id: projectId,
       name: "Untitled project",
       thumbnail: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      scenes: [
-        {
-          id: sceneId,
-          name: "Main Scene",
-          isMain: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      currentSceneId: sceneId,
+      data: {}, // Initial empty scene data
       canvasSize: { width: 1080, height: 1920 },
       canvasMode: "preset",
       fps: 30,
     };
+
     try {
-      await storageService.saveProject({ project: newProject });
-      router.push(`/edit/${newProject.id}`);
+      const response = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProject),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create project");
+      }
+
+      router.push(`/edit/${projectId}`);
     } catch (e) {
       console.error("Failed to create project", e);
+      toast.error("Failed to create project on server");
     }
   };
 
   const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     try {
-      await storageService.deleteProject({ id });
+      const response = await fetch(`/api/projects/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete project");
+
+      toast.success("Project deleted");
       await loadProjects();
     } catch (error) {
       console.error("Failed to delete project", error);
+      toast.error("Failed to delete project");
     }
   };
 

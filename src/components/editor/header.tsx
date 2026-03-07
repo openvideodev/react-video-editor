@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { IconShare } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,8 @@ import { ModeToggle } from "../ui/mode-toggle";
 import { useRouter, useParams } from "next/navigation";
 import { storageService } from "@/lib/storage/storage-service";
 import { Save } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { debounce } from "lodash";
 
 export default function Header() {
   const { studio } = useStudioStore();
@@ -53,7 +55,11 @@ export default function Header() {
   const params = useParams();
   const projectId = params.projectId as string;
   const [isSaving, setIsSaving] = useState(false);
-
+  const session = authClient.useSession();
+  const sessionRef = useRef(session.data);
+  useEffect(() => {
+    sessionRef.current = session.data;
+  }, [session.data]);
   const handleApplyCustomSize = () => {
     const w = parseInt(customWidth);
     const h = parseInt(customHeight);
@@ -182,50 +188,74 @@ export default function Header() {
     };
   }, [studio]);
 
-  const handleSave = async (showToast = true) => {
-    if (!studio || !projectId) return;
+  const handleSave = useCallback(
+    async (showToast = false) => {
+      if (!studio || !projectId) return;
 
-    setIsSaving(true);
-    let toastId;
-    if (showToast) {
-      toastId = toast.loading("Saving project...");
-    }
+      const isLoggedIn = !!sessionRef.current;
+      setIsSaving(true);
 
-    try {
-      const studioJSON = studio.exportToJSON();
-      await storageService.saveProjectFull(projectId, studioJSON);
-      if (showToast) {
-        toast.success("Project saved", { id: toastId });
+      let toastId;
+      if (showToast) toastId = toast.loading("Saving project...");
+
+      try {
+        const studioJSON = studio.exportToJSON();
+
+        await storageService.saveProjectFull(projectId, studioJSON);
+
+        if (isLoggedIn) {
+          const response = await fetch(`/api/projects/${projectId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              updatedAt: new Date().toISOString(),
+              data: studioJSON,
+            }),
+          });
+
+          if (!response.ok && showToast) throw new Error("Server sync failed");
+        }
+
+        if (showToast) toast.success("Project saved", { id: toastId });
+      } catch (error) {
+        console.error("Failed to save project", error);
+        if (showToast) toast.error("Failed to save project", { id: toastId });
+      } finally {
+        setIsSaving(false);
       }
-    } catch (error) {
-      console.error("Failed to save project", error);
-      if (showToast) {
-        toast.error("Failed to save project", { id: toastId });
-      }
-    } finally {
-      setIsSaving(false);
-    }
-  };
-  // Auto-save on studio changes (with debounce)
+    },
+    [studio, projectId],
+  );
+
+  const debouncedSave = useCallback(
+    debounce(() => handleSave(false), 1000),
+    [handleSave],
+  );
+
   useEffect(() => {
     if (!studio || !projectId) return;
 
-    let timeoutId: NodeJS.Timeout;
+    const eventsToListen = [
+      "history:changed",
+      "clip:added",
+      "clip:removed",
+      "clip:updated",
+      "clip:moved",
+      "track:added",
+      "track:removed",
+      "clips:removed",
+      "clip:replaced",
+      "clip:propsChange",
+      "propsChange",
+    ];
 
-    const onStudioChange = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        handleSave(false); // Silent save
-      }, 2000); // 2 second debounce
-    };
-
-    studio.on("history:changed", onStudioChange);
+    eventsToListen.forEach((event) => studio.on(event, debouncedSave));
 
     return () => {
-      studio.off("history:changed", onStudioChange);
-      clearTimeout(timeoutId);
+      debouncedSave.cancel();
+      eventsToListen.forEach((event) => studio.off(event, debouncedSave));
     };
-  }, [studio, projectId]);
+  }, [studio, projectId, debouncedSave]);
 
   const handleNew = () => {
     if (!studio) return;

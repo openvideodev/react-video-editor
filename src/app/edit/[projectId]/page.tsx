@@ -3,51 +3,49 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Editor from "@/components/editor/editor";
-import { storageService } from "@/lib/storage/storage-service";
 import { useProjectStore } from "@/stores/project-store";
 
 export default function EditProjectPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    async function loadProjectData() {
-      if (!projectId) return;
+    if (!projectId) return;
 
+    const loadProject = async () => {
       try {
-        const project = await storageService.loadProject({ id: projectId });
+        const res = await fetch(`/api/projects/${projectId}`);
 
-        if (!project) {
-          console.error("Project not found");
+        if (!res.ok) {
           router.push("/projects");
           return;
         }
 
-        // Initialize project store
+        const project = await res.json();
+
         const projectStore = useProjectStore.getState();
+
         projectStore.setCanvasSize(project.canvasSize, project.canvasMode || "preset");
+
         if (project.fps) {
           projectStore.setFps(project.fps);
         }
 
-        // Load the full project state from OPFS
-        const projectFull = await storageService.loadProjectFull(projectId);
-        if (projectFull) {
-          projectStore.setInitialStudioJSON(projectFull);
-        } else {
-          // Reset if not found (legacy or first-time open after feature update)
-          projectStore.setInitialStudioJSON(null);
+        if (project.data) {
+          projectStore.setInitialStudioJSON(project.data);
         }
-      } catch (err) {
-        console.error("Failed to load project", err);
+      } catch (error) {
+        console.error("Failed to load project", error);
+        router.push("/projects");
       } finally {
         setIsLoaded(true);
       }
-    }
+    };
 
-    loadProjectData();
+    loadProject();
   }, [projectId, router]);
 
   if (!isLoaded) {

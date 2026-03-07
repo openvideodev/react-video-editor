@@ -18,6 +18,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   customPresets CustomPreset[]
+  projects      Project[]
 
   @@unique([email])
   @@map("user")
@@ -83,4 +84,30 @@ model CustomPreset {
 
   @@index([userId])
   @@map("custom_preset")
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  name            String
+  thumbnail       String?
+  backgroundColor String?
+  backgroundType  String?  @default("color")
+  blurIntensity   Int?
+  fps             Int      @default(30)
+  canvasSize      Json     // { width: number, height: number }
+  canvasMode      String   @default("preset")
+  currentSceneId  String?
+  bookmarks       Json?    // number[]
+  mediaItems      Json?    // string[]
+  
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  data            Json?    // TimelineTrack[] (The single scene data)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@map("project")
 }
