@@ -25,7 +25,7 @@ import { ANIMATABLE_PROPERTIES, AnimationProps } from "openvideo";
 interface CustomShaderFormProps {
   type: "Effect" | "Transition";
   onApply: (data: { label: string; fragment: string }) => void;
-  onSave: (data: { label: string; fragment: string }) => void;
+  onSave: (data: { label: string; fragment: string; published: boolean }) => void;
   isSaving?: boolean;
   initialData?: { label: string; fragment: string };
 }
@@ -52,6 +52,7 @@ export const CustomShaderForm = ({
 }: CustomShaderFormProps) => {
   const [label, setLabel] = useState(initialData?.label || "");
   const [fragment, setFragment] = useState(initialData?.fragment || "");
+  const [published, setPublished] = useState(false);
 
   // Reset fragment when type changes if it wasn't modified or if it matches a template
   useEffect(() => {
@@ -95,11 +96,19 @@ export const CustomShaderForm = ({
           Reset to Template
         </Button>
       </div>
+      <div className="flex items-center gap-2 py-2">
+        <Switch checked={published} onCheckedChange={setPublished} id="publish-shader" />
+        <Label htmlFor="publish-shader">Publish to Gallery</Label>
+      </div>
       <div className="flex gap-2">
         <Button onClick={() => onApply({ label, fragment })} variant="outline" className="flex-1">
           Apply
         </Button>
-        <Button onClick={() => onSave({ label, fragment })} className="flex-1" disabled={isSaving}>
+        <Button
+          onClick={() => onSave({ label, fragment, published })}
+          className="flex-1"
+          disabled={isSaving}
+        >
           {isSaving ? "Saving..." : "Save"}
         </Button>
       </div>
@@ -132,6 +141,7 @@ export interface ICaptionsControlProps {
     value: number;
     mode?: "static" | "dynamic";
   };
+  published?: boolean;
 }
 
 const CAPTION_ANIMATIONS = [
@@ -243,6 +253,7 @@ export const CustomCaptionForm = ({
 }) => {
   const [isAnimationEnabled, setIsAnimationEnabled] = useState(true);
   const [isWordAnimationEnabled, setIsWordAnimationEnabled] = useState(true);
+  const [published, setPublished] = useState(false);
 
   const [config, setConfig] = useState<ICaptionsControlProps>({
     type: "lines",
@@ -289,11 +300,11 @@ export const CustomCaptionForm = ({
     if (!isWordAnimationEnabled) {
       delete finalConfig.wordAnimation;
     }
-    onSave(finalConfig);
+    onSave({ ...finalConfig, published });
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="h-full pr-4">
       <div className="space-y-6 p-1 pb-4">
         {/* Basic Settings */}
         <div className="space-y-2 max-w-[200px]">
@@ -592,6 +603,13 @@ export const CustomCaptionForm = ({
           )}
         </div>
 
+        <div className="flex items-center gap-2 py-2 border-t mt-4">
+          <Switch checked={published} onCheckedChange={setPublished} id="publish-captions" />
+          <Label htmlFor="publish-captions" className="text-xs">
+            Publish to Gallery
+          </Label>
+        </div>
+
         <div className="flex gap-2 pt-4">
           <Button onClick={handleApply} variant="outline" className="flex-1">
             Apply
@@ -624,6 +642,8 @@ export const CustomAnimationForm = ({
   });
   const [duration, setDuration] = useState(1000);
   const [easing, setEasing] = useState("easeOutQuad");
+  const [label, setLabel] = useState("");
+  const [published, setPublished] = useState(false);
 
   const sortedKeys = Object.keys(keyframes).sort((a, b) => parseInt(a) - parseInt(b));
 
@@ -687,11 +707,22 @@ export const CustomAnimationForm = ({
     type: "keyframes",
     opts: { duration: duration * 1000, delay: 0, easing },
     params: keyframes,
+    label,
+    published,
   });
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="h-full pr-4">
       <div className="space-y-6 p-1 pb-4">
+        <div className="space-y-2">
+          <Label>Label</Label>
+          <Input
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="My Custom Animation"
+          />
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Duration (ms)</Label>
@@ -775,6 +806,13 @@ export const CustomAnimationForm = ({
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="flex items-center gap-2 py-2 border-t mt-4">
+          <Switch checked={published} onCheckedChange={setPublished} id="publish-animation" />
+          <Label htmlFor="publish-animation" className="text-xs">
+            Publish to Gallery
+          </Label>
         </div>
 
         <div className="flex gap-2 pt-4">

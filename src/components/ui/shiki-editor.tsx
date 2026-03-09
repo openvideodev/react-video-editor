@@ -48,9 +48,7 @@ export const ShikiEditor = ({
       } catch {
         if (!cancelled) {
           const escaped = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          setHighlightedHtml(
-            `<pre style="margin:0;padding:0;background:transparent;"><code>${escaped}</code></pre>`,
-          );
+          setHighlightedHtml(`<pre><code>${escaped}</code></pre>`);
         }
       }
     };
@@ -65,6 +63,7 @@ export const ShikiEditor = ({
       className={`shiki-editor-wrapper relative rounded-md border border-input overflow-hidden focus-within:ring-1 focus-within:ring-ring ${className}`}
       style={{ minHeight: "16rem" }}
     >
+      {/* Highlighting Layer */}
       <div
         ref={preRef}
         className="shiki-editor-highlight absolute inset-0 overflow-hidden pointer-events-none rounded-md"
@@ -72,6 +71,7 @@ export const ShikiEditor = ({
         dangerouslySetInnerHTML={{ __html: highlightedHtml }}
       />
 
+      {/* Input Layer */}
       <textarea
         ref={textareaRef}
         value={value}
@@ -79,7 +79,7 @@ export const ShikiEditor = ({
         onScroll={handleScroll}
         placeholder={placeholder}
         spellCheck={false}
-        className="shiki-editor-textarea absolute inset-0 w-full h-full resize-none bg-transparent text-transparent font-mono text-xs leading-relaxed p-3 outline-none rounded-md z-10"
+        className="shiki-editor-textarea absolute inset-0 w-full h-full resize-none bg-transparent text-transparent font-mono text-xs leading-relaxed p-4 outline-none rounded-md z-10"
         style={{
           caretColor: "white",
           WebkitTextFillColor: "transparent",
@@ -87,7 +87,7 @@ export const ShikiEditor = ({
       />
 
       {!value && placeholder && (
-        <div className="absolute inset-0 p-3 text-muted-foreground/40 font-mono text-xs pointer-events-none z-0">
+        <div className="absolute inset-0 p-4 text-muted-foreground/40 font-mono text-xs pointer-events-none z-0">
           {placeholder}
         </div>
       )}
@@ -100,13 +100,13 @@ export const ShikiEditor = ({
         }
         .shiki-editor-highlight pre {
           margin: 0 !important;
-          padding: 0.75rem !important;
+          padding: 1rem !important; /* Matches textarea p-4 (1rem) */
           background: transparent !important;
           font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace !important;
-          font-size: 0.75rem !important;
-          line-height: 1.625 !important;
-          overflow: auto !important;
-          height: 100% !important;
+          font-size: 0.75rem !important; /* text-xs */
+          line-height: 1.625 !important; /* leading-relaxed */
+          overflow: hidden !important; /* Scroll controlled by parent div via preRef */
+          white-space: pre !important; 
         }
         .shiki-editor-highlight code {
           font-family: inherit !important;
@@ -117,6 +117,8 @@ export const ShikiEditor = ({
           font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
           line-height: 1.625;
           tab-size: 4;
+          white-space: pre;
+          overflow: auto;
         }
         .shiki-editor-textarea::placeholder {
           color: transparent;

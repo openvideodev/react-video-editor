@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { ExamplePlayer } from "@/components/example-player";
-import { Studio, getEffectOptions, ProjectJSON } from "openvideo";
+import { Studio, getEffectOptions, ProjectJSON, registerCustomEffect } from "openvideo";
 import { CustomShaderForm } from "@/components/gallery/custom-preset-forms";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -80,12 +80,27 @@ const EffectsPage = () => {
     setLoading(true);
   };
 
-  const handleCustomApply = (data: any) => {
+  const handleCustomApply = async (data: any) => {
     if (!project) return;
+    // CustomShaderForm returns { label, fragment } — derive a slug key from the label
+    const key =
+      (data.key ??
+        (data.label as string)
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_]/g, "")) ||
+      "custom_effect";
+    const effectData = { ...data, key };
     const newProject = JSON.parse(JSON.stringify(project));
     const clip = newProject.clips.find((c: any) => c.type === "Effect");
+    await registerCustomEffect(key, effectData as any);
     if (clip) {
-      clip.effect = { ...clip.effect, key: "custom", name: data.label, fragment: data.fragment };
+      clip.effect = {
+        ...clip.effect,
+        key,
+        name: key,
+      };
       toast.success("Custom effect applied");
     }
     setProject(newProject);
@@ -103,7 +118,12 @@ const EffectsPage = () => {
       const res = await fetch("/api/custom-presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.label || "My Effect", category: "effects", data }),
+        body: JSON.stringify({
+          name: data.label || "My Effect",
+          category: "effects",
+          data,
+          published: data.published,
+        }),
       });
       if (res.ok) toast.success("Effect saved!");
       else {
@@ -147,7 +167,9 @@ const EffectsPage = () => {
             <ScrollArea className="h-full">
               <div
                 className="p-3 grid gap-3"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                }}
               >
                 {effects.map((e) => (
                   <PresetItem

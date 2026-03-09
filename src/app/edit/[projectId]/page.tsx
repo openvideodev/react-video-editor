@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Editor from "@/components/editor/editor";
 import { storageService } from "@/lib/storage/storage-service";
 import { useProjectStore } from "@/stores/project-store";
+import { registerCustomEffect, registerCustomTransition } from "openvideo";
 
 export default function EditProjectPage() {
   const params = useParams();
@@ -32,12 +33,46 @@ export default function EditProjectPage() {
           projectStore.setFps(project.fps);
         }
 
-        // Load the full project state from OPFS
-        const projectFull = await storageService.loadProjectFull(projectId);
-        if (projectFull) {
-          projectStore.setInitialStudioJSON(projectFull);
+        // Register the user's custom effects & transitions before loading the
+        // project JSON so the studio can resolve any custom shader keys it finds.
+        try {
+          const [effectsRes, transitionsRes] = await Promise.all([
+            fetch("/api/custom-presets?category=effects"),
+            fetch("/api/custom-presets?category=transitions"),
+          ]);
+
+          if (effectsRes.ok) {
+            const { own: ownEffects = [], published: pubEffects = [] } = await effectsRes.json();
+            for (const preset of [...ownEffects, ...pubEffects]) {
+              const key = `custom_effect_${preset.id}`;
+              registerCustomEffect(key, {
+                key,
+                label: preset.data?.label || preset.name,
+                fragment: preset.data?.fragment,
+              } as any);
+            }
+          }
+
+          if (transitionsRes.ok) {
+            const { own: ownTrans = [], published: pubTrans = [] } = await transitionsRes.json();
+            for (const preset of [...ownTrans, ...pubTrans]) {
+              const key = `custom_transition_${preset.id}`;
+              registerCustomTransition(key, {
+                key,
+                label: preset.data?.label || preset.name,
+                fragment: preset.data?.fragment,
+              } as any);
+            }
+          }
+        } catch (err) {
+          console.warn("Failed to pre-register custom presets", err);
+        }
+
+        // Use the data field from the project model in the DB
+        if (project.data) {
+          projectStore.setInitialStudioJSON(project.data);
         } else {
-          // Reset if not found (legacy or first-time open after feature update)
+          // Reset if not found
           projectStore.setInitialStudioJSON(null);
         }
       } catch (err) {

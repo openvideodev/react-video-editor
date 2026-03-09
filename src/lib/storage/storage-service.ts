@@ -2,13 +2,7 @@ import type { TProject } from "@/types/project";
 import type { MediaFile } from "@/types/media";
 import { IndexedDBAdapter } from "./indexeddb-adapter";
 import { OPFSAdapter } from "./opfs-adapter";
-import type {
-  MediaFileData,
-  StorageConfig,
-  SerializedProject,
-  SerializedScene,
-  TimelineData,
-} from "./types";
+import type { MediaFileData, StorageConfig, TimelineData } from "./types";
 import type { TimelineTrack } from "@/types/timeline";
 import type { SavedSoundsData, SavedSound, SoundEffect } from "@/types/sounds";
 
@@ -22,7 +16,6 @@ export interface StorageStats {
 }
 
 class StorageService {
-  private projectsAdapter: IndexedDBAdapter<SerializedProject>;
   private savedSoundsAdapter: IndexedDBAdapter<SavedSoundsData>;
   private config: StorageConfig;
 
@@ -34,12 +27,6 @@ class StorageService {
       savedSoundsDb: "video-editor-saved-sounds",
       version: 1,
     };
-
-    this.projectsAdapter = new IndexedDBAdapter<SerializedProject>(
-      this.config.projectsDb,
-      "projects",
-      this.config.version,
-    );
 
     this.savedSoundsAdapter = new IndexedDBAdapter<SavedSoundsData>(
       this.config.savedSoundsDb,
@@ -78,89 +65,129 @@ class StorageService {
 
   // Project operations
   async saveProject({ project }: { project: TProject }): Promise<void> {
-    // Convert TProject to serializable format
-    const serializedScenes: SerializedScene[] = project.scenes.map((scene) => ({
-      id: scene.id,
-      name: scene.name,
-      isMain: scene.isMain,
-      createdAt: scene.createdAt.toISOString(),
-      updatedAt: scene.updatedAt.toISOString(),
-    }));
+    // We try to update first, if it fails or if it's new we might need a different approach
+    // But for simplicity, we'll check if it exists or just use a dedicated "update" vs "create" approach
+    // In this singleton service, we can just call the individual API
 
-    const serializedProject: SerializedProject = {
-      id: project.id,
-      name: project.name,
-      thumbnail: project.thumbnail,
-      createdAt: project.createdAt.toISOString(),
-      updatedAt: project.updatedAt.toISOString(),
-      scenes: serializedScenes,
-      currentSceneId: project.currentSceneId,
-      backgroundColor: project.backgroundColor,
-      backgroundType: project.backgroundType,
-      blurIntensity: project.blurIntensity,
-      bookmarks: project.bookmarks,
-      fps: project.fps,
-      canvasSize: project.canvasSize,
-      canvasMode: project.canvasMode,
-    };
+    try {
+      // First check if project exists
+      const existing = await this.loadProject({ id: project.id });
 
-    await this.projectsAdapter.set(project.id, serializedProject);
+      const res = await fetch(`/api/projects${existing ? `/${project.id}` : ""}`, {
+        method: existing ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: project.id,
+          name: project.name,
+          thumbnail: project.thumbnail,
+          canvasSize: project.canvasSize,
+          canvasMode: project.canvasMode,
+          fps: project.fps,
+          data: project.data, // This is the single scene data
+          currentSceneId: project.currentSceneId,
+          bookmarks: project.bookmarks,
+          mediaItems: project.mediaItems,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to save project: ${res.statusText}`);
+      }
+    } catch (e) {
+      console.error("Error saving project to DB:", e);
+      throw e;
+    }
+  }
+
+  async saveProjectFull(projectId: string, data: any): Promise<void> {
+    try {
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to save project data: ${res.statusText}`);
+      }
+    } catch (e) {
+      console.error("Error saving project data to DB:", e);
+      throw e;
+    }
   }
 
   async loadProject({ id }: { id: string }): Promise<TProject | null> {
-    const serializedProject = await this.projectsAdapter.get(id);
+    try {
+      const res = await fetch(`/api/projects/${id}`);
+      if (!res.ok) return null;
 
-    if (!serializedProject) return null;
+      const dbProject = await res.json();
 
-    // Now convert serialized scenes back to Scene objects
-    const scenes =
-      serializedProject.scenes?.map((scene) => ({
-        id: scene.id,
-        name: scene.name,
-        isMain: scene.isMain,
-        createdAt: new Date(scene.createdAt),
-        updatedAt: new Date(scene.updatedAt),
-      })) || [];
-
-    // Convert back to TProject format
-    const project = {
-      id: serializedProject.id,
-      name: serializedProject.name,
-      thumbnail: serializedProject.thumbnail,
-      createdAt: new Date(serializedProject.createdAt),
-      updatedAt: new Date(serializedProject.updatedAt),
-      scenes,
-      currentSceneId: serializedProject.currentSceneId || "",
-      backgroundColor: serializedProject.backgroundColor,
-      backgroundType: serializedProject.backgroundType,
-      blurIntensity: serializedProject.blurIntensity,
-      bookmarks: serializedProject.bookmarks,
-      fps: serializedProject.fps,
-      canvasSize: serializedProject.canvasSize,
-      canvasMode: serializedProject.canvasMode,
-    };
-    return project;
+      // Mapping from DB model (project) to TProject
+      return {
+        id: dbProject.id,
+        name: dbProject.name,
+        thumbnail: dbProject.thumbnail,
+        createdAt: new Date(dbProject.createdAt),
+        updatedAt: new Date(dbProject.updatedAt),
+        scenes: [], // Scenes are now simplified out or handled differently
+        currentSceneId: dbProject.currentSceneId || "",
+        backgroundColor: dbProject.backgroundColor,
+        backgroundType: dbProject.backgroundType,
+        blurIntensity: dbProject.blurIntensity,
+        bookmarks: dbProject.bookmarks || [],
+        fps: dbProject.fps,
+        canvasSize: dbProject.canvasSize,
+        canvasMode: dbProject.canvasMode,
+        data: dbProject.data,
+      } as TProject;
+    } catch (e) {
+      console.error("Error loading project from DB:", e);
+      return null;
+    }
   }
 
   async loadAllProjects(): Promise<TProject[]> {
-    const projectIds = await this.projectsAdapter.list();
-    const projects: TProject[] = [];
+    try {
+      const res = await fetch("/api/projects");
+      if (!res.ok) return [];
 
-    for (const id of projectIds) {
-      const project = await this.loadProject({ id });
-      if (project) {
-        projects.push(project);
-      }
+      const dbProjects = await res.json();
+
+      return dbProjects.map((dbProject: any) => ({
+        id: dbProject.id,
+        name: dbProject.name,
+        thumbnail: dbProject.thumbnail,
+        createdAt: new Date(dbProject.createdAt),
+        updatedAt: new Date(dbProject.updatedAt),
+        scenes: [],
+        currentSceneId: dbProject.currentSceneId || "",
+        backgroundColor: dbProject.backgroundColor,
+        backgroundType: dbProject.backgroundType,
+        blurIntensity: dbProject.blurIntensity,
+        bookmarks: dbProject.bookmarks || [],
+        fps: dbProject.fps,
+        canvasSize: dbProject.canvasSize,
+        canvasMode: dbProject.canvasMode,
+        data: dbProject.data,
+      }));
+    } catch (e) {
+      console.error("Error loading all projects from DB:", e);
+      return [];
     }
-
-    // Sort by last updated (most recent first)
-    return projects.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
 
   async deleteProject({ id }: { id: string }): Promise<void> {
-    await this.projectsAdapter.remove(id);
-    // Also delete project-specific data
     try {
+      const res = await fetch(`/api/projects/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to delete project: ${res.statusText}`);
+      }
+
+      // Also delete project-specific local data (media/temp files)
       const { mediaFilesAdapter } = this.getProjectMediaAdapters({
         projectId: id,
       });
@@ -169,31 +196,12 @@ class StorageService {
       const timelineAdapter = this.getProjectTimelineAdapter({ projectId: id });
       await timelineAdapter.clear();
     } catch (e) {
-      console.error("Failed to clear project data during deletion", e);
+      console.error("Failed to delete project or clear local data", e);
+      throw e;
     }
   }
 
-  // Full project serialization via OPFS
-  async saveProjectFull(projectId: string, studioJSON: any): Promise<void> {
-    const { mediaFilesAdapter } = this.getProjectMediaAdapters({ projectId });
-    const jsonString = JSON.stringify(studioJSON);
-    // Use the name 'project.json' for the serialized state
-    await (mediaFilesAdapter as any).set("project.json", jsonString);
-  }
-
-  async loadProjectFull(projectId: string): Promise<any | null> {
-    const { mediaFilesAdapter } = this.getProjectMediaAdapters({ projectId });
-    const file = await mediaFilesAdapter.get("project.json");
-    if (!file) return null;
-
-    try {
-      const text = await file.text();
-      return JSON.parse(text);
-    } catch (e) {
-      console.error("Failed to parse project.json from OPFS", e);
-      return null;
-    }
-  }
+  // Legacy OPFS serialization removed - everything is now in DB JSON
 
   // Media operations
   async saveMediaFile({
@@ -343,21 +351,16 @@ class StorageService {
 
   // Utility methods
   async clearAllData(): Promise<void> {
-    // Clear all projects
-    await this.projectsAdapter.clear();
-
-    // Note: Project-specific media and timelines will be cleaned up when projects are deleted
+    // Note: Projects should be cleared via API or manually in DB
+    // This local clear is for media/saved sounds
+    await this.savedSoundsAdapter.clear();
   }
 
   async getStorageInfo(): Promise<{
-    projects: number;
     isOPFSSupported: boolean;
     isIndexedDBSupported: boolean;
   }> {
-    const projectIds = await this.projectsAdapter.list();
-
     return {
-      projects: projectIds.length,
       isOPFSSupported: this.isOPFSSupported(),
       isIndexedDBSupported: this.isIndexedDBSupported(),
     };

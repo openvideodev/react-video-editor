@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { ExamplePlayer } from "@/components/example-player";
-import { Studio, getTransitionOptions, ProjectJSON } from "openvideo";
+import { Studio, getTransitionOptions, ProjectJSON, registerCustomTransition } from "openvideo";
 import { CustomShaderForm } from "@/components/gallery/custom-preset-forms";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -73,21 +73,34 @@ const TransitionsPage = () => {
     const newProject = JSON.parse(JSON.stringify(project));
     const clip = newProject.clips.find((c: any) => c.type === "Transition");
     if (clip)
-      clip.transitionEffect = { ...clip.transitionEffect, key: preset.key, name: preset.label };
+      clip.transitionEffect = {
+        ...clip.transitionEffect,
+        key: preset.key,
+        name: preset.label,
+      };
     setProject(newProject);
     setLoading(true);
   };
 
-  const handleCustomApply = (data: any) => {
+  const handleCustomApply = async (data: any) => {
     if (!project) return;
+    const key =
+      (data.key ??
+        (data.label as string)
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "_")
+          .replace(/[^a-z0-9_]/g, "")) ||
+      "custom_transition";
+    const transitionData = { ...data, key };
     const newProject = JSON.parse(JSON.stringify(project));
     const clip = newProject.clips.find((c: any) => c.type === "Transition");
+    await registerCustomTransition(key, transitionData as any);
     if (clip) {
       clip.transitionEffect = {
         ...clip.transitionEffect,
-        key: "custom",
-        name: data.label,
-        fragment: data.fragment,
+        key,
+        name: key,
       };
       toast.success("Custom transition applied");
     }
@@ -110,6 +123,7 @@ const TransitionsPage = () => {
           name: data.label || "My Transition",
           category: "transitions",
           data,
+          published: data.published,
         }),
       });
       if (res.ok) toast.success("Transition saved!");
@@ -156,7 +170,9 @@ const TransitionsPage = () => {
             <ScrollArea className="h-full">
               <div
                 className="p-3 grid gap-3"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                }}
               >
                 {transitions.map((t) => (
                   <PresetItem

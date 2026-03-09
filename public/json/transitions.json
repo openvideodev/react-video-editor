@@ -19,10 +19,10 @@
       "src": "https://images.pexels.com/photos/35554037/pexels-photo-35554037.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
       "display": {
         "from": 0,
-        "to": 5000000
+        "to": 1000000
       },
       "playbackRate": 1,
-      "duration": 5000000,
+      "duration": 1000000,
       "left": -147.79594723201978,
       "top": -33.520454828209495,
       "width": 1375.5918944640378,
@@ -50,11 +50,11 @@
       "name": "Photo by Jérémy Glineur",
       "src": "https://images.pexels.com/photos/35565461/pexels-photo-35565461.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
       "display": {
-        "from": 5000000,
-        "to": 10000000
+        "from": 1000000,
+        "to": 2000000
       },
       "playbackRate": 1,
-      "duration": 5000000,
+      "duration": 1000000,
       "left": -188.35093737939292,
       "top": -43.757528884920475,
       "width": 1546.8199124699777,
@@ -82,11 +82,11 @@
       "name": "",
       "src": "",
       "display": {
-        "from": 4375000,
-        "to": 5625000
+        "from": 500000,
+        "to": 1500000
       },
       "playbackRate": 1,
-      "duration": 1250000,
+      "duration": 1000000,
       "left": 0,
       "top": 0,
       "width": 0,

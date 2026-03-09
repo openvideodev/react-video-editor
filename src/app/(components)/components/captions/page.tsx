@@ -145,7 +145,12 @@ const CaptionsPage = () => {
       const res = await fetch("/api/custom-presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.label || "My Caption", category: "captions", data }),
+        body: JSON.stringify({
+          name: data.label || "My Caption",
+          category: "captions",
+          data,
+          published: data.published,
+        }),
       });
       if (res.ok) toast.success("Caption saved!");
       else {
@@ -189,7 +194,9 @@ const CaptionsPage = () => {
             <ScrollArea className="h-full">
               <div
                 className="p-3 grid gap-3"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                }}
               >
                 {STYLE_CAPTION_PRESETS.map((preset, index) => {
                   const label = `Style ${index + 1}`;

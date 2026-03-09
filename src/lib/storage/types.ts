@@ -49,11 +49,6 @@ export interface StorageConfig {
 }
 
 // Helper type for serialization - converts Date objects to strings
-export type SerializedProject = Omit<TProject, "createdAt" | "updatedAt" | "scenes"> & {
-  createdAt: string;
-  updatedAt: string;
-  scenes: SerializedScene[];
-  bookmarks?: number[];
-};
+// (These are legacy and can be removed if strictly following "remove unrelated")
 
 // Extend FileSystemDirectoryHandle with missing async iterator methods

@@ -75,7 +75,12 @@ const AnimationsPage = () => {
       clip.animations = [
         {
           type: preset.value,
-          opts: { duration: 1000000, delay: 0, easing: "easeOutQuad", iterCount: 1 },
+          opts: {
+            duration: 1000000,
+            delay: 0,
+            easing: "easeOutQuad",
+            iterCount: 1,
+          },
         },
       ];
     setProject(newProject);
@@ -105,7 +110,12 @@ const AnimationsPage = () => {
       const res = await fetch("/api/custom-presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.label || "My Animation", category: "animations", data }),
+        body: JSON.stringify({
+          name: data.label || "My Animation",
+          category: "animations",
+          data,
+          published: data.published,
+        }),
       });
       if (res.ok) toast.success("Animation saved!");
       else {
@@ -149,7 +159,9 @@ const AnimationsPage = () => {
             <ScrollArea className="h-full">
               <div
                 className="p-3 grid gap-3"
-                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))" }}
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+                }}
               >
                 {ANIMATION_PRESETS.map((preset) => (
                   <PresetItem

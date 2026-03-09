@@ -16,7 +16,7 @@ export interface TProject {
   thumbnail: string;
   createdAt: Date;
   updatedAt: Date;
-  scenes: Scene[];
+  scenes?: Scene[];
   currentSceneId: string;
   mediaItems?: string[];
   backgroundColor?: string;
@@ -32,4 +32,5 @@ export interface TProject {
    * - "custom": User set a custom aspect ratio or dimensions
    */
   canvasMode: "preset" | "original" | "custom";
+  data?: any; // The single scene data
 }

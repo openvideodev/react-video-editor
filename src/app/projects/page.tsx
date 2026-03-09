@@ -144,19 +144,11 @@ export default function ProjectsPage() {
       thumbnail: "",
       createdAt: new Date(),
       updatedAt: new Date(),
-      scenes: [
-        {
-          id: sceneId,
-          name: "Main Scene",
-          isMain: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
       currentSceneId: sceneId,
       canvasSize: { width: 1080, height: 1920 },
       canvasMode: "preset",
       fps: 30,
+      data: null, // Scene data will be saved on first edit
     };
     try {
       await storageService.saveProject({ project: newProject });
