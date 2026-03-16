@@ -51,7 +51,7 @@
     "motion": "^12.23.26",
     "next": "16.0.7",
     "next-themes": "^0.4.6",
-    "openvideo": "^0.2.2",
+    "openvideo": "^0.2.4",
     "opfs-tools": "^0.7.2",
     "pg": "^8.20.0",
     "pixi.js": "^8.14.3",

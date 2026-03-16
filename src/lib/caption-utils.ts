@@ -33,7 +33,6 @@ export async function regenerateCaptionClips({
   styleUpdate,
 }: RegenerateCaptionClipsOptions) {
   if (!studio || !captionClip?.mediaId) return;
-  console.log("styleUpdate", styleUpdate);
 
   const getAnimationObjects = (animation: string | string[], clipDuration: number) => {
     const animations = Array.isArray(animation) ? animation : [animation];
@@ -64,8 +63,6 @@ export async function regenerateCaptionClips({
   siblingClips.sort((a, b) => a.display.from - b.display.from);
 
   if (siblingClips.length === 0) return;
-
-  const uniformTop = captionClip.top ?? 0;
 
   const mediaClip = studio.getClipById(mediaId);
   if (!mediaClip) return;
@@ -123,11 +120,27 @@ export async function regenerateCaptionClips({
   const clipsToAdd: IClip[] = [];
 
   for (const json of newClipsJSON) {
-    const enrichedJson = {
+    const uniformTop = json.top ?? 0;
+    const enrichedJson: any = {
       ...json,
       mediaId,
       wordsPerLine: mode,
       top: uniformTop,
+      angle: captionClip.angle !== undefined ? captionClip.angle : json.angle,
+      opacity: captionClip.opacity !== undefined ? captionClip.opacity : json.opacity,
+      zIndex: captionClip.zIndex !== undefined ? captionClip.zIndex : json.zIndex,
+      flip: captionClip.flip !== undefined ? captionClip.flip : json.flip,
+      textBoxStyle: styleUpdate?.textBoxStyle,
+      caption: {
+        ...json.caption,
+        ...(captionClip.caption || {}),
+        words: json.caption.words,
+        colors: {
+          ...(json.caption?.colors || {}),
+          ...(captionClip.caption?.colors || {}),
+        },
+        textBoxStyle: styleUpdate?.textBoxStyle,
+      },
       originalOpts: {
         ...(json.originalOpts || {}),
         wordsPerLine: mode,
@@ -139,6 +152,7 @@ export async function regenerateCaptionClips({
           ),
         }),
         ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
+        ...(styleUpdate?.textBoxStyle ? { textBoxStyle: styleUpdate.textBoxStyle } : {}),
       },
       opts: {
         ...(json.opts || {}),
@@ -151,6 +165,7 @@ export async function regenerateCaptionClips({
           ),
         }),
         ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
+        ...(styleUpdate?.textBoxStyle ? { textBoxStyle: styleUpdate.textBoxStyle } : {}),
       },
       animations: styleUpdate?.animation
         ? getAnimationObjects(styleUpdate.animation, json.display.to - json.display.from)
@@ -194,6 +209,15 @@ export async function regenerateCaptionClips({
       if (styleUpdate.textCase) enrichedJson.style.textCase = styleUpdate.textCase;
 
       if (styleUpdate.wordAnimation) enrichedJson.style.wordAnimation = styleUpdate.wordAnimation;
+
+      if (styleUpdate.textBoxStyle) {
+        enrichedJson.textBoxStyle = styleUpdate.textBoxStyle;
+        if (!enrichedJson.caption) enrichedJson.caption = {};
+        enrichedJson.caption.textBoxStyle = styleUpdate.textBoxStyle;
+        if (enrichedJson.style) {
+          enrichedJson.style.textBoxStyle = styleUpdate.textBoxStyle;
+        }
+      }
 
       if (styleUpdate.caption) {
         if (!enrichedJson.caption) enrichedJson.caption = {};

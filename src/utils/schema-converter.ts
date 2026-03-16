@@ -26,6 +26,7 @@ export const groupWordsByWidth = (
   maxWidth: number = 800,
   fontSize: number = 80,
   fontFamily: string = "Bangers-Regular",
+  maxLines: number = 1,
 ): any[] => {
   if (!words || words.length === 0) return [];
 
@@ -39,68 +40,32 @@ export const groupWordsByWidth = (
   const captions: any[] = [];
   let currentWords: any[] = [];
   let currentText = "";
-  let currentWidth = 0;
+  let lastLineText = "";
+  let currentLineCount = 1;
 
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const wordText = word.word || word.text || "";
+  const finalizeCaption = () => {
+    if (currentWords.length === 0) return;
 
-    // Calculate width if we add this word
-    const testText = currentText ? `${currentText} ${wordText}` : wordText;
-    const bitmapText = new PIXI.BitmapText(testText, {
-      fontFamily,
-      fontSize,
-    });
-    const testWidth = bitmapText.width + 160;
-
-    if (testWidth > maxWidth && currentWords.length > 0) {
-      // Width exceeded, create caption with current words
-      const firstWord = currentWords[0];
-      const lastWord = currentWords[currentWords.length - 1];
-
-      // Measure actual height of the text
-      const metrics = ctx.measureText("AaFfLMZpPqQ");
-      const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-
-      captions.push({
-        text: currentText,
-        width: currentWidth, // Actual measured width
-        height: textHeight || fontSize, // Actual measured height, fallback to fontSize
-        words: currentWords.map((w, idx) => ({
-          text: w.word || w.text || "",
-          from: idx === 0 ? 0 : (w.start - firstWord.start) * 1000, // Relative to caption start in ms
-          to: (w.end - firstWord.start) * 1000, // Relative to caption start in ms
-          isKeyWord: idx === 0 || idx === currentWords.length - 1, // First and last words are keywords
-          paragraphIndex: w.paragraphIndex ?? "",
-        })),
-        from: firstWord.start, // In seconds
-        to: lastWord.end, // In seconds
-      });
-      // Start new caption with current word
-      currentWords = [word];
-      currentText = wordText;
-      currentWidth = ctx.measureText(wordText).width;
-    } else {
-      // Add word to current caption
-      currentWords.push(word);
-      currentText = testText;
-      currentWidth = testWidth;
-    }
-  }
-
-  // Add remaining words as final caption
-  if (currentWords.length > 0) {
     const firstWord = currentWords[0];
     const lastWord = currentWords[currentWords.length - 1];
 
-    // Measure actual height of the text
+    // Measure actual height of the block
     const metrics = ctx.measureText("AaFfLMZpPqQ");
-    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const singleLineHeight =
+      metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent || fontSize;
+    const totalHeight = singleLineHeight * currentLineCount * 1.2; // Add some leading
+
+    // Calculate max width among all lines
+    const lines = currentText.split("\n");
+    let maxW = 0;
+    lines.forEach((line) => {
+      maxW = Math.max(maxW, ctx.measureText(line).width);
+    });
 
     captions.push({
       text: currentText,
-      width: currentWidth, // Actual measured width
-      height: textHeight || fontSize, // Actual measured height, fallback to fontSize
+      width: maxW + 160,
+      height: totalHeight,
       words: currentWords.map((w, idx) => ({
         text: w.word || w.text || "",
         from: idx === 0 ? 0 : (w.start - firstWord.start) * 1000,
@@ -111,7 +76,48 @@ export const groupWordsByWidth = (
       from: firstWord.start,
       to: lastWord.end,
     });
+  };
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const wordText = word.word || word.text || "";
+
+    const testLineText = lastLineText ? `${lastLineText} ${wordText}` : wordText;
+    const bitmapText = new PIXI.BitmapText(testLineText, {
+      fontFamily,
+      fontSize,
+    });
+    const testLineWidth = bitmapText.width + 160;
+
+    if (testLineWidth > maxWidth && lastLineText !== "") {
+      if (currentLineCount < maxLines) {
+        // Add newline and continue chunk
+        currentLineCount++;
+        currentText += "\n" + wordText;
+        lastLineText = wordText;
+        currentWords.push(word);
+      } else {
+        // finalize and start new chunk
+        finalizeCaption();
+        currentWords = [word];
+        currentText = wordText;
+        lastLineText = wordText;
+        currentLineCount = 1;
+      }
+    } else {
+      // fits in current line
+      currentWords.push(word);
+      if (lastLineText === "") {
+        currentText += (currentText ? " " : "") + wordText;
+      } else {
+        currentText =
+          currentText.substring(0, currentText.length - lastLineText.length) + testLineText;
+      }
+      lastLineText = testLineText;
+    }
   }
+
+  finalizeCaption();
 
   return captions;
 };
@@ -273,7 +279,7 @@ export const convertSchemaToExported = async (schemaJson: any): Promise<any> => 
             const words = captionData.results.main.words;
 
             // Group words by width
-            const captionChunks = groupWordsByWidth(words, 800, 80, "Bangers-Regular");
+            const captionChunks = groupWordsByWidth(words, 800, 80, "Bangers-Regular", 1);
 
             // Create Caption clips for each chunk
             for (const chunk of captionChunks) {

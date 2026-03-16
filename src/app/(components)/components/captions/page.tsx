@@ -109,6 +109,7 @@ const CaptionsPage = () => {
             angle: Math.PI / 4,
           },
           wordAnimation: preset.wordAnimation,
+          textBoxStyle: preset.textBoxStyle,
         };
         const allCaptionClips = studioRef.current.clips.filter((c) => c.type === "Caption");
         const mode = preset.type === "word" ? "single" : "multiple";

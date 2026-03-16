@@ -72,7 +72,8 @@ export async function generateCaptionClips(options: CaptionClipOptions): Promise
       };
     });
   } else {
-    captionChunks = groupWordsByWidth(words, maxCaptionWidth, fontSize, fontFamily);
+    const maxLines = options.style?.textBoxStyle?.maxLines ?? 1;
+    captionChunks = groupWordsByWidth(words, maxCaptionWidth, fontSize, fontFamily, maxLines);
   }
 
   const clips: any[] = [];

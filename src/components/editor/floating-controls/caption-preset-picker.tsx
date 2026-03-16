@@ -95,6 +95,7 @@ const CaptionPresetPicker = () => {
         angle: Math.PI / 4,
       },
       wordAnimation: preset.wordAnimation,
+      textBoxStyle: preset.textBoxStyle,
     };
 
     // Apply to all selected caption clips and other clips with the same mediaId

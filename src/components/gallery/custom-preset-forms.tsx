@@ -141,6 +141,13 @@ export interface ICaptionsControlProps {
     value: number;
     mode?: "static" | "dynamic";
   };
+  textBoxStyle?: {
+    style?: "tiktok" | "none";
+    textAlign?: "left" | "center" | "right" | "";
+    maxLines?: number;
+    borderRadius?: number;
+    horizontalPadding?: number;
+  };
   published?: boolean;
 }
 
