@@ -362,6 +362,21 @@ export function AnimationPropertiesPicker() {
     { label: "Pulse", value: "pulse" },
   ];
 
+  const comboPresets = [
+    { label: "Combo Zoom 1", value: "comboZoom1" },
+    { label: "Combo Zoom 2", value: "comboZoom2" },
+    { label: "Combo Pendulum 1", value: "comboPendulum1" },
+    { label: "Combo Pendulum 2", value: "comboPendulum2" },
+    { label: "Combo Right Distort", value: "comboRightDistort" },
+    { label: "Combo Left Distort", value: "comboLeftDistort" },
+    { label: "Combo Wobble", value: "comboWobble" },
+    { label: "Combo Spinning Top 1", value: "comboSpinningTop1" },
+    { label: "Combo Spinning Top 2", value: "comboSpinningTop2" },
+    { label: "Combo Sway Out", value: "comboSwayOut" },
+    { label: "Combo Bounce 1", value: "comboBounce1" },
+    { label: "Combo Sway In", value: "comboSwayIn" },
+  ];
+
   return (
     <div
       ref={containerRef}
@@ -391,6 +406,7 @@ export function AnimationPropertiesPicker() {
                 activeTab={activeTab}
                 inPresets={inPresets}
                 outPresets={outPresets}
+                comboPresets={comboPresets}
                 handlePresetChange={handlePresetChange}
               />
               <EasingOptions easing={easing} setEasing={setEasing} />
@@ -400,7 +416,7 @@ export function AnimationPropertiesPicker() {
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="in">In</TabsTrigger>
                 <TabsTrigger value="out">Out</TabsTrigger>
-                <TabsTrigger value="custom">Custom</TabsTrigger>
+                <TabsTrigger value="combo">Combo</TabsTrigger>
               </TabsList>
 
               <div className="mt-4 flex flex-col gap-4">
@@ -410,6 +426,7 @@ export function AnimationPropertiesPicker() {
                   activeTab={activeTab}
                   inPresets={inPresets}
                   outPresets={outPresets}
+                  comboPresets={comboPresets}
                   handlePresetChange={handlePresetChange}
                 />
 
@@ -723,12 +740,14 @@ const PresetOptions = ({
   activeTab,
   inPresets,
   outPresets,
+  comboPresets,
   handlePresetChange,
 }: {
   preset: string;
   activeTab: string;
   inPresets: { label: string; value: string }[];
   outPresets: { label: string; value: string }[];
+  comboPresets: { label: string; value: string }[];
   handlePresetChange: (preset: string) => void;
 }) => {
   return (
@@ -753,18 +772,12 @@ const PresetOptions = ({
                 {p.label}
               </SelectItem>
             ))}
-          {activeTab === "custom" && (
-            <>
-              <SelectItem value="custom">Keyframes Only</SelectItem>
-              {Array.from(
-                new Map([...inPresets, ...outPresets].map((p) => [p.value, p])).values(),
-              ).map((p) => (
-                <SelectItem key={p.value} value={p.value}>
-                  {p.label}
-                </SelectItem>
-              ))}
-            </>
-          )}
+          {activeTab === "combo" &&
+            comboPresets.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
     </div>
