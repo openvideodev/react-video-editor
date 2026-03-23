@@ -704,7 +704,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
           }
 
           if (!timelineClip) {
-            const commonProps = {
+            const commonProps: any = {
               left: startX,
               top: region.top,
               width: width,
@@ -747,7 +747,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
               studioClipId: clip.id,
             });
           } else {
-            timelineClip.set({
+            const props: any = {
               left: startX,
               top: region.top,
               width: width,
@@ -765,7 +765,15 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
               duration: clip.duration * (clip.playbackRate || 1),
               sourceDuration: clip.sourceDuration,
               studioClipId: clip.id,
-            });
+            };
+
+            if (timelineClip.group) {
+              const group = timelineClip.group;
+              props.left = startX - (group.left || 0) - (group.width || 0) / 2;
+              props.top = region.top - (group.top || 0) - (group.height || 0) / 2;
+            }
+
+            timelineClip.set(props);
             timelineClip.setCoords();
           }
           // (timelineClip as FabricObject).
