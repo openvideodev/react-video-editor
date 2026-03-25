@@ -39,6 +39,8 @@ import { ModeToggle } from "../ui/mode-toggle";
 import { useRouter, useParams } from "next/navigation";
 import { storageService } from "@/lib/storage/storage-service";
 import { Save } from "lucide-react";
+import AutosizeInput from "../ui/autosize-input";
+import { authClient } from "@/lib/auth-client";
 
 export default function Header() {
   const { studio } = useStudioStore();
@@ -52,7 +54,35 @@ export default function Header() {
   const router = useRouter();
   const params = useParams();
   const projectId = params.projectId as string;
+  const { data: session } = authClient.useSession();
+  const { projectName, setProjectName } = useProjectStore();
   const [isSaving, setIsSaving] = useState(false);
+  const [title, setTitle] = useState(projectName || "Untitled video");
+
+  // Sync title with store when project name changes externally (like on initial load)
+  useEffect(() => {
+    if (projectName && projectName !== title) {
+      setTitle(projectName);
+    }
+  }, [projectName]);
+
+  // Debounce title update to database
+  useEffect(() => {
+    if (!session || !projectId || title === projectName) return;
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        await storageService.updateProject(projectId, { name: title });
+        setProjectName(title);
+        console.log("Project name updated in DB:", title);
+      } catch (error) {
+        console.error("Failed to update project name:", error);
+        toast.error("Failed to save project name");
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [title, session, projectId, projectName, setProjectName]);
 
   const handleApplyCustomSize = () => {
     const w = parseInt(customWidth);
@@ -344,6 +374,9 @@ export default function Header() {
     document.body.appendChild(input);
     input.click();
   };
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
 
   return (
     <header className="relative flex h-[52px] w-full shrink-0 items-center justify-between px-4 bg-card z-10 border-b">
@@ -505,8 +538,20 @@ export default function Header() {
       </div>
 
       {/* Center Section */}
-      <div className="absolute text-sm font-medium left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      {/* <div className="absolute text-sm font-medium left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         Untitled video
+      </div> */}
+
+      <div className="flex h-13 items-center justify-center gap-2">
+        <div className=" pointer-events-auto flex h-10 items-center gap-2 rounded-md px-2.5">
+          <AutosizeInput
+            name="title"
+            value={title}
+            onChange={handleTitleChange}
+            width={200}
+            inputClassName="border-none outline-none px-1 text-sm font-medium"
+          />
+        </div>
       </div>
 
       {/* Right Section */}

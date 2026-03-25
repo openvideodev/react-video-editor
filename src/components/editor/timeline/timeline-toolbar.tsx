@@ -1,4 +1,5 @@
 import { usePlaybackStore } from "@/stores/playback-store";
+import { useStudioStore } from "@/stores/studio-store";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +41,10 @@ export function TimelineToolbar({
   onSplit?: () => void;
 }) {
   const { currentTime, duration, isPlaying, toggle, seek } = usePlaybackStore();
+  const { selectedClips } = useStudioStore();
+
+  const isSelected = selectedClips.length > 0;
+  const isLocked = selectedClips.some((clip) => clip.locked);
 
   const handleZoomIn = () => {
     setZoomLevel(Math.min(3.5, zoomLevel + 0.15));
@@ -59,7 +64,12 @@ export function TimelineToolbar({
         <TooltipProvider delayDuration={500}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={onSplit}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onSplit}
+                disabled={!isSelected || isLocked}
+              >
                 <Scissors className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -68,7 +78,12 @@ export function TimelineToolbar({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={onDuplicate}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onDuplicate}
+                disabled={!isSelected || isLocked}
+              >
                 <Copy className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -77,7 +92,12 @@ export function TimelineToolbar({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={onDelete}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onDelete}
+                disabled={!isSelected || isLocked}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </TooltipTrigger>

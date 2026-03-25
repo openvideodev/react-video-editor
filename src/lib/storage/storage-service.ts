@@ -116,6 +116,23 @@ class StorageService {
     }
   }
 
+  async updateProject(projectId: string, updates: Partial<TProject>): Promise<void> {
+    try {
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updates),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to update project: ${res.statusText}`);
+      }
+    } catch (e) {
+      console.error("Error updating project in DB:", e);
+      throw e;
+    }
+  }
+
   async loadProject({ id }: { id: string }): Promise<TProject | null> {
     try {
       const res = await fetch(`/api/projects/${id}`);

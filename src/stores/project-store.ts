@@ -7,6 +7,8 @@ interface ProjectState {
   aspectRatio: string;
   fps: number;
   initialStudioJSON: any | null;
+  projectName: string;
+  setProjectName: (name: string) => void;
   setCanvasSize: (size: CanvasSize, aspectRatio: string) => void;
   setFps: (fps: number) => void;
   setInitialStudioJSON: (json: any | null) => void;
@@ -23,6 +25,8 @@ export const useProjectStore = create<ProjectState>()(
       aspectRatio: DEFAULT_ASPECT_RATIO,
       fps: DEFAULT_FPS,
       initialStudioJSON: null,
+      projectName: "Untitled video",
+      setProjectName: (projectName) => set({ projectName }),
       setCanvasSize: (canvasSize, aspectRatio) => set({ canvasSize, aspectRatio }),
       setFps: (fps) => set({ fps }),
       setInitialStudioJSON: (initialStudioJSON) => set({ initialStudioJSON }),

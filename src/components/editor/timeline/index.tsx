@@ -10,6 +10,12 @@ import {
   Ellipsis,
   ArrowUp,
   ArrowDown,
+  Copy,
+  Clipboard,
+  CopyPlus,
+  LockKeyholeOpen,
+  LockKeyhole,
+  Trash2,
 } from "lucide-react";
 import { useTimelineStore } from "@/stores/timeline-store";
 import { usePlaybackStore } from "@/stores/playback-store";
@@ -38,13 +44,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+  ContextMenuSeparator,
+} from "@/components/ui/context-menu";
 import { Button } from "@/components/ui/button";
+import { TimelineClipMenu } from "./timeline-clip-menu";
+import { useClipActions } from "../options-floating-menu";
 
 export function Timeline() {
   const { tracks, clips, getTotalDuration } = useTimelineStore();
   const { duration, seek, setDuration } = usePlaybackStore();
   const { studio } = useStudioStore();
   const { theme, resolvedTheme } = useTheme();
+  const {
+    selectedClip,
+    isLocked,
+    hasClipboard,
+    handleCopy,
+    handlePaste,
+    handleDuplicate,
+    handleToggleLock,
+    handleDelete,
+  } = useClipActions();
 
   const currentTheme = (theme === "system" ? resolvedTheme : theme) as "dark" | "light";
 
@@ -91,6 +117,7 @@ export function Timeline() {
   const trackLabelsRef = useRef<HTMLDivElement>(null);
   const playheadRef = useRef<HTMLDivElement>(null);
   const timelineCanvasRef = useRef<TimelineCanvas | null>(null);
+  const [canvasInstance, setCanvasInstance] = useState<TimelineCanvas | null>(null);
   const isUpdatingRef = useRef(false);
 
   const handleScrollChange = useCallback(
@@ -237,7 +264,7 @@ export function Timeline() {
       getDuration: () => useTimelineStore.getState().getTotalDuration(),
     });
     timelineCanvasRef.current = canvas;
-
+    setCanvasInstance(canvas);
     // Set up UI event listeners (scroll/zoom)
     canvas.on("scroll", ({ deltaX, deltaY, scrollX, scrollY }) => {
       if (isUpdatingRef.current) return;
@@ -323,13 +350,13 @@ export function Timeline() {
     }
   }, [currentTheme]);
 
-  const handleDelete = useCallback(() => {
-    studio?.deleteSelected();
-  }, [studio]);
+  // const handleDelete = useCallback(() => {
+  //   studio?.deleteSelected();
+  // }, [studio]);
 
-  const handleDuplicate = useCallback(() => {
-    studio?.duplicateSelected();
-  }, [studio]);
+  // const handleDuplicate = useCallback(() => {
+  //   studio?.duplicateSelected();
+  // }, [studio]);
 
   const handleSplit = useCallback(() => {
     // Current time is in seconds in PlaybackStore. Canvas expects microseconds.
@@ -357,7 +384,7 @@ export function Timeline() {
         onDuplicate={handleDuplicate}
         onSplit={handleSplit}
       />
-      <TimelineStudioSync timelineCanvas={timelineCanvasRef.current} />
+      <TimelineStudioSync timelineCanvas={canvasInstance} />
 
       {/* Timeline Container */}
       <div className="flex-1 flex flex-col overflow-hidden relative bg-card" ref={timelineRef}>
@@ -514,7 +541,115 @@ export function Timeline() {
 
           {/* Timeline Tracks Content */}
           <div className="flex-1 relative overflow-hidden">
-            <div id="timeline-canvas" className="w-full h-full" />
+            <ContextMenu>
+              <ContextMenuTrigger asChild>
+                <div
+                  id="timeline-canvas"
+                  className="w-full h-full"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (timelineCanvasRef.current) {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const x = e.clientX - rect.left;
+                      const y = e.clientY - rect.top;
+                      timelineCanvasRef.current.findJunction(x, y, true);
+                    }
+                  }}
+                  onDragLeave={() => {
+                    if (timelineCanvasRef.current) {
+                      timelineCanvasRef.current.clearTransitionButton();
+                    }
+                  }}
+                  onDrop={async (e) => {
+                    const type = e.dataTransfer.getData("type");
+                    if (type !== "transition") return;
+
+                    const transitionKey = e.dataTransfer.getData("text/plain");
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    if (timelineCanvasRef.current && studio) {
+                      const existingTransition = timelineCanvasRef.current.findTransition(x, y);
+
+                      if (existingTransition) {
+                        await studio.addTransition(
+                          transitionKey,
+                          2_000_000,
+                          existingTransition.clipAId,
+                          existingTransition.clipBId,
+                        );
+                      } else {
+                        const junction = timelineCanvasRef.current.findJunction(x, y);
+                        if (junction) {
+                          await studio.addTransition(
+                            transitionKey,
+                            2_000_000,
+                            junction.clipAId,
+                            junction.clipBId,
+                          );
+                        }
+                      }
+                    }
+                  }}
+                />
+              </ContextMenuTrigger>
+              {selectedClip && selectedClip?.type !== "Transition" && (
+                <ContextMenuContent className="w-44">
+                  {!isLocked && (
+                    <>
+                      <ContextMenuItem onClick={handleCopy} disabled={!selectedClip}>
+                        <Copy className="mr-2 w-4 h-4" />
+                        Copy
+                        <ContextMenuShortcut>⌘ C</ContextMenuShortcut>
+                      </ContextMenuItem>
+
+                      <ContextMenuItem onClick={handlePaste} disabled={!hasClipboard}>
+                        <Clipboard className="mr-2 w-4 h-4" />
+                        Paste
+                        <ContextMenuShortcut>⌘ V</ContextMenuShortcut>
+                      </ContextMenuItem>
+
+                      <ContextMenuItem onClick={handleDuplicate} disabled={!selectedClip}>
+                        <CopyPlus className="mr-2 w-4 h-4" />
+                        Duplicate
+                        <ContextMenuShortcut>⌘ D</ContextMenuShortcut>
+                      </ContextMenuItem>
+                    </>
+                  )}
+
+                  {selectedClip ? (
+                    <ContextMenuItem onClick={handleToggleLock}>
+                      {isLocked ? (
+                        <LockKeyholeOpen className="mr-2 w-4 h-4" />
+                      ) : (
+                        <LockKeyhole className="mr-2 w-4 h-4" />
+                      )}
+                      {isLocked ? "Unlock Clip" : "Lock Clip"}
+                      <ContextMenuShortcut>⌘ L</ContextMenuShortcut>
+                    </ContextMenuItem>
+                  ) : (
+                    <ContextMenuItem disabled>
+                      <LockKeyhole className="mr-2 w-4 h-4" />
+                      Lock Clip
+                      <ContextMenuShortcut>⌘ L</ContextMenuShortcut>
+                    </ContextMenuItem>
+                  )}
+
+                  {!isLocked && (
+                    <>
+                      <ContextMenuSeparator />
+                      <ContextMenuItem onClick={handleDelete} disabled={!selectedClip}>
+                        <Trash2 className="mr-2 w-4 h-4" />
+                        Delete
+                        <ContextMenuShortcut>⌫</ContextMenuShortcut>
+                      </ContextMenuItem>
+                    </>
+                  )}
+                </ContextMenuContent>
+              )}
+            </ContextMenu>
+            <TimelineClipMenu timelineCanvas={canvasInstance} />
           </div>
         </div>
       </div>

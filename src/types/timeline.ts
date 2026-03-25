@@ -40,6 +40,7 @@ export interface IClip {
   style?: any;
   caption?: any;
   effects?: any[];
+  locked?: boolean;
   // ... any other props
 }
 

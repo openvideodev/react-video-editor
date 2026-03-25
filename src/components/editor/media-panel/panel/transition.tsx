@@ -48,6 +48,11 @@ const TransitionCard = ({
 
   return (
     <div
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData("text/plain", effectKey);
+        e.dataTransfer.setData("type", "transition");
+      }}
       className="flex w-full items-center gap-2 flex-col group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

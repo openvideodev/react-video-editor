@@ -72,6 +72,10 @@ export default function EditProjectPage() {
           projectStore.setFps(project.fps);
         }
 
+        if (project.name) {
+          projectStore.setProjectName(project.name);
+        }
+
         projectStore.setInitialStudioJSON(project.data || null);
       } catch (err) {
         console.error("Failed to load project", err);

@@ -6,6 +6,16 @@ import { useProjectStore } from "@/stores/project-store";
 import { editorFont } from "./constants";
 import { CUSTOM_TRANSITIONS } from "./transition-custom";
 import { CUSTOM_EFFECTS } from "./effect-custom";
+import { SelectionFloatingMenu } from "./selection-floating-menu";
+import { useClipActions } from "./options-floating-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Clipboard, Copy, CopyPlus, LockKeyhole, LockKeyholeOpen, Trash2 } from "lucide-react";
 
 const STUDIO_CONFIG = {
   fps: 30,
@@ -33,6 +43,16 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
   const { setStudio } = useStudioStore();
   const { canvasSize, initialStudioJSON } = useProjectStore();
   const { theme, resolvedTheme } = useTheme();
+  const {
+    selectedClip,
+    isLocked,
+    hasClipboard,
+    handleCopy,
+    handlePaste,
+    handleDuplicate,
+    handleToggleLock,
+    handleDelete,
+  } = useClipActions();
 
   const bgColor = useMemo(() => {
     const currentTheme = theme === "system" ? resolvedTheme : theme;
@@ -149,23 +169,78 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
   }, [initialStudioJSON]);
 
   return (
-    <div className="h-full w-full flex flex-col min-h-0 min-w-0 bg-card rounded-sm relative">
-      <div
-        style={{
-          flex: 1,
-          position: "relative", // Ensure relative positioning for absolute children if needed
-          overflow: "hidden", // Hide anything outside (though canvas masks it too)
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          style={{
-            display: "block",
-            width: "100%",
-            height: "100%",
-          }}
-        />
-      </div>
-    </div>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div className="h-full w-full flex flex-col min-h-0 min-w-0 bg-card rounded-sm relative">
+          <div
+            style={{
+              flex: 1,
+              position: "relative", // Ensure relative positioning for absolute children if needed
+              overflow: "hidden", // Hide anything outside (though canvas masks it too)
+            }}
+          >
+            <canvas
+              ref={canvasRef}
+              style={{
+                display: "block",
+                width: "100%",
+                height: "100%",
+                outline: "none", // Avoid focus outline on canvas click
+              }}
+              tabIndex={0}
+            />
+            <SelectionFloatingMenu />
+          </div>
+        </div>
+      </ContextMenuTrigger>
+
+      {selectedClip && selectedClip?.type !== "Transition" && (
+        <ContextMenuContent className="w-44">
+          {!isLocked && (
+            <>
+              <ContextMenuItem onClick={handleCopy} disabled={!selectedClip}>
+                <Copy />
+                Copy
+                <ContextMenuShortcut>⌘ C</ContextMenuShortcut>
+              </ContextMenuItem>
+
+              <ContextMenuItem onClick={handlePaste} disabled={!hasClipboard}>
+                <Clipboard />
+                Paste
+                <ContextMenuShortcut>⌘ V</ContextMenuShortcut>
+              </ContextMenuItem>
+
+              <ContextMenuItem onClick={handleDuplicate} disabled={!selectedClip}>
+                <CopyPlus />
+                Duplicate
+                <ContextMenuShortcut>⌘ D</ContextMenuShortcut>
+              </ContextMenuItem>
+            </>
+          )}
+
+          {selectedClip ? (
+            <ContextMenuItem onClick={handleToggleLock}>
+              {isLocked ? <LockKeyholeOpen /> : <LockKeyhole />}
+              {isLocked ? "Unlock" : "Lock"}
+              <ContextMenuShortcut>⌘ L</ContextMenuShortcut>
+            </ContextMenuItem>
+          ) : (
+            <ContextMenuItem disabled>
+              <LockKeyhole />
+              Lock
+              <ContextMenuShortcut>⌘ L</ContextMenuShortcut>
+            </ContextMenuItem>
+          )}
+
+          {!isLocked && (
+            <ContextMenuItem onClick={handleDelete} disabled={!selectedClip}>
+              <Trash2 />
+              Delete
+              <ContextMenuShortcut>⌫</ContextMenuShortcut>
+            </ContextMenuItem>
+          )}
+        </ContextMenuContent>
+      )}
+    </ContextMenu>
   );
 }

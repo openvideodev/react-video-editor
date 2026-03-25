@@ -138,14 +138,21 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const allTransitions = getTransitionOptions();
 
   const renderTransitionList = (list: typeof allTransitions) => (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(92px,1fr))] gap-2.5 justify-items-center">
+    <div
+      className={`grid grid-cols-[repeat(auto-fill,minmax(92px,1fr))] gap-2.5 justify-items-center p-2 transition-all duration-200`}
+    >
       {list.map((effect) => {
         const isReady = loaded[effect.key]?.static && loaded[effect.key]?.dynamic;
 
         return (
           <div
             key={effect.key}
-            className="flex w-full items-center gap-2 flex-col group cursor-pointer relative"
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.setData("text/plain", effect.key);
+              e.dataTransfer.setData("type", "transition");
+            }}
+            className="flex w-full items-center gap-2 flex-col group cursor-pointer relative select-none"
             onClick={() => {
               if (!studio) return;
               handleUpdate({ key: effect.key });
@@ -232,8 +239,13 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const renderCustomPreset = (preset: CustomPreset, badge?: string) => (
     <div
       key={preset.id}
-      className="flex w-full items-center gap-2 flex-col group cursor-pointer relative"
+      className="flex w-full items-center gap-2 flex-col group cursor-pointer relative select-none"
       onClick={() => handleCustomClick(preset)}
+      draggable
+      onDragStart={(e) => {
+        e.dataTransfer.setData("text/plain", preset.id);
+        e.dataTransfer.setData("type", "transition");
+      }}
     >
       <div className="relative w-full aspect-video rounded-md bg-primary/40 border overflow-hidden">
         {badge && (

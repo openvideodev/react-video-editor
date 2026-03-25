@@ -187,6 +187,17 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     this.canvas.on("selection:updated", this.#onSelectionUpdate);
     this.canvas.on("selection:cleared", this.#onSelectionClear);
     this.canvas.on("mouse:move", this.#onMouseMove);
+    this.canvas.on("mouse:over", (e) => {
+      if (e.target && (e.target as any).elementId) {
+        this.emit("clip:hovered", { clipId: (e.target as any).elementId });
+      }
+    });
+
+    this.canvas.on("mouse:out", (e) => {
+      if (e.target && (e.target as any).elementId) {
+        this.emit("clip:unhovered", { clipId: (e.target as any).elementId });
+      }
+    });
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -219,40 +230,139 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     return this.#getDuration();
   }
 
+  // private handleMouseMove(opt: any) {
+  //   const pointer = this.canvas.getPointer(opt.e);
+  //   const x = pointer.x;
+  //   const y = pointer.y;
+
+  //   const track = this.getTrackAt(y);
+  //   if (!track) {
+  //     this.clearTransitionButton();
+  //     return;
+  //   }
+
+  //   const trackData = this.#tracks.find((t) => t.id === track.id);
+  //   if (!trackData) {
+  //     this.clearTransitionButton();
+  //     return;
+  //   }
+
+  //   // Only show button for Video/Image tracks (or tracks with media clips)
+  //   // For now, let's just check the clips at that junction
+  //   const clipsAtTrack = trackData.clipIds
+  //     .map((id) => this.#clipsMap[id])
+  //     .filter((c) => !!c)
+  //     .sort((a, b) => a.display.from - b.display.from);
+
+  //   const TRANSITION_POINT_THRESHOLD = 10; // Pixels
+  //   let foundTransitionPoint = null;
+
+  //   for (let i = 0; i < clipsAtTrack.length - 1; i++) {
+  //     const clipA = clipsAtTrack[i];
+  //     const clipB = clipsAtTrack[i + 1];
+
+  //     // Check if they are adjacent in time (within 0.1s or something small)
+  //     // Actually, they should be exactly together for a transition usually,
+  //     // but let's allow a small gap in pixels detection.
+  //     const endXA =
+  //       (clipA.display.to / MICROSECONDS_PER_SECOND) *
+  //       TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+  //       this.#timeScale;
+
+  //     const startXB =
+  //       (clipB.display.from / MICROSECONDS_PER_SECOND) *
+  //       TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+  //       this.#timeScale;
+
+  //     // Transition point is average or just endXAs if they are snapped
+  //     const transitionPointX = (endXA + startXB) / 2;
+
+  //     if (Math.abs(x - transitionPointX) < TRANSITION_POINT_THRESHOLD) {
+  //       // Higher priority check: types must be media (Video/Image)
+  //       if (
+  //         (clipA.type === "Video" || clipA.type === "Image") &&
+  //         (clipB.type === "Video" || clipB.type === "Image")
+  //       ) {
+  //         // Check if there's already a transition here
+  //         const hasTransition = trackData.clipIds.some((id) => {
+  //           const c = this.#clipsMap[id];
+  //           if (!c || c.type !== "Transition") return false;
+  //           // Transition is roughly centered at transition point
+  //           const tStart =
+  //             (c.display.from / MICROSECONDS_PER_SECOND) *
+  //             TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+  //             this.#timeScale;
+  //           const tEnd =
+  //             (c.display.to / MICROSECONDS_PER_SECOND) *
+  //             TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+  //             this.#timeScale;
+  //           return transitionPointX >= tStart && transitionPointX <= tEnd;
+  //         });
+
+  //         if (!hasTransition) {
+  //           foundTransitionPoint = {
+  //             x: transitionPointX,
+  //             clipA,
+  //             clipB,
+  //             trackId: track.id,
+  //           };
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   if (foundTransitionPoint) {
+  //     this.showTransitionButton(
+  //       foundTransitionPoint.x,
+  //       track.top + (track.bottom - track.top) / 2,
+  //       foundTransitionPoint.clipA.id,
+  //       foundTransitionPoint.clipB.id,
+  //       foundTransitionPoint.trackId,
+  //     );
+  //   } else {
+  //     this.clearTransitionButton();
+  //   }
+  // }
+
   private handleMouseMove(opt: any) {
     const pointer = this.canvas.getPointer(opt.e);
     const x = pointer.x;
     const y = pointer.y;
 
-    const track = this.getTrackAt(y);
-    if (!track) {
+    const junction = this.getJunctionAt(x, y);
+
+    if (junction) {
+      this.showTransitionButton(
+        junction.x,
+        junction.track.top + (junction.track.bottom - junction.track.top) / 2,
+        junction.clipA.id,
+        junction.clipB.id,
+        junction.trackId,
+      );
+    } else {
       this.clearTransitionButton();
-      return;
     }
+  }
+
+  private getJunctionAt(x: number, y: number, options: { ignoreExisting?: boolean } = {}) {
+    const track = this.getTrackAt(y);
+    if (!track) return null;
 
     const trackData = this.#tracks.find((t) => t.id === track.id);
-    if (!trackData) {
-      this.clearTransitionButton();
-      return;
-    }
+    if (!trackData) return null;
 
-    // Only show button for Video/Image tracks (or tracks with media clips)
-    // For now, let's just check the clips at that junction
     const clipsAtTrack = trackData.clipIds
       .map((id) => this.#clipsMap[id])
-      .filter((c) => !!c)
+      .filter((c) => !!c && c.type !== "Transition")
       .sort((a, b) => a.display.from - b.display.from);
 
     const TRANSITION_POINT_THRESHOLD = 10; // Pixels
-    let foundTransitionPoint = null;
 
     for (let i = 0; i < clipsAtTrack.length - 1; i++) {
       const clipA = clipsAtTrack[i];
       const clipB = clipsAtTrack[i + 1];
 
-      // Check if they are adjacent in time (within 0.1s or something small)
-      // Actually, they should be exactly together for a transition usually,
-      // but let's allow a small gap in pixels detection.
       const endXA =
         (clipA.display.to / MICROSECONDS_PER_SECOND) *
         TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
@@ -263,20 +373,26 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
         TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
         this.#timeScale;
 
-      // Transition point is average or just endXAs if they are snapped
       const transitionPointX = (endXA + startXB) / 2;
 
       if (Math.abs(x - transitionPointX) < TRANSITION_POINT_THRESHOLD) {
-        // Higher priority check: types must be media (Video/Image)
         if (
           (clipA.type === "Video" || clipA.type === "Image") &&
           (clipB.type === "Video" || clipB.type === "Image")
         ) {
-          // Check if there's already a transition here
+          if (options.ignoreExisting) {
+            return {
+              x: transitionPointX,
+              clipA,
+              clipB,
+              trackId: track.id,
+              track,
+            };
+          }
+
           const hasTransition = trackData.clipIds.some((id) => {
             const c = this.#clipsMap[id];
             if (!c || c.type !== "Transition") return false;
-            // Transition is roughly centered at transition point
             const tStart =
               (c.display.from / MICROSECONDS_PER_SECOND) *
               TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
@@ -289,29 +405,18 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
           });
 
           if (!hasTransition) {
-            foundTransitionPoint = {
+            return {
               x: transitionPointX,
               clipA,
               clipB,
               trackId: track.id,
+              track,
             };
-            break;
           }
         }
       }
     }
-
-    if (foundTransitionPoint) {
-      this.showTransitionButton(
-        foundTransitionPoint.x,
-        track.top + (track.bottom - track.top) / 2,
-        foundTransitionPoint.clipA.id,
-        foundTransitionPoint.clipB.id,
-        foundTransitionPoint.trackId,
-      );
-    } else {
-      this.clearTransitionButton();
-    }
+    return null;
   }
 
   private showTransitionButton(
@@ -355,7 +460,7 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     this.canvas.requestRenderAll();
   }
 
-  private clearTransitionButton() {
+  public clearTransitionButton() {
     if (this.#transitionButton) {
       this.canvas.remove(this.#transitionButton);
       this.#transitionButton = null;
@@ -439,6 +544,20 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     return timelineSeconds * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * this.#timeScale + vpt[4];
   }
 
+  public getClipScreenPosition(clipId: string) {
+    const clipObj = this.#clipObjects.get(clipId);
+    if (!clipObj) return null;
+
+    // getBoundingRect returns bounds in canvas coordinate system (scaled/translated by viewport)
+    const br = clipObj.getBoundingRect();
+    return {
+      left: br.left,
+      top: br.top,
+      width: br.width,
+      height: br.height,
+    };
+  }
+
   /**
    * Returns the stable X position in the "infinite canvas" space (starts at 0, no scroll/offset)
    */
@@ -491,6 +610,61 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
     }
 
     this.canvas.requestRenderAll();
+  }
+
+  public findJunction(x: number, y: number, showButton = false) {
+    const junction = this.getJunctionAt(x, y, { ignoreExisting: true });
+    if (junction) {
+      if (showButton) {
+        this.showTransitionButton(
+          junction.x,
+          junction.track.top + (junction.track.bottom - junction.track.top) / 2,
+          junction.clipA.id,
+          junction.clipB.id,
+          junction.trackId,
+        );
+      }
+      return {
+        clipAId: junction.clipA.id,
+        clipBId: junction.clipB.id,
+        trackId: junction.trackId,
+        x: junction.x,
+      };
+    }
+    return null;
+  }
+
+  public findTransition(x: number, y: number) {
+    const track = this.getTrackAt(y);
+    if (!track) return null;
+
+    const trackData = this.#tracks.find((t) => t.id === track.id);
+    if (!trackData) return null;
+
+    for (const clipId of trackData.clipIds) {
+      const clip = this.#clipsMap[clipId];
+      if (!clip || clip.type !== "Transition") continue;
+
+      const tc = clip as any;
+      const startX =
+        (clip.display.from / MICROSECONDS_PER_SECOND) *
+        TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+        this.#timeScale;
+      const endX =
+        (clip.display.to / MICROSECONDS_PER_SECOND) *
+        TIMELINE_CONSTANTS.PIXELS_PER_SECOND *
+        this.#timeScale;
+
+      if (x >= startX && x <= endX) {
+        return {
+          clipAId: tc.fromClipId,
+          clipBId: tc.toClipId,
+          trackId: track.id,
+        };
+      }
+    }
+
+    return null;
   }
 
   public clear() {
@@ -681,9 +855,12 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
 
           const isTextual = clip.type === "Text" || clip.type === "Caption";
 
+          const isEffect = clip.type === "Effect";
           let clipName = isTextual
             ? clip.text || clip.name || clip.type
-            : clip.name || (isMedia ? clip.src : clip.text) || clip.type;
+            : clip.name ||
+              (isEffect ? (clip as any).effect?.name : isMedia ? clip.src : clip.text) ||
+              clip.type;
 
           // If it's a media URL and we still have a long URL, try to extract the filename
           if (
@@ -712,6 +889,14 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
               elementId: clip.id,
               text: clipName,
               src: clip.src,
+              lockMovementX: !!clip.locked,
+              lockMovementY: !!clip.locked,
+              lockScalingX: !!clip.locked,
+              lockScalingY: !!clip.locked,
+              lockSkewingX: !!clip.locked,
+              lockSkewingY: !!clip.locked,
+              lockRotation: !!clip.locked,
+              hasControls: !clip.locked,
             };
             console.log({ commonProps });
 
@@ -754,6 +939,14 @@ class Timeline extends EventEmitter<TimelineCanvasEvents> {
               height: trackHeight,
               text: clipName,
               src: clip.src,
+              lockMovementX: !!clip.locked,
+              lockMovementY: !!clip.locked,
+              lockScalingX: !!clip.locked,
+              lockScalingY: !!clip.locked,
+              lockSkewingX: !!clip.locked,
+              lockSkewingY: !!clip.locked,
+              lockRotation: !!clip.locked,
+              hasControls: !clip.locked,
               trim: clip.trim
                 ? { ...clip.trim }
                 : {

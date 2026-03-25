@@ -46,7 +46,7 @@ export class Effect extends BaseTimelineClip {
     ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
     ctx.textAlign = "left";
     ctx.clip();
-    ctx.fillText("Effect", 36, 12);
+    ctx.fillText(this.text || "Effect", 36, 12);
 
     ctx.translate(8, 1);
 

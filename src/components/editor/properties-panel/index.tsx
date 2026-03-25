@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { IClip } from "openvideo";
 import { EffectProperties } from "./effect-properties";
 import { TransitionProperties } from "./transition-properties";
+import { cn } from "@/lib/utils";
 
 export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
   const [, setTick] = useState(0);
@@ -61,7 +62,14 @@ export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
 
   return (
     <ScrollArea className="h-full">
-      <div className="flex flex-col gap-4 p-4">{renderSpecificProperties()}</div>
+      <div
+        className={cn(
+          "flex flex-col gap-4 p-4 transition-opacity",
+          clip.locked && "opacity-50 pointer-events-none select-none",
+        )}
+      >
+        {renderSpecificProperties()}
+      </div>
     </ScrollArea>
   );
 }
