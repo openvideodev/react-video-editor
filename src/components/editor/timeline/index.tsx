@@ -648,7 +648,13 @@ export function Timeline() {
                 />
               </ContextMenuTrigger>
               {selectedClip && selectedClip?.type !== "Transition" && (
-                <ContextMenuContent className="w-44">
+                <ContextMenuContent
+                  className="w-44"
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   {!isLocked && (
                     <>
                       <ContextMenuItem onClick={handleCopy} disabled={!selectedClip}>
