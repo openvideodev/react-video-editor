@@ -1,3 +1,4 @@
+import { Icons } from "@/components/shared/icons";
 import {
   IconFolder,
   IconLetterT,
@@ -28,7 +29,7 @@ export type Tab =
   | "transitions";
 
 export const tabs: {
-  [key in Tab]: { icon: React.FC<IconProps>; label: string };
+  [key in Tab]: { icon: React.FC<IconProps> | React.FC<any>; label: string };
 } = {
   uploads: {
     icon: IconFolder,
@@ -67,7 +68,7 @@ export const tabs: {
     label: "SFX",
   },
   transitions: {
-    icon: IconArrowsLeftRight,
+    icon: Icons.transition,
     label: "Transitions",
   },
   effects: {

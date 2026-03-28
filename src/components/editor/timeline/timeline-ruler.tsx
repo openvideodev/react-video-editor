@@ -67,13 +67,13 @@ export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: Timeli
     ctx.fillStyle = colors.text;
     ctx.strokeStyle = colors.border;
     ctx.lineWidth = 1;
-    ctx.font = "12px Inter, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
+    ctx.font = "11px Inter, sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
 
     // Calculate intervals
-    // We want main labels (text) to have enough space (min 50px)
-    const minTextSpacing = 50;
+    // We want main labels (text) to have enough space (min 60px)
+    const minTextSpacing = 60;
 
     // Available intervals: 0.1s, 0.5s, 1s, 2s, 5s, 10s, 15s, 30s, 1m (60s), 2m (120s), 5m (300s)
     const intervalOptions = [0.1, 0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300];
@@ -86,24 +86,19 @@ export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: Timeli
       }
     }
 
-    // Helper to format time
+    // Helper to format time: MM:SS
     const formatTime = (seconds: number) => {
-      // If interval is sub-second, show decimal
-      if (mainInterval < 1) {
-        // Avoid long floating point errors
-        return seconds.toFixed(1) + "s";
-      }
-
-      const m = Math.floor(seconds / 60);
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
       const s = Math.floor(seconds % 60);
 
-      if (m > 0 && s === 0) {
-        return `${m}m`;
+      const mStr = m.toString().padStart(2, "0");
+      const sStr = s.toString().padStart(2, "0");
+
+      if (h > 0) {
+        return `${h}:${mStr}:${sStr}`;
       }
-      if (m === 0 && s === 0) {
-        return "0s";
-      }
-      return m > 0 ? `${m}:${s.toString().padStart(2, "0")}` : s.toString().padStart(2, "0");
+      return `${mStr}:${sStr}`;
     };
 
     // Sub ticks
@@ -111,6 +106,7 @@ export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: Timeli
     let subTickCount = 5;
     if (mainInterval === 0.1) subTickCount = 2; // 0.05
     if (mainInterval === 1) subTickCount = 5; // 0.2
+    if (mainInterval === 6) subTickCount = 6; // 1s
     if (mainInterval === 60) subTickCount = 4; // 15s
 
     let subInterval = mainInterval / subTickCount;
@@ -132,7 +128,7 @@ export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: Timeli
       const x = Math.floor(time * pixelsPerSecond - scrollLeft) + 0.5;
 
       if (x > width) break;
-      if (x < -20) continue; // Skip if far left
+      if (x < -50) continue; // Skip if far left
 
       const isBeyondDuration = time > duration + 0.001;
       ctx.globalAlpha = isBeyondDuration ? 0.4 : 1.0;
@@ -145,22 +141,23 @@ export function TimelineRuler({ zoomLevel, duration, width, scrollLeft }: Timeli
         Math.abs((time % mainInterval) - mainInterval) < 0.001;
 
       if (isMain) {
-        // Main Tick (Botom)
-        ctx.moveTo(x, 18);
+        // Main Tick (Full height)
+        ctx.moveTo(x, 0);
         ctx.lineTo(x, 24);
+        ctx.stroke();
 
-        // Text (Top)
+        // Text (Aligned right of the tick)
         const text = formatTime(time);
-        ctx.fillText(text, x, 4);
+        ctx.fillText(text, x + 5, 12);
       } else {
-        // Sub Tick (Bottom, shorter)
+        // Sub Tick (Top, short)
         // Only draw sub ticks if there's enough space
         if (subInterval !== mainInterval) {
-          ctx.moveTo(x, 21);
-          ctx.lineTo(x, 24);
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, 4);
+          ctx.stroke();
         }
       }
-      ctx.stroke();
     }
     ctx.globalAlpha = 1.0;
   }, [zoomLevel, duration, width, scrollLeft, colors]);

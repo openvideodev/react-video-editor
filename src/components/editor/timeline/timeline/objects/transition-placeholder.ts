@@ -17,9 +17,9 @@ export class TransitionPlaceholder extends Group {
     const box = new Rect({
       width,
       height,
-      fill: "rgba(0, 242, 255, 0.3)",
-      stroke: "rgba(0, 242, 255, 1)",
-      strokeWidth: 2,
+      fill: "rgba(0, 242, 255, 0.6)",
+      stroke: "white",
+      strokeWidth: 4,
       strokeDashArray: [4, 4],
       rx: 4,
       ry: 4,

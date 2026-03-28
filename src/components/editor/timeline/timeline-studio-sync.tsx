@@ -348,7 +348,6 @@ export const TimelineStudioSync = ({ timelineCanvas }: TimelineStudioSyncProps) 
   // When clips are modified/moved in the timeline canvas, update the store
   useEffect(() => {
     if (!timelineCanvas) return;
-
     const handleClipModified = async ({
       clipId,
       displayFrom,
@@ -367,17 +366,76 @@ export const TimelineStudioSync = ({ timelineCanvas }: TimelineStudioSyncProps) 
 
       if (!studio) return;
 
-      // Update Studio
-      // Calculate new display.to based on from + duration
-      const displayTo = displayFrom + duration;
-      const display = { from: displayFrom, to: displayTo };
+      // Transition clips need special handling: just calling studio.updateClip is not enough.
+      // The engine also needs the adjacent clips' `transition` metadata updated and the
+      // cached transition renderer cleared — exactly what handleUpdate in transition-properties does.
+      const storeClip = useTimelineStore.getState().clips[clipId];
+      if (storeClip?.type === "Transition") {
+        const transitionClip = storeClip as any;
+        const fromClipId = transitionClip.fromClipId;
+        const toClipId = transitionClip.toClipId;
+        const transitionKey = transitionClip.transitionEffect?.key ?? "GridFlip";
 
-      await studio.updateClip(clipId, {
-        display,
-        // We can redundant set duration for clarity, though our logic handles it
-        duration,
-        trim,
-      });
+        if (fromClipId && toClipId) {
+          const fromClip = studio.timeline.getClipById(fromClipId);
+          const toClip = studio.timeline.getClipById(toClipId);
+
+          if (fromClip && toClip) {
+            const transitionStart = toClip.display.from - duration / 2;
+            const transitionEnd = transitionStart + duration;
+
+            const transitionMeta = {
+              key: transitionKey,
+              name: transitionKey,
+              duration,
+              fromClipId,
+              toClipId,
+              start: Math.max(0, transitionStart),
+              end: transitionEnd,
+            };
+
+            // Clear the cached renderer so it picks up the new duration
+            const rendererKey = `${fromClipId}_${toClipId}`;
+            if ((studio as any).transitionRenderers?.has(rendererKey)) {
+              (studio as any).transitionRenderers.get(rendererKey)?.destroy();
+              (studio as any).transitionRenderers.delete(rendererKey);
+            }
+
+            await studio.updateClips([
+              {
+                id: clipId,
+                updates: {
+                  duration,
+                  display: {
+                    from: Math.max(0, transitionStart),
+                    to: transitionEnd,
+                  },
+                },
+              },
+              {
+                id: fromClipId,
+                updates: { transition: transitionMeta } as any,
+              },
+              {
+                id: toClipId,
+                updates: { transition: transitionMeta } as any,
+              },
+            ]);
+
+            studio.seek(studio.currentTime);
+          }
+        }
+      } else {
+        // Update Studio for non-transition clips
+        const displayTo = displayFrom + duration;
+        const display = { from: displayFrom, to: displayTo };
+
+        await studio.updateClip(clipId, {
+          display,
+          duration,
+          trim,
+        });
+      }
 
       // Update store duration (max duration might have changed)
       // Convert µs -> s

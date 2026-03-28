@@ -1,6 +1,6 @@
 import { Control, controlsUtils } from "fabric";
 import { drawVerticalLine } from "./render";
-import { changeWidth } from "./resize-action";
+import { changeWidth, changeTransitionWidth } from "./resize-action";
 import { changeTrim } from "./trim-action";
 // import { changeWidth } from "../resize/common";
 // import { drawVerticalLine } from "./draw";
@@ -75,17 +75,19 @@ export const createTransitionControls = () => ({
   mr: new Control({
     x: 0.5,
     y: 0,
-    // actionHandler: resizeTransitionWidth,
+    actionHandler: changeTransitionWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
     actionName: "resizing",
-    // render: drawVerticalLine,
+    render: drawVerticalLine,
+    offsetX: -8,
   }),
   ml: new Control({
     x: -0.5,
     y: 0,
-    // actionHandler: resizeTransitionWidth,
+    actionHandler: changeTransitionWidth,
     cursorStyleHandler: scaleSkewCursorStyleHandler,
     actionName: "resizing",
-    // render: drawVerticalLine,
+    render: drawVerticalLine,
+    offsetX: 8,
   }),
 });

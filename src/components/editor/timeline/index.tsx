@@ -119,6 +119,14 @@ export function Timeline() {
   const timelineCanvasRef = useRef<TimelineCanvas | null>(null);
   const [canvasInstance, setCanvasInstance] = useState<TimelineCanvas | null>(null);
   const isUpdatingRef = useRef(false);
+  const lastDragPos = useRef({ x: 0, y: 0 });
+  const dragRafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (dragRafRef.current) cancelAnimationFrame(dragRafRef.current);
+    };
+  }, []);
 
   const handleScrollChange = useCallback(
     (scrollX: number) => {
@@ -555,12 +563,24 @@ export function Timeline() {
                   onContextMenu={handleContextMenu}
                   onDragOver={(e) => {
                     e.preventDefault();
-                    if (timelineCanvasRef.current) {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const x = e.clientX - rect.left;
-                      const y = e.clientY - rect.top;
-                      timelineCanvasRef.current.findJunction(x, y, true);
-                    }
+                    if (!timelineCanvasRef.current) return;
+
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Spatial debounce: only update if moved significantly
+                    const dx = Math.abs(x - lastDragPos.current.x);
+                    const dy = Math.abs(y - lastDragPos.current.y);
+                    if (dx < 2 && dy < 2) return;
+
+                    lastDragPos.current = { x, y };
+
+                    if (dragRafRef.current) return;
+                    dragRafRef.current = requestAnimationFrame(() => {
+                      dragRafRef.current = null;
+                      timelineCanvasRef.current?.findJunction(x, y, true);
+                    });
                   }}
                   onDragLeave={() => {
                     if (timelineCanvasRef.current) {
@@ -580,9 +600,21 @@ export function Timeline() {
                       const existingTransition = timelineCanvasRef.current.findTransition(x, y);
 
                       if (existingTransition) {
+                        const clipA = clips[existingTransition.clipAId];
+                        const clipB = clips[existingTransition.clipBId];
+                        const minDuration = Math.min(
+                          clipA?.duration ?? Infinity,
+                          clipB?.duration ?? Infinity,
+                        );
+                        let duration = minDuration === Infinity ? 2_000_000 : minDuration * 0.25;
+                        const fps = 30;
+                        let frameCount = Math.round((duration / 1_000_000) * fps);
+                        if (frameCount % 2 !== 0) frameCount += 1;
+                        duration = Math.round((frameCount / fps) * 1_000_000);
+
                         await studio.addTransition(
                           transitionKey,
-                          2_000_000,
+                          duration,
                           existingTransition.clipAId,
                           existingTransition.clipBId,
                         );
@@ -593,9 +625,19 @@ export function Timeline() {
                           true, // Use expanded logic for drop as well
                         );
                         if (junction) {
+                          const minDuration = Math.min(
+                            junction.clipA.duration ?? Infinity,
+                            junction.clipB.duration ?? Infinity,
+                          );
+                          let duration = minDuration === Infinity ? 2_000_000 : minDuration * 0.25;
+                          const fps = 30;
+                          let frameCount = Math.round((duration / 1_000_000) * fps);
+                          if (frameCount % 2 !== 0) frameCount += 1;
+                          duration = Math.round((frameCount / fps) * 1_000_000);
+
                           await studio.addTransition(
                             transitionKey,
-                            2_000_000,
+                            duration,
                             junction.clipA.id,
                             junction.clipB.id,
                           );
@@ -606,7 +648,13 @@ export function Timeline() {
                 />
               </ContextMenuTrigger>
               {selectedClip && selectedClip?.type !== "Transition" && (
-                <ContextMenuContent className="w-44">
+                <ContextMenuContent
+                  className="w-44"
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   {!isLocked && (
                     <>
                       <ContextMenuItem onClick={handleCopy} disabled={!selectedClip}>
@@ -660,7 +708,7 @@ export function Timeline() {
                 </ContextMenuContent>
               )}
             </ContextMenu>
-            <TimelineClipMenu timelineCanvas={canvasInstance} />
+            {/* <TimelineClipMenu timelineCanvas={canvasInstance} /> */}
           </div>
         </div>
       </div>

@@ -1,9 +1,12 @@
-import { TransformActionHandler, controlsUtils } from "fabric";
+import { Control, TransformActionHandler, controlsUtils } from "fabric";
 import { resolveOrigin, isTransformCentered } from "./utils";
 import { CENTER, LEFT, RIGHT } from "./constants";
-// import { TIMELINE_CONSTANTS } from '../../utils';
+import { MICROSECONDS_PER_SECOND } from "@/types/timeline";
+import { drawVerticalLine } from "./render";
+import { TIMELINE_CONSTANTS } from "../../timeline-constants";
 
-const { wrapWithFireEvent, getLocalPoint, wrapWithFixedAnchor } = controlsUtils;
+const { wrapWithFireEvent, getLocalPoint, wrapWithFixedAnchor, scaleSkewCursorStyleHandler } =
+  controlsUtils;
 
 /**
  * Action handler to change object's width
@@ -62,3 +65,62 @@ export const changeObjectWidth: TransformActionHandler = (_, transform, x, y) =>
 };
 
 export const changeWidth = wrapWithFireEvent("resizing", wrapWithFixedAnchor(changeObjectWidth));
+
+/**
+ * Action handler to change transition's width proportionally from both sides
+ */
+export const resizeTransitionWidth: TransformActionHandler = (_, transform, x, y) => {
+  const { target } = transform;
+  const localPoint = getLocalPoint(transform, CENTER, CENTER, x, y);
+
+  const strokePadding = target.strokeWidth / (target.strokeUniform ? target.scaleX : 1);
+  // We double the local point because we want centered expansion (proportional on both sides)
+  const multiplier = 2;
+  const oldWidth = target.width;
+
+  let newWidth = Math.ceil(Math.abs((localPoint.x * multiplier) / target.scaleX) - strokePadding);
+
+  // Minimum width: 0.2s in pixels
+  const zoom = (target as any).timeScale || 1;
+  const MIN_PIXELS = 0.2 * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoom;
+
+  let finalWidth = Math.max(newWidth, MIN_PIXELS);
+
+  // Maximum width: 25% of shortest neighbor
+  const maxDurationUs = (target as any).maxTransitionDurationUs;
+  if (maxDurationUs) {
+    const maxWidth =
+      (maxDurationUs / MICROSECONDS_PER_SECOND) * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoom;
+    if (finalWidth > maxWidth) {
+      finalWidth = maxWidth;
+    }
+  }
+
+  const fps = 30; // standard project fps
+  let durationFrames = Math.round(
+    (finalWidth / (TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoom)) * fps,
+  );
+  if (durationFrames % 2 !== 0) durationFrames += 1; // force even number of frames
+  const duration = Math.round((durationFrames / fps) * MICROSECONDS_PER_SECOND);
+
+  // Re-adjust finalWidth to match the snapped frame duration
+  finalWidth = (duration / MICROSECONDS_PER_SECOND) * TIMELINE_CONSTANTS.PIXELS_PER_SECOND * zoom;
+
+  if (Math.abs(finalWidth - oldWidth) < 0.1) return false;
+
+  const diffWidth = finalWidth - oldWidth;
+  const diffLeft = diffWidth / 2;
+
+  target.set("width", finalWidth);
+  // Adjust left to keep center fixed (left-origin object)
+  target.set("left", target.left - diffLeft);
+
+  // Update duration property for consistency
+  (target as any).duration = duration;
+
+  target.setCoords();
+
+  return oldWidth !== target.width;
+};
+
+export const changeTransitionWidth = wrapWithFireEvent("resizing", resizeTransitionWidth);
