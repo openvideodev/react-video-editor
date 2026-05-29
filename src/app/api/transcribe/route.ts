@@ -1,6 +1,17 @@
 // app/api/transcribe/route.ts
 import { NextResponse } from "next/server";
 import { transcribe } from "@/lib/transcribe";
+import { config } from "@/lib/config";
+import { generateUUID } from "@/utils/id";
+import { R2StorageService } from "@/lib/r2";
+
+const r2 = new R2StorageService({
+  bucketName: config.r2.bucket,
+  accessKeyId: config.r2.accessKeyId,
+  secretAccessKey: config.r2.secretAccessKey,
+  accountId: config.r2.accountId,
+  cdn: config.r2.cdn,
+});
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +31,14 @@ export async function POST(request: Request) {
       paragraphs: true,
     });
 
-    return NextResponse.json(result, { status: 200 });
+    let transcriptionUrl = null;
+    if (body.saveToR2) {
+      const fileName = `transcription-${generateUUID()}.json`;
+      const fileBuffer = Buffer.from(JSON.stringify(result));
+      transcriptionUrl = await r2.uploadData(fileName, fileBuffer, "application/json");
+    }
+
+    return NextResponse.json({ ...result, url: transcriptionUrl }, { status: 200 });
   } catch (error) {
     console.error("Transcription error:", error);
     const errorMessage = error instanceof Error ? error.message : "Internal server error";

@@ -1,64 +1,39 @@
-import { R2StorageService } from "@/lib/r2";
-import { NextRequest, NextResponse } from "next/server";
-
-// Note: Reusing SFX logic for Music as a placeholder or if using SFX "instrumental" capabilities.
-// If a specific Music API becomes available, this should be updated.
-
-const r2 = new R2StorageService({
-  bucketName: process.env.R2_BUCKET_NAME || "",
-  accountId: process.env.R2_ACCOUNT_ID || "",
-  accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-  cdn: process.env.R2_PUBLIC_DOMAIN || "",
-});
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, duration } = await req.json();
+    const body = await req.json();
+    const apiKey = process.env.ELEVENLABS_API_KEY;
 
-    if (!text) {
-      return NextResponse.json({ error: "Text/Description is required" }, { status: 400 });
+    if (!apiKey) {
+      return NextResponse.json({ error: "ElevenLabs API key not configured" }, { status: 500 });
     }
 
-    const apiKey = process.env.ELEVENLABS_API_KEY;
-    // Using SFX endpoint for now as discussed
-    const url = `${process.env.ELEVENLABS_URL}/v1/sound-generation`;
-
-    const headers = {
-      Accept: "audio/mpeg",
-      "Content-Type": "application/json",
-      "xi-api-key": apiKey || "",
-    };
-
-    const data = {
-      text, // Prompt might need to be adjusted to encourage "musical" results
-      duration_seconds: duration || undefined,
-    };
-
-    const response = await fetch(url, {
+    const response = await fetch("https://api.elevenlabs.io/v1/sound-generation", {
       method: "POST",
-      headers,
-      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        "xi-api-key": apiKey,
+      },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("ElevenLabs Music/SFX API Error:", errorText);
+      const errorData = await response.json().catch(() => ({}));
       return NextResponse.json(
-        { error: "Failed to generate music", details: errorText },
+        { error: errorData.message || "Failed to generate music" },
         { status: response.status },
       );
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const fileName = `music/${Date.now()}.mp3`;
-    const publicUrl = await r2.uploadData(fileName, buffer, "audio/mpeg");
-
-    return NextResponse.json({ url: publicUrl });
+    const audioBuffer = await response.arrayBuffer();
+    return new NextResponse(audioBuffer, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+      },
+    });
   } catch (error) {
-    console.error("Music generation error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("ElevenLabs Music API Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

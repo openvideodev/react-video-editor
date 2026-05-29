@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
-import { Effect, getEffectOptions, VALUES_FILTER_SPECIAL, registerCustomEffect } from "openvideo";
+import { useState } from "react";
+import {
+  Effect,
+  getEffectOptions,
+  VALUES_FILTER_SPECIAL,
+  registerCustomEffect,
+} from "@openvideo/engine-pixi";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useStudioStore } from "@/stores/studio-store";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
 import { formatFilterName } from "@/utils/effects";
+import { core } from "@/lib/project";
+import Draggable from "@/components/shared/draggable";
+import { useIsDraggingOverTimeline } from "@/hooks/use-is-dragging-over-timeline";
 
 const EFFECT_DURATION_DEFAULT = 5000000;
 
@@ -21,124 +26,84 @@ type EffectCardProps = {
   dynamicSrc: string;
   onClick: () => void;
   badge?: string;
+  effectKey?: string;
 };
 
-const EffectCard = ({ label, staticSrc, dynamicSrc, onClick, badge }: EffectCardProps) => {
+const EffectCard = ({ label, staticSrc, dynamicSrc, onClick, badge, effectKey }: EffectCardProps) => {
   const [isDynamicLoaded, setIsDynamicLoaded] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const isDraggingOverTimeline = useIsDraggingOverTimeline();
 
   return (
-    <div
-      className="flex w-full flex-col items-center gap-2 cursor-pointer group"
-      onClick={onClick}
-      onMouseEnter={() => {
-        setIsHovering(true);
-
-        if (!isDynamicLoaded) {
-          const img = new Image();
-          img.src = dynamicSrc;
-        }
+    <Draggable
+      data={{
+        type: "Effect",
+        name: label,
+        effectKey: effectKey || label,
+        display: { from: 0, to: EFFECT_DURATION_DEFAULT },
+        duration: EFFECT_DURATION_DEFAULT,
       }}
-      onMouseLeave={() => setIsHovering(false)}
+      shouldDisplayPreview={!isDraggingOverTimeline}
+      renderCustomPreview={
+        <div className="w-20 aspect-video rounded-md overflow-hidden shadow-xl border-2 border-primary bg-zinc-900 flex items-center justify-center">
+          <span className="text-[10px] text-white font-medium px-2 text-center">{label}</span>
+        </div>
+      }
     >
-      <div className="relative w-full aspect-video rounded-md bg-input/30 border overflow-hidden">
-        {staticSrc || dynamicSrc ? (
-          <>
-            {staticSrc && (
-              <img
-                src={staticSrc}
-                loading="lazy"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 ${
-                  isHovering && isDynamicLoaded ? "opacity-0" : "opacity-100"
-                }`}
-              />
-            )}
-            {dynamicSrc && (
-              <img
-                src={dynamicSrc}
-                loading="lazy"
-                onLoad={() => setIsDynamicLoaded(true)}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 ${
-                  isHovering && isDynamicLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            )}
-            {isHovering && !isDynamicLoaded && dynamicSrc && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                <div className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-xs text-muted-foreground text-center px-2 bg-primary/40 h-full w-full"></div>
-        )}
-        {isHovering && dynamicSrc && !isDynamicLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <div className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-          </div>
-        )}
+      <div
+        className="flex w-full flex-col items-center gap-2 cursor-pointer group"
+        onClick={onClick}
+        onMouseEnter={() => {
+          setIsHovering(true);
 
-        {badge && (
-          <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-[9px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
-            {badge}
-          </div>
-        )}
+          if (!isDynamicLoaded) {
+            const img = new Image();
+            img.src = dynamicSrc;
+          }
+        }}
+        onMouseLeave={() => setIsHovering(false)}
+      >
+        <div className="relative w-full aspect-video rounded-md bg-input/30 border overflow-hidden">
+          {staticSrc || dynamicSrc ? (
+            <div
+              className="absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-200"
+              style={{
+                backgroundImage: `url(${isHovering && isDynamicLoaded ? dynamicSrc : staticSrc})`,
+              }}
+              onLoad={() => {
+                // Background images don't have onLoad on the div, but we preloaded the dynamic one
+                if (isHovering) setIsDynamicLoaded(true);
+              }}
+            />
+          ) : (
+            <div className="text-xs text-muted-foreground text-center px-2 bg-primary/40 h-full w-full"></div>
+          )}
+          {isHovering && dynamicSrc && !isDynamicLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+              <div className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            </div>
+          )}
 
-        <div
-          className={`absolute bottom-0 left-0 w-full p-2 bg-linear-to-t from-black/80 to-transparent text-white text-xs font-medium truncate text-center transition-opacity duration-200 ${
-            dynamicSrc ? "group-hover:opacity-0" : ""
-          }`}
-        >
-          {label}
+          {badge && (
+            <div className="absolute top-1 right-1 bg-primary/80 text-primary-foreground text-[9px] font-semibold px-1.5 py-0.5 rounded-full leading-none">
+              {badge}
+            </div>
+          )}
+
+          <div
+            className={`absolute bottom-0 left-0 w-full p-2 bg-linear-to-t from-black/80 to-transparent text-white text-xs font-medium truncate text-center transition-opacity duration-200 ${
+              dynamicSrc ? "group-hover:opacity-0" : ""
+            }`}
+          >
+            {label}
+          </div>
         </div>
       </div>
-    </div>
+    </Draggable>
   );
 };
 
-// ─── Default Effects ──────────────────────────────────────────────────────────
-
-const EffectDefault = () => {
-  const { studio } = useStudioStore();
-  const effects = getEffectOptions();
-  const specialEffects = Object.keys(VALUES_FILTER_SPECIAL).map((filterName) => ({
-    key: filterName,
-    label: formatFilterName(filterName),
-    previewStatic: `https://cdn.subgen.co/previews/effects/static/effect_${filterName}_static.webp`,
-    previewDynamic: `https://cdn.subgen.co/previews/effects/dynamic/effect_${filterName}_dynamic.webp`,
-  }));
-  const allEffects = [...specialEffects, ...effects];
-
-  const handleClick = (key: string) => {
-    if (!studio) return;
-
-    const clip = new Effect(key);
-    clip.duration = EFFECT_DURATION_DEFAULT;
-    if (key === "embossFilter") {
-      clip.effect.values = { strength: 5 };
-    }
-    if (key === "pixelateFilter") {
-      clip.effect.values = { size: 10 };
-    }
-    studio.addClip(clip);
-  };
-
-  return (
-    <>
-      {allEffects.map((effect) => (
-        <EffectCard
-          key={effect.key}
-          label={effect.label}
-          staticSrc={effect.previewStatic}
-          dynamicSrc={effect.previewDynamic}
-          onClick={() => handleClick(effect.key)}
-        />
-      ))}
-    </>
-  );
-};
-
-// ─── Custom Effects (from DB) ─────────────────────────────────────────────────
+// ─── Combined Effects List ────────────────────────────────────────────────────
 
 type CustomPreset = {
   id: string;
@@ -149,92 +114,73 @@ type CustomPreset = {
   userId: string;
 };
 
-const EffectCustom = () => {
-  const { studio } = useStudioStore();
+const CombinedEffects = () => {
   const [ownPresets, setOwnPresets] = useState<CustomPreset[]>([]);
-  const [publishedPresets, setPublishedPresets] = useState<CustomPreset[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const effects = getEffectOptions();
 
-  useEffect(() => {
-    const fetchPresets = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/custom-presets?category=effects");
-        if (!res.ok) throw new Error("Failed to fetch custom effects");
-        const json = await res.json();
-        setOwnPresets(json.own ?? []);
-        setPublishedPresets(json.published ?? []);
-      } catch (err) {
-        setError("Could not load custom effects.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchPresets();
-  }, []);
+  const specialEffects = Object.keys(VALUES_FILTER_SPECIAL).map((filterName) => ({
+    key: filterName,
+    label: formatFilterName(filterName),
+    previewStatic: `https://cdn.subgen.co/previews/effects/static/effect_${filterName}_static.webp`,
+    previewDynamic: `https://cdn.subgen.co/previews/effects/dynamic/effect_${filterName}_dynamic.webp`,
+  }));
+  const allEffects = [...specialEffects, ...effects];
 
-  const handleClick = async (preset: CustomPreset) => {
-    if (!studio) return;
-    // Use a stable key derived from the preset id
-    const key = `custom_effect_${preset.id}`;
-    // Register the custom GLSL shader so the engine knows how to render it
+  const handleDefaultClick = async (key: string) => {
+    const effectValues: Record<string, any> = {};
+    if (key === "embossFilter") effectValues.strength = 5;
+    if (key === "pixelateFilter") effectValues.size = 10;
+
+    await core.clip.add({
+      type: "Effect",
+      name: formatFilterName(key),
+      effectKey: key,
+      display: { from: 0, to: EFFECT_DURATION_DEFAULT },
+      duration: EFFECT_DURATION_DEFAULT,
+    
+    });
+  };
+
+  const handleCustomClick = async (preset: CustomPreset) => {
+    const key = `custom_${preset.id}`;
     await registerCustomEffect(key, {
       key,
       label: preset.data.label || preset.name,
       fragment: preset.data.fragment,
     } as any);
-    const clip = new Effect(key);
-    clip.duration = EFFECT_DURATION_DEFAULT;
-    studio.addClip(clip);
+    await core.clip.add({
+      type: "Effect",
+      name: preset.data.label || preset.name,
+      effectKey: key,
+      display: { from: 0, to: EFFECT_DURATION_DEFAULT },
+      duration: EFFECT_DURATION_DEFAULT,
+    });
   };
-
-  if (isLoading) {
-    return (
-      <div className="col-span-full flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" />
-        <span className="text-xs">Loading custom effects…</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="col-span-full flex items-center justify-center py-12 text-xs text-destructive">
-        {error}
-      </div>
-    );
-  }
-
-  if (ownPresets.length === 0 && publishedPresets.length === 0) {
-    return (
-      <div className="col-span-full flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground">
-        <span className="text-xs">No custom effects yet.</span>
-        <span className="text-[10px]">Create one from the Gallery to see it here.</span>
-      </div>
-    );
-  }
 
   return (
     <>
+      {/* Default effects */}
+      {allEffects.map((effect) => (
+        <EffectCard
+          key={effect.key}
+          label={effect.label}
+          effectKey={effect.key}
+          staticSrc={effect.previewStatic}
+          dynamicSrc={effect.previewDynamic}
+          onClick={() => handleDefaultClick(effect.key)}
+        />
+      ))}
+
+      {/* Custom effects */}
       {ownPresets.map((preset) => (
         <EffectCard
           key={preset.id}
           label={preset.data.label || preset.name}
+          effectKey={`custom_${preset.id}`}
           staticSrc=""
           dynamicSrc=""
-          onClick={() => handleClick(preset)}
-        />
-      ))}
-      {publishedPresets.map((preset) => (
-        <EffectCard
-          key={preset.id}
-          label={preset.data.label || preset.name}
-          staticSrc=""
-          dynamicSrc=""
-          onClick={() => handleClick(preset)}
-          badge="Public"
+          onClick={() => handleCustomClick(preset)}
+          badge="Custom"
         />
       ))}
     </>
@@ -246,31 +192,13 @@ const EffectCustom = () => {
 const PanelEffect = () => {
   return (
     <div className="p-4 h-full">
-      <Tabs defaultValue="default" className="w-full h-full">
-        <TabsList className="w-full">
-          <TabsTrigger value="default" className="flex-1">
-            Default
-          </TabsTrigger>
-          <TabsTrigger value="custom" className="flex-1">
-            Custom
-          </TabsTrigger>
-        </TabsList>
-
-        {[
-          { value: "default", Component: EffectDefault },
-          { value: "custom", Component: EffectCustom },
-        ].map(({ value, Component }) => (
-          <TabsContent key={value} value={value} className="h-full">
-            <ScrollArea className="h-[calc(100%-60px)]">
-              <div className={gridClasses}>
-                <Component />
-              </div>
-            </ScrollArea>
-          </TabsContent>
-        ))}
-      </Tabs>
+      <ScrollArea className="h-full">
+        <div className={gridClasses}>
+          <CombinedEffects />
+        </div>
+      </ScrollArea>
     </div>
   );
-};
+}
 
 export default PanelEffect;

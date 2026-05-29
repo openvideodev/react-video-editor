@@ -1,7 +1,15 @@
-import * as React from "react";
 import { useState, useEffect } from "react";
-import { ANIMATABLE_PROPERTIES, AnimationProps, AnimationOptions, KeyframeData } from "openvideo";
-import { getPresetTemplate } from "openvideo";
+import {
+  ANIMATABLE_PROPERTIES,
+  AnimationProps,
+  AnimationOptions,
+  KeyframeData,
+} from "@openvideo/engine-pixi";
+import {
+  getPresetKeyframes,
+  SPECIAL_ANIMATIONS_CAPTIONS,
+  GSAP_PRESETS,
+} from "@/lib/animation-presets";
 import {
   Select,
   SelectContent,
@@ -12,30 +20,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { NumberInput } from "@/components/ui/number-input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import useLayoutStore from "../store/use-layout-store";
 import { useStudioStore } from "@/stores/studio-store";
-import { useRef } from "react";
 import { Switch } from "@/components/ui/switch";
+import * as Popover from "@radix-ui/react-popover";
 
 type PropertyKey = keyof typeof ANIMATABLE_PROPERTIES;
-
-const SPECIAL_ANIMATIONS_CAPTIONS = [
-  "charTypewriter",
-  "upDownCaption",
-  "upLeftCaption",
-  "fadeByWord",
-];
 
 export function AnimationPropertiesPicker() {
   const { floatingControlData, setFloatingControl } = useLayoutStore();
   const { studio } = useStudioStore();
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const { clipId, animationId, mode } = floatingControlData || {};
   const clip = studio?.getClipById(clipId) as any;
@@ -54,7 +58,7 @@ export function AnimationPropertiesPicker() {
     animation?.params || { "0%": {}, "100%": {} },
   );
   const [duration, setDuration] = useState<number>(() => {
-    if (animation?.options.duration) {
+    if (animation?.options?.duration) {
       return animation.options.duration / 1000;
     }
     if (typeClip === "Caption") {
@@ -62,9 +66,9 @@ export function AnimationPropertiesPicker() {
     }
     return 1000;
   });
-  const [delay, setDelay] = useState<number>((animation?.options.delay || 0) / 1000);
-  const [iterCount, setIterCount] = useState<number>(animation?.options.iterCount || 1);
-  const [easing, setEasing] = useState<string>((animation?.options.easing as string) || "linear");
+  const [delay, setDelay] = useState<number>((animation?.options?.delay || 0) / 1000);
+  const [iterCount, setIterCount] = useState<number>(animation?.options?.iterCount || 1);
+  const [easing, setEasing] = useState<string>((animation?.options?.easing as string) || "linear");
   const [mirrorEnabled, setMirrorEnabled] = useState<boolean>(false);
 
   // Initialize from animation
@@ -82,8 +86,8 @@ export function AnimationPropertiesPicker() {
       setMirrorEnabled(hasMirror);
 
       // Determine active tab based on delay and type
-      const currentDelayMicro = animation.options.delay;
-      const currentDurationMicro = animation.options.duration;
+      const currentDelayMicro = animation.options?.delay;
+      const currentDurationMicro = animation.options?.duration;
       const isOut =
         animation.type.toLowerCase().includes("out") ||
         (currentDelayMicro > 0 &&
@@ -97,25 +101,7 @@ export function AnimationPropertiesPicker() {
     }
   }, [animation, clipDuration]);
 
-  // Click outside handling
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(target) &&
-        !target.closest("[data-radix-portal]") &&
-        !target.closest("[data-radix-popper-content-wrapper]")
-      ) {
-        setFloatingControl("");
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [setFloatingControl]);
+  // Removed manual click outside handling in favor of Radix Popover
 
   // Handle Tab Change
   const handleTabChange = (tab: string) => {
@@ -143,8 +129,10 @@ export function AnimationPropertiesPicker() {
   // Update keyframes only when preset or params change via UI
   useEffect(() => {
     if (preset !== "custom" && preset !== "") {
-      const template = getPresetTemplate(preset, presetParams);
-      setKeyframes(template);
+      if (!(preset in GSAP_PRESETS)) {
+        const template = getPresetKeyframes(preset);
+        setKeyframes(template);
+      }
     } else if (preset === "" || (preset === "custom" && Object.keys(keyframes).length === 0)) {
       setKeyframes({ "0%": {}, "100%": {} });
     }
@@ -227,47 +215,53 @@ export function AnimationPropertiesPicker() {
     });
   };
 
+  const handleRenameKeyframe = (oldKey: string, newKey: string) => {
+    if (newKey === oldKey || newKey === "0%" || newKey === "100%") return;
+    setKeyframes((prev) => {
+      if (prev[newKey]) return prev; // don't overwrite existing
+      const { [oldKey]: props, ...rest } = prev;
+      return { ...rest, [newKey]: props };
+    });
+  };
+
   const buildAnimationConfig = () => {
-    const opts: AnimationOptions = {
+    const options: AnimationOptions = {
       duration: duration * 1000,
       delay: delay * 1000,
       iterCount,
       easing,
     };
 
-    const finalParams: any = structuredClone(keyframes);
+    const isStagger = preset in GSAP_PRESETS;
+    const type = isStagger ? "stagger" : "keyframes";
 
-    Object.keys(finalParams).forEach((key) => {
-      if (key.includes("%")) {
-        finalParams[key].mirror = mirrorEnabled ? 1 : 0;
-      }
-    });
+    const finalParams: any = isStagger
+      ? (() => {
+          const staggerPreset = GSAP_PRESETS[preset];
+          const p = structuredClone(staggerPreset.params);
+          p.stagger = presetParams.stagger ?? p.stagger ?? 0.05;
+          return p;
+        })()
+      : structuredClone(keyframes);
 
-    if (preset !== "custom") {
-      const filteredParams: any = {};
-
-      if (preset === "slideIn" || preset === "slideOut") {
-        filteredParams.direction = presetParams.direction;
-        filteredParams.distance = presetParams.distance;
-      } else if (preset.startsWith("char")) {
-        filteredParams.stagger = presetParams.stagger;
-      }
-
-      finalParams.presetParams = filteredParams;
+    if (!isStagger) {
+      Object.keys(finalParams).forEach((key) => {
+        if (key.includes("%")) {
+          finalParams[key].mirror = mirrorEnabled ? 1 : 0;
+        }
+      });
     }
 
-    const type = preset === "custom" || preset === "" ? "keyframes" : preset;
-
-    return { type, opts, finalParams };
+    return { type, options, finalParams };
   };
 
   const handleSave = () => {
-    const { type, opts, finalParams } = buildAnimationConfig();
+    const { type, options, finalParams } = buildAnimationConfig();
 
     if (mode === "edit" && animationId) {
-      clip.updateAnimation(animationId, type, opts, finalParams);
+      clip.updateAnimation(animationId, type, options, finalParams);
     } else {
-      clip.addAnimation(type, opts, finalParams);
+      clip.addAnimation(type, options, finalParams);
     }
 
     clip.emit("propsChange", {});
@@ -277,21 +271,21 @@ export function AnimationPropertiesPicker() {
   const handleApplyToAllCaptions = () => {
     if (!studio) return;
 
-    const { type, opts, finalParams } = buildAnimationConfig();
+    const { type, options, finalParams } = buildAnimationConfig();
 
     studio.clips.forEach((c: any) => {
       if (c.type === "Caption") {
         c.animations = [];
         const special = SPECIAL_ANIMATIONS_CAPTIONS.includes(type);
         const targetDuration = special ? c.duration : c.duration * 0.2;
-        let targetDelay = opts.delay;
+        let targetDelay = options.delay;
         if (type.toLowerCase().includes("out") || activeTab === "out") {
           targetDelay = Math.max(0, c.duration - targetDuration);
         }
 
         c.addAnimation(
           type,
-          { ...opts, duration: targetDuration, delay: targetDelay },
+          { ...options, duration: targetDuration, delay: targetDelay },
           finalParams,
         );
         c.emit("propsChange", {});
@@ -399,56 +393,44 @@ export function AnimationPropertiesPicker() {
     setMirrorEnabled(mirror);
   }, [clipDuration, activeTab, animation, typeClip]);
 
-  useEffect(() => {
-    const hasProperties = Object.values(keyframes).some((frame) => Object.keys(frame).length > 0);
-
-    console.log(hasProperties);
-  }, [keyframes]);
-
   return (
-    <div
-      ref={containerRef}
-      className="absolute left-full top-0 z-[200] ml-2 w-72 border bg-background p-0 shadow-xl rounded-lg overflow-hidden"
-    >
-      <ScrollArea className="max-h-[600px]">
-        <div className="flex flex-col gap-4 p-4">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">
-              {mode === "add" ? "Add Animation" : "Edit Animation"}
-            </h3>
-            <button
-              onClick={() => setFloatingControl("")}
-              className="text-muted-foreground hover:text-white"
-            >
-              <IconX className="size-4" />
-            </button>
-          </div>
-
-          {/* Tabs */}
-
-          {typeClip === "Caption" ? (
-            <div className="mt-4 flex flex-col gap-4">
-              <PresetOptions
-                preset={preset}
-                activeTab={activeTab}
-                inPresets={inPresets}
-                outPresets={outPresets}
-                comboPresets={comboPresets}
-                handlePresetChange={handlePresetChange}
-              />
-              <EasingOptions easing={easing} setEasing={setEasing} />
+    <Popover.Root open={!!clipId} onOpenChange={(open) => !open && setFloatingControl("")}>
+      <Popover.Anchor className="absolute left-full top-0" />
+      <Popover.Content
+        side="right"
+        align="start"
+        sideOffset={8}
+        className="z-[200] w-80 border bg-background p-0 shadow-xl rounded-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[92vh]"
+        onInteractOutside={(e) => {
+          // Prevent closing when interacting with portals (Select dropdowns)
+          const target = e.target as HTMLElement;
+          if (
+            target.closest("[data-radix-portal]") ||
+            target.closest("[data-radix-popper-content-wrapper]")
+          ) {
+            e.preventDefault();
+          }
+        }}
+      >
+        <ScrollArea className="flex-1 overflow-y-auto">
+          <div className="flex flex-col gap-4 p-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold">
+                {mode === "add" ? "Add Animation" : "Edit Animation"}
+              </h3>
+              <button
+                onClick={() => setFloatingControl("")}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <IconX className="size-3.5" />
+              </button>
             </div>
-          ) : (
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="in">In</TabsTrigger>
-                <TabsTrigger value="out">Out</TabsTrigger>
-                <TabsTrigger value="combo">Combo</TabsTrigger>
-              </TabsList>
 
-              <div className="mt-4 flex flex-col gap-4">
-                {/* Preset Selector */}
+            {/* Tabs */}
+
+            {typeClip === "Caption" ? (
+              <div className="flex flex-col gap-2">
                 <PresetOptions
                   preset={preset}
                   activeTab={activeTab}
@@ -457,171 +439,166 @@ export function AnimationPropertiesPicker() {
                   comboPresets={comboPresets}
                   handlePresetChange={handlePresetChange}
                 />
+                <EasingOptions easing={easing} setEasing={setEasing} />
+              </div>
+            ) : (
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 h-7">
+                  <TabsTrigger value="in" className="text-xs">
+                    In
+                  </TabsTrigger>
+                  <TabsTrigger value="out" className="text-xs">
+                    Out
+                  </TabsTrigger>
+                  <TabsTrigger value="combo" className="text-xs">
+                    Combo
+                  </TabsTrigger>
+                </TabsList>
 
-                {/* Preset Parameters (Slide Only) */}
-                {(preset === "slideIn" || preset === "slideOut") && (
-                  <div className="grid grid-cols-2 gap-2 p-2 bg-secondary/20 rounded-md">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-muted-foreground">Direction</label>
-                      <Select
-                        value={presetParams.direction}
-                        onValueChange={(val) =>
-                          setPresetParams((prev: any) => ({
-                            ...prev,
-                            direction: val,
-                          }))
-                        }
-                      >
-                        <SelectTrigger className="h-7 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="z-[250]">
-                          <SelectItem value="left">Left</SelectItem>
-                          <SelectItem value="right">Right</SelectItem>
-                          <SelectItem value="top">Top</SelectItem>
-                          <SelectItem value="bottom">Bottom</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[10px] text-muted-foreground">Distance (px)</label>
-                      <NumberInput
-                        value={presetParams.distance}
-                        onChange={(val) =>
-                          setPresetParams((prev: any) => ({
-                            ...prev,
-                            distance: val,
-                          }))
-                        }
-                        className="h-7 text-xs"
-                      />
-                    </div>
-                  </div>
-                )}
+                <div className="mt-2 flex flex-col gap-2">
+                  {/* Preset Selector */}
+                  <PresetOptions
+                    preset={preset}
+                    activeTab={activeTab}
+                    inPresets={inPresets}
+                    outPresets={outPresets}
+                    comboPresets={comboPresets}
+                    handlePresetChange={handlePresetChange}
+                  />
 
-                {/* Stagger (for character animations) */}
-                {preset.startsWith("char") && (
-                  <div className="flex flex-col gap-2 p-2 bg-secondary/20 rounded-md">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] text-muted-foreground">
-                        Stagger: {presetParams.stagger}s
-                      </label>
-                    </div>
-                    <Slider
-                      value={[presetParams.stagger || 0.05]}
-                      min={0}
-                      max={0.5}
-                      step={0.01}
-                      onValueChange={([val]) =>
-                        setPresetParams((prev: any) => ({
-                          ...prev,
-                          stagger: val,
-                        }))
-                      }
-                    />
-                  </div>
-                )}
-
-                {/* Keyframes */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                    Keyframes
-                  </label>
-
-                  {sortedKeyframes.map((keyframe) => (
-                    <KeyframeItem
-                      key={keyframe}
-                      keyframe={keyframe}
-                      properties={keyframes[keyframe] || {}}
-                      onPropertyChange={(prop, val) => handlePropertyChange(keyframe, prop, val)}
-                      onPropertyToggle={(prop, enabled) =>
-                        handlePropertyToggle(keyframe, prop, enabled)
-                      }
-                      onRemove={() => handleRemoveKeyframe(keyframe)}
-                      canRemove={keyframe !== "0%" && keyframe !== "100%"}
-                    />
-                  ))}
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddKeyframe}
-                    className="w-full"
-                  >
-                    <IconPlus className="size-3.5 mr-1" />
-                    Add Keyframe
-                  </Button>
-                </div>
-
-                {/* Mirror Effect */}
-                {typeClip !== "Text" && (
-                  <div className="flex items-center justify-between p-2 bg-secondary/20 rounded-md border border-dashed">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-medium">Mirror Effect</span>
-                      <span className="text-[10px] text-muted-foreground">
-                        Repeat edges to fill frame
-                      </span>
-                    </div>
-                    <Switch checked={mirrorEnabled} onCheckedChange={setMirrorEnabled} />
-                  </div>
-                )}
-
-                {/* Timing */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                    Timing
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <InputGroup>
-                      <InputGroupAddon align="inline-start">
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          Duration
-                        </span>
-                      </InputGroupAddon>
-                      <NumberInput value={duration} onChange={setDuration} className="p-0" />
-                      <InputGroupAddon align="inline-end">
-                        <span className="text-[10px] text-muted-foreground">ms</span>
-                      </InputGroupAddon>
-                    </InputGroup>
-
-                    <InputGroup
-                      className={cn(activeTab !== "custom" && "opacity-60 pointer-events-none")}
-                    >
-                      <InputGroupAddon align="inline-start">
-                        <span className="text-[10px] font-medium text-muted-foreground">Delay</span>
-                      </InputGroupAddon>
-                      <NumberInput value={delay} onChange={setDelay} className="p-0" />
-                      <InputGroupAddon align="inline-end">
-                        <span className="text-[10px] text-muted-foreground">ms</span>
-                      </InputGroupAddon>
-                    </InputGroup>
-                  </div>
-
-                  {activeTab === "out" && (
-                    <div className="text-[10px] text-muted-foreground italic px-1">
-                      * Delay matches clip end automatically
+                  {/* Preset Parameters (Slide Only) */}
+                  {(preset === "slideIn" || preset === "slideOut") && (
+                    <div className="grid grid-cols-2 gap-1.5 p-2 bg-secondary/20 rounded-md">
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-muted-foreground">Direction</label>
+                        <Select
+                          value={presetParams.direction}
+                          onValueChange={(val) =>
+                            setPresetParams((prev: any) => ({
+                              ...prev,
+                              direction: val,
+                            }))
+                          }
+                        >
+                          <SelectTrigger className="h-7 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="z-[250]">
+                            <SelectItem value="left">Left</SelectItem>
+                            <SelectItem value="right">Right</SelectItem>
+                            <SelectItem value="top">Top</SelectItem>
+                            <SelectItem value="bottom">Bottom</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-muted-foreground">Distance (px)</label>
+                        <NumberInput
+                          value={presetParams.distance}
+                          onChange={(val) =>
+                            setPresetParams((prev: any) => ({
+                              ...prev,
+                              distance: val,
+                            }))
+                          }
+                          className="h-7 text-xs"
+                        />
+                      </div>
                     </div>
                   )}
 
-                  <InputGroup>
-                    <InputGroupAddon align="inline-start">
-                      <span className="text-[10px] font-medium text-muted-foreground">
-                        Iterations
-                      </span>
-                    </InputGroupAddon>
-                    <NumberInput value={iterCount} onChange={setIterCount} className="p-0" />
-                  </InputGroup>
+                  {/* Stagger */}
+                  {preset in GSAP_PRESETS && (
+                    <div className="flex items-center gap-2 p-2 bg-secondary/20 rounded-md">
+                      <label className="text-[10px] text-muted-foreground shrink-0 w-14">
+                        Stagger {presetParams.stagger}s
+                      </label>
+                      <Slider
+                        value={[presetParams.stagger || 0.05]}
+                        min={0}
+                        max={0.5}
+                        step={0.01}
+                        onValueChange={([val]) =>
+                          setPresetParams((prev: any) => ({ ...prev, stagger: val }))
+                        }
+                        className="flex-1"
+                      />
+                    </div>
+                  )}
+
+                  {!(preset in GSAP_PRESETS) && (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold">Keyframes</label>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleAddKeyframe}
+                          className="h-7 gap-1 text-xs"
+                        >
+                          <IconPlus className="size-3" />
+                          Add Stop
+                        </Button>
+                      </div>
+                      {sortedKeyframes.map((keyframe) => (
+                        <KeyframeItem
+                          key={keyframe}
+                          keyframe={keyframe}
+                          properties={keyframes[keyframe] || {}}
+                          onPropertyChange={(prop, val) =>
+                            handlePropertyChange(keyframe, prop, val)
+                          }
+                          onPropertyToggle={(prop, enabled) =>
+                            handlePropertyToggle(keyframe, prop, enabled)
+                          }
+                          onRemove={() => handleRemoveKeyframe(keyframe)}
+                          onRename={(newKey) => handleRenameKeyframe(keyframe, newKey)}
+                          canRemove={keyframe !== "0%" && keyframe !== "100%"}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Mirror Effect */}
+                  {typeClip !== "Text" && !(preset in GSAP_PRESETS) && (
+                    <div className="flex items-center justify-between px-2 py-1.5 bg-secondary/20 rounded-md">
+                      <span className="text-[10px] text-muted-foreground">Mirror</span>
+                      <Switch checked={mirrorEnabled} onCheckedChange={setMirrorEnabled} />
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-semibold">Timing</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] text-muted-foreground">Duration (ms)</span>
+                        <NumberInput value={duration} onChange={setDuration} className="h-8" />
+                      </div>
+                      <div
+                        className={cn(
+                          "flex flex-col gap-1",
+                          activeTab === "out" && "opacity-50 pointer-events-none",
+                        )}
+                      >
+                        <span className="text-[10px] text-muted-foreground">Delay (ms)</span>
+                        <NumberInput value={delay} onChange={setDelay} className="h-8" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] text-muted-foreground">Iterations</span>
+                        <NumberInput value={iterCount} onChange={setIterCount} className="h-8" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold">Easing</label>
+                    <EasingOptions easing={easing} setEasing={setEasing} />
+                  </div>
                 </div>
+              </Tabs>
+            )}
 
-                {/* Easing */}
-                <EasingOptions easing={easing} setEasing={setEasing} />
-              </div>
-            </Tabs>
-          )}
-
-          {/* Actions */}
-          <div className="flex flex-col gap-2 pt-2 border-t mt-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-2 border-t">
               <Button variant="outline" onClick={() => setFloatingControl("")} className="flex-1">
                 Cancel
               </Button>
@@ -637,9 +614,9 @@ export function AnimationPropertiesPicker() {
               </Button>
             </div>
           </div>
-        </div>
-      </ScrollArea>
-    </div>
+        </ScrollArea>
+      </Popover.Content>
+    </Popover.Root>
   );
 }
 
@@ -649,6 +626,7 @@ interface KeyframeItemProps {
   onPropertyChange: (property: PropertyKey, value: number) => void;
   onPropertyToggle: (property: PropertyKey, enabled: boolean) => void;
   onRemove: () => void;
+  onRename: (newKey: string) => void;
   canRemove: boolean;
 }
 
@@ -658,78 +636,125 @@ function KeyframeItem({
   onPropertyChange,
   onPropertyToggle,
   onRemove,
+  onRename,
   canRemove,
 }: KeyframeItemProps) {
-  const [expanded, setExpanded] = useState(true);
+  const [pctValue, setPctValue] = useState(keyframe.replace("%", ""));
+
+  useEffect(() => {
+    setPctValue(keyframe.replace("%", ""));
+  }, [keyframe]);
+
+  const activeProps = (Object.keys(properties) as PropertyKey[]).filter(
+    (p) => p !== "mirror" && p in ANIMATABLE_PROPERTIES,
+  );
+  const availableProps = (Object.keys(ANIMATABLE_PROPERTIES) as PropertyKey[]).filter(
+    (p) => p !== "mirror" && !(p in properties),
+  );
+
+  const commitRename = (raw: string) => {
+    const n = Math.max(1, Math.min(99, parseInt(raw) || 1));
+    setPctValue(String(n));
+    const newKey = `${n}%`;
+    if (newKey !== keyframe) onRename(newKey);
+  };
 
   return (
-    <div className="border rounded-md bg-secondary/20">
-      <div
-        className="flex items-center justify-between p-2 cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-medium">{keyframe}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-muted-foreground">
-            {Object.keys(properties).length}{" "}
-            {Object.keys(properties).length === 1 ? "property" : "properties"}
-          </span>
-          {canRemove && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove();
+    <div className="border rounded-lg overflow-hidden">
+      {/* Header bar */}
+      <div className="flex items-center gap-2 px-3 py-2 bg-muted/40 border-b">
+        {canRemove ? (
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              min={1}
+              max={99}
+              value={pctValue}
+              onChange={(e) => setPctValue(e.target.value)}
+              onBlur={(e) => commitRename(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitRename((e.target as HTMLInputElement).value);
+                if (e.key === "Escape") setPctValue(keyframe.replace("%", ""));
               }}
-              className="text-muted-foreground hover:text-red-400"
-            >
-              <IconTrash className="size-3.5" />
-            </button>
-          )}
-        </div>
+              className="w-12 h-7 rounded border bg-background px-2 text-sm font-bold tabular-nums text-center outline-none focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <span className="text-sm font-bold text-muted-foreground">%</span>
+          </div>
+        ) : (
+          <span className="text-sm font-bold tabular-nums">{keyframe}</span>
+        )}
+        <span className="text-xs text-muted-foreground flex-1">
+          {activeProps.length === 0
+            ? "No properties"
+            : activeProps.map((p) => ANIMATABLE_PROPERTIES[p].label).join(", ")}
+        </span>
+        {canRemove && (
+          <button onClick={onRemove} className="text-muted-foreground hover:text-destructive">
+            <IconTrash className="size-3.5" />
+          </button>
+        )}
       </div>
 
-      {expanded && (
-        <div className="p-2 pt-0 flex flex-col gap-2">
-          {(Object.keys(ANIMATABLE_PROPERTIES) as PropertyKey[])
-            .filter((prop) => prop !== "mirror")
-            .map((prop) => {
-              const isEnabled = prop in properties;
-              const config = ANIMATABLE_PROPERTIES[prop];
-
-              return (
-                <div key={prop} className="flex items-center gap-2">
-                  <Checkbox
-                    checked={isEnabled}
-                    onCheckedChange={(checked) => onPropertyToggle(prop, checked === true)}
+      {/* Property rows */}
+      <div className="p-3 flex flex-col gap-3 bg-card">
+        {activeProps.length === 0 && (
+          <p className="text-xs text-muted-foreground text-center py-1">
+            No properties — add one below
+          </p>
+        )}
+        {activeProps.map((prop) => {
+          const config = ANIMATABLE_PROPERTIES[prop];
+          return (
+            <div key={prop} className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">{config.label}</span>
+                <div className="flex items-center gap-2">
+                  <NumberInput
+                    value={properties[prop] ?? config.default}
+                    onChange={(val) => onPropertyChange(prop, val)}
+                    className="w-16 h-7 text-xs"
                   />
-
-                  <span className="text-[10px] text-muted-foreground min-w-[60px]">
-                    {config.label}
-                  </span>
-                  {isEnabled && (
-                    <div className="flex-1 flex items-center gap-2">
-                      <Slider
-                        value={[properties[prop] ?? config.default]}
-                        onValueChange={([val]) => onPropertyChange(prop, val)}
-                        min={config.min}
-                        max={config.max}
-                        step={config.step}
-                        className="flex-1"
-                      />
-                      <NumberInput
-                        value={properties[prop] ?? config.default}
-                        onChange={(val) => onPropertyChange(prop, val)}
-                        className="w-16 h-7 text-xs p-1"
-                      />
-                    </div>
-                  )}
+                  <button
+                    onClick={() => onPropertyToggle(prop, false)}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <IconX className="size-3.5" />
+                  </button>
                 </div>
-              );
-            })}
-        </div>
-      )}
+              </div>
+              <Slider
+                value={[properties[prop] ?? config.default]}
+                onValueChange={([val]) => onPropertyChange(prop, val)}
+                min={config.min}
+                max={config.max}
+                step={config.step}
+              />
+            </div>
+          );
+        })}
+
+        {availableProps.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-dashed text-muted-foreground"
+              >
+                <IconPlus data-icon="inline-start" />
+                Add Property
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="z-[300]" align="start">
+              {availableProps.map((p) => (
+                <DropdownMenuItem key={p} onSelect={() => onPropertyToggle(p, true)}>
+                  {ANIMATABLE_PROPERTIES[p].label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
     </div>
   );
 }
@@ -742,13 +767,10 @@ const EasingOptions = ({
   setEasing: (easing: string) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-        Easing
-      </label>
+    <div className="flex flex-col gap-1">
       <Select value={easing} onValueChange={setEasing}>
-        <SelectTrigger className="w-full h-9">
-          <SelectValue placeholder="Select easing" />
+        <SelectTrigger className="w-full h-7 text-xs">
+          <SelectValue placeholder="Easing" />
         </SelectTrigger>
         <SelectContent className="z-[250]">
           <SelectItem value="linear">Linear</SelectItem>
@@ -783,12 +805,9 @@ const PresetOptions = ({
   handlePresetChange: (preset: string) => void;
 }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-        Preset
-      </label>
+    <div className="flex flex-col gap-1">
       <Select value={preset} onValueChange={handlePresetChange}>
-        <SelectTrigger className="w-full h-9">
+        <SelectTrigger className="w-full h-7 text-xs">
           <SelectValue placeholder="Select a preset" />
         </SelectTrigger>
         <SelectContent className="z-[250] max-h-60">

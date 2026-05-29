@@ -1,14 +1,17 @@
 import { useEffect, useRef, useMemo, useState } from "react";
-import { Studio, fontManager, registerCustomTransition, registerCustomEffect } from "openvideo";
-import { useTheme } from "next-themes";
+import {
+  Studio,
+  fontManager,
+  registerCustomTransition,
+  registerCustomEffect,
+} from "@openvideo/engine-pixi";
 import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
+import { core } from "@/lib/project";
 import { editorFont } from "./constants";
 import { CUSTOM_TRANSITIONS } from "./transition-custom";
 import { CUSTOM_EFFECTS } from "./effect-custom";
-import { SelectionFloatingMenu } from "./selection-floating-menu";
-import { TextEditorOverlay } from "./text-editor-overlay";
-import { useClipActions } from "./options-floating-menu";
+import { useClipActions } from "./studio-context-menu";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -22,11 +25,6 @@ const STUDIO_CONFIG = {
   fps: 30,
   interactivity: true,
   spacing: 20,
-} as const;
-
-const THEME_COLORS = {
-  dark: "#1C160D",
-  light: "#ffffff",
 } as const;
 
 interface CanvasPanelProps {
@@ -43,7 +41,6 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
   const onReadyRef = useRef(onReady);
   const { setStudio, setSelectedClips } = useStudioStore();
   const { canvasSize, initialStudioJSON } = useProjectStore();
-  const { theme, resolvedTheme } = useTheme();
   const {
     selectedClip,
     isLocked,
@@ -56,11 +53,6 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
   } = useClipActions();
   const [editingClip, setEditingClip] = useState<any | null>(null);
 
-  const bgColor = useMemo(() => {
-    const currentTheme = theme === "system" ? resolvedTheme : theme;
-    return currentTheme === "dark" ? THEME_COLORS.dark : THEME_COLORS.light;
-  }, [theme, resolvedTheme]);
-
   // Keep onReady ref up to date
   useEffect(() => {
     onReadyRef.current = onReady;
@@ -71,14 +63,11 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
     if (studioRef.current) {
       studioRef.current.setSize(canvasSize.width, canvasSize.height);
     }
+    core.store.getState().updateSettings({
+      width: canvasSize.width,
+      height: canvasSize.height,
+    });
   }, [canvasSize]);
-
-  // Handle theme changes
-  useEffect(() => {
-    if (studioRef.current) {
-      studioRef.current.setBgColor(bgColor);
-    }
-  }, [bgColor]);
 
   // Setup Studio and ResizeObserver (only once on mount)
   useEffect(() => {
@@ -88,8 +77,9 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
     studioRef.current = new Studio({
       ...canvasSize,
       ...STUDIO_CONFIG,
-      bgColor,
+      backgroundColor: "#111111",
       canvas: canvasRef.current,
+      core: core,
     });
 
     // Initialize fonts and notify when ready
@@ -161,46 +151,6 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
     });
   }, []);
 
-  useEffect(() => {
-    const projectStore = useProjectStore.getState();
-    if (initialStudioJSON !== null) {
-      projectStore.setInitialStudioJSON(null);
-      console.log("Loading initial studio JSON", initialStudioJSON);
-      studioRef.current?.loadFromJSON(initialStudioJSON);
-    }
-  }, [initialStudioJSON]);
-
-  useEffect(() => {
-    if (!studioRef.current) return;
-
-    const studio = studioRef.current;
-
-    const handleSelection = (data: { selected: any[] }) => {
-      setSelectedClips(data.selected);
-    };
-
-    const handleClear = () => {
-      setSelectedClips([]);
-      setEditingClip(null);
-    };
-
-    const handleDblClick = ({ clip }: { clip: any }) => {
-      setEditingClip(clip);
-    };
-
-    studio.on("selection:created", handleSelection);
-    studio.on("selection:updated", handleSelection);
-    studio.on("selection:cleared", handleClear);
-    studio.on("clip:dblclick", handleDblClick);
-
-    return () => {
-      studio.off("selection:created", handleSelection);
-      studio.off("selection:updated", handleSelection);
-      studio.off("selection:cleared", handleClear);
-      studio.off("clip:dblclick", handleDblClick);
-    };
-  }, [setSelectedClips]);
-
   const handleContextMenu = (e: React.MouseEvent) => {
     if (!studioRef.current || !canvasRef.current) return;
 
@@ -215,9 +165,9 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
     });
 
     if (topmostClip) {
-      studioRef.current.selection.selectClip(topmostClip);
+      core.store.getState().select(topmostClip.id);
     } else {
-      studioRef.current.selection.deselectClip();
+      core.store.getState().deselect();
     }
   };
 
@@ -243,10 +193,6 @@ export function CanvasPanel({ onReady }: CanvasPanelProps) {
               }}
               tabIndex={0}
             />
-            <SelectionFloatingMenu />
-            {editingClip && (
-              <TextEditorOverlay clip={editingClip} onClose={() => setEditingClip(null)} />
-            )}
           </div>
         </div>
       </ContextMenuTrigger>

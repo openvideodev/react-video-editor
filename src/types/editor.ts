@@ -26,3 +26,15 @@ export interface TextElementDragState {
   elementWidth: number;
   elementHeight: number;
 }
+
+export interface IFont {
+  family: string;
+  fullName: string;
+  url: string;
+}
+
+export interface ICompactFont {
+  family: string;
+  styles: IFont[];
+  default: IFont;
+}

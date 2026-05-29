@@ -4,59 +4,68 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, Play, Trash2 } from "lucide-react";
-import { useStudioStore } from "@/stores/studio-store";
-import { fontManager, jsonToClip, Log, type IClip } from "openvideo";
+import { fontManager, jsonToClip, Log, type IClip } from "@openvideo/engine-pixi";
 import { generateCaptionClips } from "@/lib/caption-generator";
+import { useStore } from "zustand";
+import { projectStore, core } from "@/lib/project";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { nanoid } from "nanoid";
 
 export default function PanelCaptions() {
-  const { studio } = useStudioStore();
-  const [mediaItems, setMediaItems] = useState<IClip[]>([]);
-  const [captionItems, setCaptionItems] = useState<IClip[]>([]);
+  const clips = useStore(projectStore, (s) => s.clips);
+  const currentTime = useStore(projectStore, (s) => s.currentTime);
+
+  const mediaItems = (Object.values(clips) as unknown as IClip[]).filter(
+    (clip: any) => clip.type === "Video" || clip.type === "Audio",
+  );
+
+  const captionItems = (Object.values(clips) as unknown as IClip[])
+    .filter((clip: any) => clip.type === "Caption")
+    .sort(
+      (a, b) => ((a as any).timing?.display?.from ?? 0) - ((b as any).timing?.display?.from ?? 0),
+    );
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeCaptionId, setActiveCaptionId] = useState<string | null>(null);
 
-  // Use refs to access latest state inside event listeners without re-binding
-  const captionItemsRef = useRef<IClip[]>([]);
-  const activeCaptionIdRef = useRef<string | null>(null);
+  const captionItemsRef = useRef(captionItems);
+  const activeCaptionIdRef = useRef(activeCaptionId);
 
   useEffect(() => {
     captionItemsRef.current = captionItems;
   }, [captionItems]);
 
-  const updateClips = () => {
-    if (!studio) return;
-    const tracks = studio.getTracks();
-    const allClips: IClip[] = [];
-    tracks.forEach((track) => {
-      track.clipIds.forEach((id) => {
-        const clip = studio.getClipById(id);
-        if (clip) allClips.push(clip);
-      });
-    });
-
-    const mediaClips = allClips.filter(
-      (clip: IClip) => clip.type === "Video" || clip.type === "Audio",
-    );
-    setMediaItems(mediaClips);
-
-    // Find all captions
-    const captions = allClips.filter((clip: IClip) => clip.type === "Caption");
-    const sorted = captions.sort((a: IClip, b: IClip) => a.display.from - b.display.from);
-    setCaptionItems(sorted);
-  };
+  useEffect(() => {
+    activeCaptionIdRef.current = activeCaptionId;
+  }, [activeCaptionId]);
 
   useEffect(() => {
-    if (!studio) return;
+    // Find the currently active caption
+    const activeItem = captionItems.find(
+      (item) =>
+        currentTime >= (item as any).timing?.display?.from &&
+        currentTime < (item as any).timing?.display?.to,
+    );
+    if (activeItem) {
+      setActiveCaptionId(activeItem.id);
+    } else {
+      setActiveCaptionId(null);
+    }
+  }, [currentTime, captionItems]);
 
+  const updateClips = () => {}; // No longer needed but kept empty to avoid breaking other calls if any
+
+  useEffect(() => {
     const handleUpdate = () => updateClips();
 
-    const handleTimeUpdate = ({ currentTime }: { currentTime: number }) => {
+    const handleTimeUpdate = (currentTime: number) => {
       // Find the currently active caption
       // We use the Ref because this closure is created once and we don't want to re-bind listener
       const activeItem = captionItemsRef.current.find(
-        (item) => currentTime >= item.display.from && currentTime < item.display.to,
+        (item) =>
+          currentTime >= (item as any).timing?.display?.from &&
+          currentTime < (item as any).timing?.display?.to,
       );
 
       const newActiveId = activeItem ? activeItem.id : null;
@@ -68,22 +77,15 @@ export default function PanelCaptions() {
       }
     };
 
-    handleUpdate();
-    studio.on("clip:added", handleUpdate);
-    studio.on("clip:removed", handleUpdate);
-    studio.on("clip:updated", handleUpdate);
-    studio.on("currentTime", handleTimeUpdate);
+    core.on("timeupdate", handleTimeUpdate);
 
     return () => {
-      studio.off("clip:added", handleUpdate);
-      studio.off("clip:removed", handleUpdate);
-      studio.off("clip:updated", handleUpdate);
-      studio.off("currentTime", handleTimeUpdate);
+      core.off("timeupdate", handleTimeUpdate);
     };
-  }, [studio]);
+  }, []);
 
   const handleGenerateCaptions = async () => {
-    if (!studio || mediaItems.length === 0) return;
+    if (mediaItems.length === 0) return;
 
     setIsGenerating(true);
     try {
@@ -95,8 +97,7 @@ export default function PanelCaptions() {
         url: fontUrl,
       });
 
-      const captionTrackId = `track_captions_${Date.now()}`;
-      const clipsToAdd: IClip[] = [];
+      const clipsToAdd: any[] = [];
 
       for (const mediaClip of mediaItems) {
         try {
@@ -120,10 +121,10 @@ export default function PanelCaptions() {
 
           const words = transcriptionData.results?.main?.words || transcriptionData.words || [];
 
-          // 2. Generate caption JSON
+          const settings = core.store.getState().settings;
           const captionClipsJSON = await generateCaptionClips({
-            videoWidth: (studio as any).opts.width,
-            videoHeight: (studio as any).opts.height,
+            videoWidth: settings.width,
+            videoHeight: settings.height,
             words,
           });
 
@@ -137,21 +138,36 @@ export default function PanelCaptions() {
                 sourceClipId: mediaClip.id,
               },
               display: {
-                from: json.display.from + mediaClip.display.from,
-                to: json.display.to + mediaClip.display.from,
+                from: json.display.from + (mediaClip.timing?.display?.from ?? 0),
+                to: json.display.to + (mediaClip.timing?.display?.from ?? 0),
               },
             };
-            const clip = await jsonToClip(enrichedJson);
-            clipsToAdd.push(clip);
+            clipsToAdd.push(enrichedJson);
           }
         } catch (error) {
           Log.error(`Failed to process media ${mediaClip.id}:`, error);
         }
       }
 
+      const trackId = "track_" + nanoid(10);
+      const trackCommand = {
+        id: nanoid(),
+        type: "track.add",
+        payload: { id: trackId, name: "Captions", type: "caption" },
+      };
+
       if (clipsToAdd.length > 0) {
-        await studio.addClip(clipsToAdd, { trackId: captionTrackId });
-        updateClips();
+        const fullClips = await Promise.all(clipsToAdd.map((c) => core.clip.prepare(c as any)));
+
+        const addCommands = fullClips.map((clip) => ({
+          id: nanoid(),
+          type: "clip.add",
+          payload: { clip, trackId },
+        }));
+
+        core.batch([trackCommand, ...addCommands] as any[]);
+      } else {
+        core.execute(trackCommand as any);
       }
     } catch (error) {
       Log.error("Failed to generate captions:", error);
@@ -175,13 +191,13 @@ export default function PanelCaptions() {
   }
 
   const handleSplitCaption = async (id: string, cursorPosition: number, fullText: string) => {
-    if (!studio) return;
-
-    const clip = studio.getClipById(id);
+    const state = core.store.getState();
+    const clip = state.clips[id];
     if (!clip) return;
 
-    const trackId = studio.findTrackIdByClipId(id);
-    if (!trackId) return;
+    const track = state.tracks.find((t) => t.clipIds.includes(id));
+    if (!track) return;
+    const trackId = track.id;
 
     const wordsInText: { text: string; start: number; end: number }[] = [];
     const regex = /\S+/g;
@@ -223,9 +239,6 @@ export default function PanelCaptions() {
 
     const part1Words = words.slice(0, splitWordIndex);
     const part2Words = words.slice(splitWordIndex);
-    console.log("part1Words", part1Words);
-    console.log("part2Words", part2Words);
-    console.log("clipJson", clipJson);
 
     if (part1Words.length === 0 || part2Words.length === 0) return;
     const lastWordPart1 = part1Words[part1Words.length - 1];
@@ -267,23 +280,10 @@ export default function PanelCaptions() {
     };
 
     try {
-      const clip1 = await jsonToClip(clip1Json as any);
-      const clip2 = await jsonToClip(clip2Json as any);
-
-      const videoWidth = (studio as any).opts.width || 1080;
-
-      // Center clip 1
-      if (clip1.width > 0) {
-        clip1.left = (videoWidth - clip1.width) / 2;
+      for (const c of [clip1Json, clip2Json]) {
+        await core.clip.add(c as any, { trackId });
       }
-
-      // Center clip 2
-      if (clip2.width > 0) {
-        clip2.left = (videoWidth - clip2.width) / 2;
-      }
-
-      await studio.addClip([clip1, clip2], { trackId });
-      studio.removeClipById(id);
+      core.clip.remove([id]);
     } catch (error) {
       Log.error("Failed to split caption clip:", error);
     }
@@ -291,13 +291,11 @@ export default function PanelCaptions() {
 
   // En PanelCaptions, modifica handleUpdateCaption:
   const handleUpdateCaption = async (id: string, text: string, fullUpdate = false) => {
-    if (!studio) return;
-
-    const clip = studio.getClipById(id);
+    const state = core.store.getState();
+    const clip = state.clips[id];
     if (!clip) return;
 
-    const tracks = studio.getTracks();
-    const track = tracks.find((t) => t.clipIds.includes(id));
+    const track = state.tracks.find((t) => t.clipIds.includes(id));
     if (!track) return;
 
     if (!fullUpdate) {
@@ -363,22 +361,19 @@ export default function PanelCaptions() {
     } as any;
 
     try {
-      const newClip = await jsonToClip(newClipJson);
-      await studio.addClip([newClip], { trackId: track.id });
-      studio.removeClipById(id);
+      await core.clip.add(newClipJson, { trackId: track.id });
+      core.clip.remove([id]);
     } catch (error) {
       Log.error("Failed to update caption clip:", error);
     }
   };
 
   const handleDeleteCaption = (id: string) => {
-    if (!studio) return;
-    studio.removeClipById(id);
+    core.clip.remove([id]);
   };
 
   const handleSeek = (time: number) => {
-    if (!studio) return;
-    studio.seek(time);
+    core.seek(time);
   };
 
   return (
@@ -400,7 +395,7 @@ export default function PanelCaptions() {
                     onUpdate={(text, fullUpdate) => handleUpdateCaption(item.id, text, fullUpdate)}
                     onSplit={(pos, text) => handleSplitCaption(item.id, pos, text)}
                     onDelete={() => handleDeleteCaption(item.id)}
-                    onSeek={() => handleSeek(item.display.from)}
+                    onSeek={() => handleSeek((item as any).timing?.display?.from ?? 0)}
                   />
                 ))}
               </div>
@@ -486,7 +481,8 @@ function CaptionItem({
           className="text-[10px] font-mono text-muted-foreground cursor-pointer hover:text-white transition-colors"
           onClick={onSeek}
         >
-          {formatTime(item.display.from / 1_000_000)} - {formatTime(item.display.to / 1_000_000)}
+          {formatTime(((item as any).timing?.display?.from ?? 0) / 1_000_000)} -{" "}
+          {formatTime(((item as any).timing?.display?.to ?? 0) / 1_000_000)}
         </div>
 
         <div

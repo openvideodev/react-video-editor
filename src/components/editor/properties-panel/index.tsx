@@ -5,30 +5,12 @@ import { VideoProperties } from "./video-properties";
 import { AudioProperties } from "./audio-properties";
 import { CaptionProperties } from "./caption-properties";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { IClip } from "openvideo";
+import { IClip } from "@openvideo/engine-pixi";
 import { EffectProperties } from "./effect-properties";
 import { TransitionProperties } from "./transition-properties";
 import { cn } from "@/lib/utils";
 
 export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
-  const [, setTick] = useState(0);
-
-  useEffect(() => {
-    if (selectedClips.length !== 1) return;
-
-    const clip = selectedClips[0];
-
-    const onPropsChange = () => {
-      setTick((t) => t + 1);
-    };
-
-    clip.on("propsChange", onPropsChange);
-
-    return () => {
-      clip.off("propsChange", onPropsChange);
-    };
-  }, [selectedClips]);
-
   if (selectedClips.length > 1) {
     return (
       <div className="bg-card h-full p-4 flex flex-col items-center justify-center gap-3">
@@ -36,6 +18,8 @@ export function PropertiesPanel({ selectedClips }: { selectedClips: IClip[] }) {
       </div>
     );
   }
+
+  if (selectedClips.length === 0) return null;
 
   const clip = selectedClips[0];
 

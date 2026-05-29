@@ -1,34 +1,33 @@
 import { useEffect } from "react";
 import hotkeys from "hotkeys-js";
-import { useTimelineStore } from "@/stores/timeline-store";
-import { usePlaybackStore } from "@/stores/playback-store";
+import { useStore } from "zustand";
+import { projectStore, core } from "@/lib/project";
 import { useStudioStore } from "@/stores/studio-store";
-import { TimelineCanvas } from "@/components/editor/timeline/timeline";
+import CanvasTimeline from "@/components/editor/timeline/items/timeline";
 
 interface UseEditorHotkeysProps {
-  timelineCanvas: TimelineCanvas | null;
+  timelineCanvas: CanvasTimeline | null;
   setZoomLevel?: (zoomLevel: number | ((prev: number) => number)) => void;
 }
 
 export function useEditorHotkeys({ timelineCanvas, setZoomLevel }: UseEditorHotkeysProps) {
-  const { isPlaying, toggle, currentTime } = usePlaybackStore();
+  const currentTimeUs = useStore(projectStore, (s) => s.currentTime);
+  const isPlaying = useStore(projectStore, (s) => s.isPlaying);
+  const selectedIds = useStore(projectStore, (s) => s.selectedIds);
+  const fps = useStore(projectStore, (s) => s.settings.fps);
   const { studio } = useStudioStore();
 
   useEffect(() => {
     // Play/Pause
     hotkeys("space", (event, handler) => {
       event.preventDefault();
-      toggle();
+      core.playback.toggle();
     });
 
     // Split
     hotkeys("command+b, ctrl+b", (event, handler) => {
       event.preventDefault();
-      if (studio) {
-        // Studio expects microseconds
-        const splitTime = currentTime * 1_000_000;
-        studio.splitSelected(splitTime);
-      }
+      core.clip.split(currentTimeUs);
     });
 
     // Delete
@@ -37,33 +36,26 @@ export function useEditorHotkeys({ timelineCanvas, setZoomLevel }: UseEditorHotk
       const activeTag = document.activeElement?.tagName.toLowerCase();
       if (activeTag === "input" || activeTag === "textarea") return;
 
-      if (studio) {
-        studio.deleteSelected();
+      if (selectedIds.length > 0) {
+        core.clip.remove(selectedIds);
       }
     });
 
     // Select All
     hotkeys("command+a, ctrl+a", (event, handler) => {
       event.preventDefault();
-      const { clips } = useTimelineStore.getState();
-      if (timelineCanvas) {
-        timelineCanvas.selectClips(Object.keys(clips));
-      }
+      const { clips } = projectStore.getState();
+      projectStore.getState().select(Object.keys(clips));
     });
 
-    // Copy / Paste / Cut - These are usually handled by OS if not intercepted
-    // But for canvas objects we might need custom handling.
+    // Copy / Paste / Cut
     hotkeys("command+c, ctrl+c", (event) => {
-      // event.preventDefault();
-      if (timelineCanvas) {
-        // timelineCanvas.copySelected();
-      }
+      // Future: Implement Core-level clipboard
     });
 
     hotkeys("command+v, ctrl+v", (event) => {
-      // event.preventDefault();
       if (studio) {
-        studio.duplicateSelected(); // Reuse duplicate for now as paste
+        studio.duplicateSelected();
       }
     });
 
@@ -79,16 +71,15 @@ export function useEditorHotkeys({ timelineCanvas, setZoomLevel }: UseEditorHotk
       setZoomLevel?.((prev) => Math.max(0.1, prev - 0.15));
     });
 
-    // Undo
+    // Undo / Redo
     hotkeys("command+z, ctrl+z", (event) => {
       event.preventDefault();
-      studio?.undo();
+      core.undo();
     });
 
-    // Redo
     hotkeys("command+shift+z, ctrl+shift+z, command+y, ctrl+y", (event) => {
       event.preventDefault();
-      studio?.redo();
+      core.redo();
     });
 
     // Move Up
@@ -130,13 +121,15 @@ export function useEditorHotkeys({ timelineCanvas, setZoomLevel }: UseEditorHotk
     // Last Frame
     hotkeys("command+left, ctrl+left", (event) => {
       event.preventDefault();
-      studio?.framePrev();
+      const frameDurationUs = 1_000_000 / fps;
+      core.seek(Math.max(0, currentTimeUs - frameDurationUs));
     });
 
     // Next Frame
     hotkeys("command+right, ctrl+right", (event) => {
       event.preventDefault();
-      studio?.frameNext();
+      const frameDurationUs = 1_000_000 / fps;
+      core.seek(currentTimeUs + frameDurationUs);
     });
 
     return () => {
@@ -157,5 +150,5 @@ export function useEditorHotkeys({ timelineCanvas, setZoomLevel }: UseEditorHotk
       hotkeys.unbind("command+left, ctrl+left");
       hotkeys.unbind("command+right, ctrl+right");
     };
-  }, [isPlaying, timelineCanvas, currentTime, toggle, setZoomLevel]);
+  }, [isPlaying, timelineCanvas, currentTimeUs, selectedIds, fps, setZoomLevel, studio]);
 }

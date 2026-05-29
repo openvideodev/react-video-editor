@@ -37,7 +37,7 @@ export function TabBar() {
   }, []);
 
   return (
-    <div className="relative flex items-center py-2 px-2 bg-primary/7">
+    <div className="relative flex items-center py-2 px-2 bg-primary/2">
       {showLeftFade && (
         <div className="absolute left-0 top-0 bottom-0 w-8 bg-linear-to-r from-card to-transparent z-10 pointer-events-none" />
       )}

@@ -1,4 +1,4 @@
-import { fontManager } from "openvideo";
+import { fontManager } from "@openvideo/engine-pixi";
 import * as PIXI from "pixi.js";
 
 /**
@@ -489,7 +489,7 @@ export const convertSchemaToExported = async (schemaJson: any): Promise<any> => 
       width,
       height,
       fps: 30,
-      bgColor: "#000000",
+      backgroundColor: "#000000",
     },
   };
 };

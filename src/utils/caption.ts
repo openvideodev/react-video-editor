@@ -28,7 +28,7 @@ export function buildParagraphsFromCaptions(captions: any[]) {
   const paragraphMap = new Map<number, any>();
 
   captions.forEach((caption) => {
-    const words = caption?.opts?.words ?? [];
+    const words = caption?.options?.words ?? [];
     if (words.length === 0) return;
 
     const paragraphIndex = words[0].paragraphIndex;

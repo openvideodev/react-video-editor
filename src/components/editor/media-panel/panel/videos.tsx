@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useStudioStore } from "@/stores/studio-store";
-import { useProjectStore } from "@/stores/project-store";
-import { Video, Log, Placeholder } from "openvideo";
+import { core } from "@/lib/project";
+import { Log } from "@openvideo/engine-pixi";
 import { Search, Film, Loader2 } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { cloneDeep, debounce } from "lodash";
+import { debounce } from "lodash";
+import Draggable from "@/components/shared/draggable";
+import { useIsDraggingOverTimeline } from "@/hooks/use-is-dragging-over-timeline";
 
 interface PexelsVideo {
   id: number;
@@ -32,11 +33,10 @@ interface PexelsVideo {
 }
 
 export default function PanelVideos() {
-  const { studio } = useStudioStore();
-  const { canvasSize } = useProjectStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [videos, setVideos] = useState<PexelsVideo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const isDraggingOverTimeline = useIsDraggingOverTimeline();
 
   const fetchVideos = async (query: string) => {
     setIsLoading(true);
@@ -74,67 +74,25 @@ export default function PanelVideos() {
   };
 
   const addItemToCanvas = async (asset: PexelsVideo) => {
-    if (!studio) return;
     try {
-      // Find the best quality mp4 link
       const videoFile = asset.video_files.find((f) => f.quality === "hd") || asset.video_files[0];
       if (!videoFile) throw new Error("No video file found");
-
-      const src = videoFile.link;
-      const clipName = `Video by ${asset.user.name}`;
-
-      // 1. Create and add placeholder immediately
-      const placeholder = new Placeholder(
-        src,
+      // Use the new Core command-based API to add a video clip
+      await core.clip.add(
         {
+          type: "Video",
+          src: videoFile.link,
+          name: `Video by ${asset.user.name}`,
           width: asset.width,
           height: asset.height,
-          duration: asset.duration * 1e6, // seconds to microseconds
+          display: { from: 0, to: asset.duration * 1e6 },
+          trim: { from: 0, to: asset.duration * 1e6 },
+          metadata: {
+            previewUrl: asset.image,
+          },
         },
-        "Video",
+        { objectFit: "contain" },
       );
-      placeholder.name = clipName;
-
-      // Scale to fit and center in scene
-      await placeholder.scaleToFit(canvasSize.width, canvasSize.height);
-      placeholder.centerInScene(canvasSize.width, canvasSize.height);
-
-      await studio.addClip(placeholder);
-
-      // 2. Load the real clip in the background
-      Video.fromUrl(src)
-        .then(async (videoClip) => {
-          videoClip.name = clipName;
-
-          // 3. Replace all placeholders with this source once loaded
-          await studio.timeline.replaceClipsBySource(src, async (oldClip) => {
-            const clone = await videoClip.clone();
-            // Copy state from placeholder (user might have moved/resized/split it)
-            clone.id = oldClip.id; // Keep the same ID if possible, or replaceClipsBySource handles it
-            clone.name = oldClip.name; // Keep the name from placeholder
-            clone.left = oldClip.left;
-            clone.top = oldClip.top;
-            clone.width = oldClip.width;
-            clone.height = oldClip.height;
-            const realDuration = videoClip.meta.duration;
-            const newTrim = { ...oldClip.trim };
-            newTrim.to = Math.max(newTrim.to, realDuration);
-            newTrim.from = Math.min(newTrim.from, newTrim.to);
-            console.warn(
-              "This needs to be reviewed. assets from pexels may not have the right duration",
-            );
-            clone.display = { ...oldClip.display };
-            clone.trim = newTrim;
-            clone.duration = (newTrim.to - newTrim.from) / clone.playbackRate;
-            clone.display.to = clone.display.from + clone.duration;
-            clone.zIndex = oldClip.zIndex;
-            return clone;
-          });
-        })
-        .catch((err) => {
-          Log.error("Failed to load video in background:", err);
-          // Optional: handle failure by removing placeholder or showing error
-        });
     } catch (error) {
       Log.error(`Failed to add video:`, error);
     }
@@ -143,7 +101,7 @@ export default function PanelVideos() {
   return (
     <div className="h-full flex flex-col">
       <div>
-        <div className="flex-1 p-4">
+        <div className="p-4">
           <InputGroup>
             <InputGroupAddon className="bg-secondary/30 pointer-events-none text-muted-foreground w-8 justify-center">
               <Search size={14} />
@@ -171,29 +129,56 @@ export default function PanelVideos() {
           </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2">
-            {videos.map((video) => (
-              <div
-                key={video.id}
-                className="group relative aspect-square rounded-md overflow-hidden bg-secondary/50 cursor-pointer border border-transparent hover:border-primary/50 transition-all"
-                onClick={() => addItemToCanvas(video)}
-              >
-                <div className="w-full h-full flex items-center justify-center bg-black/20 text-[0px]">
-                  <img
-                    src={video.image}
-                    className="w-full h-full object-cover pointer-events-none"
-                    alt={video.user.name}
-                  />
+            {videos.map((video) => {
+              const videoFile =
+                video.video_files.find((f) => f.quality === "hd") || video.video_files[0];
+              return (
+                <Draggable
+                  key={video.id}
+                  data={{
+                    type: "Video",
+                    src: videoFile?.link,
+                    name: `Video by ${video.user.name}`,
+                    width: video.width,
+                    height: video.height,
+                    duration: video.duration * 1e6,
+                    metadata: {
+                      previewUrl: video.image,
+                    },
+                  }}
+                  shouldDisplayPreview={!isDraggingOverTimeline}
+                  renderCustomPreview={
+                    <div className="w-20 aspect-video rounded-md overflow-hidden shadow-xl border-2 border-primary">
+                      <img src={video.image} className="w-full h-full object-cover" />
+                    </div>
+                  }
+                >
+                  <div
+                    className="group relative aspect-square rounded-md overflow-hidden bg-secondary/50 cursor-pointer border border-transparent hover:border-primary/50 transition-all"
+                    onClick={() => addItemToCanvas(video)}
+                  >
+                    <div
+                      className="w-full h-full flex items-center justify-center bg-black/20 text-[0px]"
+                      style={{
+                        backgroundImage: `url(${video.image})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      <span className="absolute bottom-1 right-1 text-[8px] bg-black/60 text-white px-1 rounded">
+                        {Math.floor(video.duration)}s
+                      </span>
+                    </div>
 
-                  <span className="absolute bottom-1 right-1 text-[8px] bg-black/60 text-white px-1 rounded">
-                    {Math.floor(video.duration)}s
-                  </span>
-                </div>
-
-                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-[10px] text-white truncate font-medium">{video.user.name}</p>
-                </div>
-              </div>
-            ))}
+                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-[10px] text-white truncate font-medium">
+                        {video.user.name}
+                      </p>
+                    </div>
+                  </div>
+                </Draggable>
+              );
+            })}
           </div>
         )}
         {isLoading && videos.length > 0 && (

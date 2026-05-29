@@ -11,4 +11,14 @@ export const config = {
     accountId: process.env.R2_ACCOUNT_ID as string,
     cdn: process.env.R2_PUBLIC_DOMAIN as string,
   },
+  pexels: {
+    url: process.env.PEXELS_URL || "https://api.pexels.com",
+    key: process.env.PEXELS_API_KEY as string,
+  },
+  elevenLabs: {
+    url: process.env.ELEVENLABS_URL || "https://api.elevenlabs.io",
+    key: process.env.ELEVENLABS_API_KEY as string,
+    model: process.env.ELEVENLABS_MODEL || "eleven_multilingual_sts_v2",
+    workerUrl: process.env.ELEVENLABS_WORKER_URL as string,
+  },
 };

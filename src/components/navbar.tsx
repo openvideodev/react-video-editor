@@ -15,7 +15,12 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const components: { title: string; href: string; description: string; icon: React.ReactNode }[] = [
+const components: {
+  title: string;
+  href: string;
+  description: string;
+  icon: React.ReactNode;
+}[] = [
   {
     title: "Animations",
     href: "/components/animations",
@@ -178,7 +183,10 @@ const Navbar = () => {
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & { title: string; icon?: React.ReactNode }
+  React.ComponentPropsWithoutRef<"a"> & {
+    title: string;
+    icon?: React.ReactNode;
+  }
 >(({ className, title, children, href, icon, ...props }, ref) => {
   return (
     <li>

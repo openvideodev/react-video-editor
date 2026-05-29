@@ -1,8 +1,5 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
 import {
   ColorPicker,
-  ColorPickerAlpha,
   ColorPickerEyeDropper,
   ColorPickerFormat,
   ColorPickerHue,
@@ -10,28 +7,22 @@ import {
   ColorPickerSelection,
 } from "@/components/ui/color-picker";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { IClip, AnimationOptions, KeyframeData } from "openvideo";
+import { IClip } from "@openvideo/engine-pixi";
 import {
-  IconAlignLeft,
-  IconAlignCenter,
-  IconAlignRight,
-  IconTextSize,
   IconLineHeight,
   IconMinus,
   IconBlur,
   IconRotate,
   IconRuler2,
-  IconOverline,
-  IconUnderline,
-  IconStrikethrough,
   IconCircle,
   IconMovie,
   IconPlus,
   IconTrash,
   IconSquare,
   IconEdit,
+  IconFlipHorizontal,
+  IconFlipVertical,
 } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
 import {
   InputGroup,
   InputGroupAddon,
@@ -43,43 +34,28 @@ import color from "color";
 import { NumberInput } from "@/components/ui/number-input";
 import { Switch } from "@/components/ui/switch";
 import useLayoutStore from "../store/use-layout-store";
+import { useStore } from "zustand";
+import { useEphemeralClip } from "@/hooks/use-ephemeral-clip";
+import { projectStore, core } from "@/lib/project";
 
 interface ImagePropertiesProps {
   clip: IClip;
 }
 
 export function ImageProperties({ clip }: ImagePropertiesProps) {
-  const imageClip = clip as any;
-  const style = imageClip.style || {};
-  const [, setTick] = useState(0);
+  const coreClipBase = useStore(projectStore, (s) => s.clips[clip.id]);
+  const coreClip = useEphemeralClip(clip.id, coreClipBase) as any;
 
-  // Listen to clip events for canvas sync
-  useEffect(() => {
-    if (!imageClip) return;
+  if (!coreClip) return null;
 
-    const onPropsChange = () => {
-      setTick((t) => t + 1);
-    };
-
-    imageClip.on?.("propsChange", onPropsChange);
-    imageClip.on?.("moving", onPropsChange);
-    imageClip.on?.("scaling", onPropsChange);
-    imageClip.on?.("rotating", onPropsChange);
-
-    return () => {
-      imageClip.off?.("propsChange", onPropsChange);
-      imageClip.off?.("moving", onPropsChange);
-      imageClip.off?.("scaling", onPropsChange);
-      imageClip.off?.("rotating", onPropsChange);
-    };
-  }, [imageClip]);
+  const style = coreClip.style || {};
 
   const handleUpdate = (updates: any) => {
-    imageClip.update(updates);
+    core.clip.update(clip.id, updates);
   };
 
   const handleStyleUpdate = (styleUpdates: any) => {
-    imageClip.update({
+    handleUpdate({
       style: {
         ...style,
         ...styleUpdates,
@@ -88,7 +64,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
   };
 
   const handleStrokeUpdate = (strokeUpdates: any) => {
-    imageClip.update({
+    handleUpdate({
       style: {
         ...style,
         stroke: {
@@ -118,7 +94,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
       finalUpdates.distance = parseFloat(shadowUpdates.distance) || 0;
     }
 
-    imageClip.update({
+    handleUpdate({
       style: {
         ...style,
         dropShadow: {
@@ -130,9 +106,9 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
   };
 
   const handleChromaKeyUpdate = (chromaUpdates: any) => {
-    imageClip.update({
+    handleUpdate({
       chromaKey: {
-        ...imageClip.chromaKey,
+        ...coreClip.chromaKey,
         ...chromaUpdates,
       },
     });
@@ -141,11 +117,12 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
   const { setFloatingControl } = useLayoutStore();
 
   const handleAnimationRemove = (id: string) => {
-    imageClip.removeAnimation(id);
-    setTick((t) => t + 1);
+    handleUpdate({
+      animations: (coreClip.animations || []).filter((a: any) => a.id !== id),
+    });
   };
 
-  const animations = imageClip.animations || [];
+  const animations = coreClip.animations || [];
 
   return (
     <div className="flex flex-col gap-5">
@@ -160,7 +137,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <span className="text-[10px] font-medium text-muted-foreground">X</span>
             </InputGroupAddon>
             <NumberInput
-              value={Math.round(imageClip.left || 0)}
+              value={Math.round(coreClip.left || 0)}
               onChange={(val) => handleUpdate({ left: val })}
               className="p-0"
             />
@@ -170,7 +147,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <span className="text-[10px] font-medium text-muted-foreground">Y</span>
             </InputGroupAddon>
             <NumberInput
-              value={Math.round(imageClip.top || 0)}
+              value={Math.round(coreClip.top || 0)}
               onChange={(val) => handleUpdate({ top: val })}
               className="p-0"
             />
@@ -182,7 +159,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <span className="text-[10px] font-medium text-muted-foreground">W</span>
             </InputGroupAddon>
             <NumberInput
-              value={Math.round(imageClip.width || 0)}
+              value={Math.round(coreClip.width || 0)}
               onChange={(val) => handleUpdate({ width: val })}
               className="p-0"
             />
@@ -192,7 +169,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <span className="text-[10px] font-medium text-muted-foreground">H</span>
             </InputGroupAddon>
             <NumberInput
-              value={Math.round(imageClip.height || 0)}
+              value={Math.round(coreClip.height || 0)}
               onChange={(val) => handleUpdate({ height: val })}
               className="p-0"
             />
@@ -205,10 +182,10 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
         <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           Rotation
         </label>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mt-1">
           <IconRotate className="size-4 text-muted-foreground" />
           <Slider
-            value={[Math.round(imageClip.angle ?? 0)]}
+            value={[Math.round(coreClip.angle ?? 0)]}
             onValueChange={(v) => handleUpdate({ angle: v[0] })}
             max={360}
             step={1}
@@ -216,7 +193,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
           />
           <InputGroup className="w-20">
             <NumberInput
-              value={Math.round(imageClip.angle ?? 0)}
+              value={Math.round(coreClip.angle ?? 0)}
               onChange={(val) => handleUpdate({ angle: val })}
               className="p-0 text-center"
             />
@@ -224,6 +201,51 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <span className="text-[10px] text-muted-foreground">°</span>
             </InputGroupAddon>
           </InputGroup>
+        </div>
+      </div>
+
+      {/* Flip Section */}
+      <div className="flex flex-col gap-2">
+        <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+          Flip
+        </label>
+        <div className="flex items-center gap-2 mt-1">
+          <button
+            onClick={() =>
+              handleUpdate({
+                flip: {
+                  ...(coreClip.flip || { x: false, y: false }),
+                  x: !coreClip.flip?.x,
+                },
+              })
+            }
+            className={`flex items-center justify-center flex-1 py-1.5 rounded-md border transition-colors ${
+              coreClip.flip?.x
+                ? "bg-primary/20 border-primary text-primary"
+                : "bg-secondary/30 border-transparent text-muted-foreground hover:text-white"
+            }`}
+          >
+            <IconFlipHorizontal className="size-4 mr-2" />
+            <span className="text-xs">Flip X</span>
+          </button>
+          <button
+            onClick={() =>
+              handleUpdate({
+                flip: {
+                  ...(coreClip.flip || { x: false, y: false }),
+                  y: !coreClip.flip?.y,
+                },
+              })
+            }
+            className={`flex items-center justify-center flex-1 py-1.5 rounded-md border transition-colors ${
+              coreClip.flip?.y
+                ? "bg-primary/20 border-primary text-primary"
+                : "bg-secondary/30 border-transparent text-muted-foreground hover:text-white"
+            }`}
+          >
+            <IconFlipVertical className="size-4 mr-2" />
+            <span className="text-xs">Flip Y</span>
+          </button>
         </div>
       </div>
 
@@ -235,7 +257,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
         <div className="flex items-center gap-4">
           <IconCircle className="size-4 text-muted-foreground" />
           <Slider
-            value={[Math.round((imageClip.opacity ?? 1) * 100)]}
+            value={[Math.round((coreClip.opacity ?? 1) * 100)]}
             onValueChange={(v) => handleUpdate({ opacity: v[0] / 100 })}
             max={100}
             step={1}
@@ -243,7 +265,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
           />
           <InputGroup className="w-20">
             <NumberInput
-              value={Math.round((imageClip.opacity ?? 1) * 100)}
+              value={Math.round((coreClip.opacity ?? 1) * 100)}
               onChange={(val) => handleUpdate({ opacity: val / 100 })}
               className="p-0 text-center"
             />
@@ -263,7 +285,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
           <button
             onClick={() => {
               setFloatingControl("animation-properties-picker", {
-                clipId: imageClip.id,
+                clipId: coreClip.id,
                 mode: "add",
               });
             }}
@@ -282,20 +304,20 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
           ) : (
             animations.map((anim: any) => (
               <div
-                key={anim.id}
+                key={anim.options?.id ?? anim.id}
                 className="flex items-center justify-between p-2 bg-secondary/30 rounded-md group"
               >
                 <div className="flex flex-col flex-1">
                   <span className="text-xs font-medium capitalize">{anim.type}</span>
                   <span className="text-[10px] text-muted-foreground">
-                    {Math.round(anim.options.duration / 1e6)}s duration
+                    {Math.round((anim.options?.duration ?? 0) / 1e6)}s duration
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => {
                       setFloatingControl("animation-properties-picker", {
-                        clipId: imageClip.id,
+                        clipId: coreClip.id,
                         animationId: anim.id,
                         mode: "edit",
                       });
@@ -324,12 +346,12 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
             Chroma Key
           </label>
           <Switch
-            checked={imageClip.chromaKey?.enabled ?? false}
+            checked={coreClip.chromaKey?.enabled ?? false}
             onCheckedChange={(checked) => handleChromaKeyUpdate({ enabled: checked })}
           />
         </div>
 
-        {(imageClip.chromaKey?.enabled ?? false) && (
+        {(coreClip.chromaKey?.enabled ?? false) && (
           <div className="flex flex-col gap-3 pt-1">
             <div className="flex gap-2">
               <InputGroup className="flex-1">
@@ -340,7 +362,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
                         <div
                           className="h-4 w-4 rounded-full border border-white/10 shadow-sm"
                           style={{
-                            backgroundColor: imageClip.chromaKey?.color || "#00FF00",
+                            backgroundColor: coreClip.chromaKey?.color || "#00FF00",
                           }}
                         />
                       </InputGroupButton>
@@ -369,7 +391,7 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
                   </Popover>
                 </InputGroupAddon>
                 <InputGroupInput
-                  value={imageClip.chromaKey?.color?.toUpperCase() || "#00FF00"}
+                  value={coreClip.chromaKey?.color?.toUpperCase() || "#00FF00"}
                   onChange={(e) => handleChromaKeyUpdate({ color: e.target.value })}
                   className="text-sm p-0 text-[10px] font-mono"
                 />
@@ -380,11 +402,11 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] text-muted-foreground">Similarity</span>
                 <span className="text-[10px] text-muted-foreground">
-                  {Math.round((imageClip.chromaKey?.similarity ?? 0.1) * 100)}%
+                  {Math.round((coreClip.chromaKey?.similarity ?? 0.1) * 100)}%
                 </span>
               </div>
               <Slider
-                value={[(imageClip.chromaKey?.similarity ?? 0.1) * 100]}
+                value={[(coreClip.chromaKey?.similarity ?? 0.1) * 100]}
                 onValueChange={(v) => handleChromaKeyUpdate({ similarity: v[0] / 100 })}
                 max={100}
                 step={1}
@@ -395,11 +417,11 @@ export function ImageProperties({ clip }: ImagePropertiesProps) {
               <div className="flex items-center justify-between">
                 <span className="text-[10px] text-muted-foreground">Spill</span>
                 <span className="text-[10px] text-muted-foreground">
-                  {Math.round((imageClip.chromaKey?.spill ?? 0.05) * 100)}%
+                  {Math.round((coreClip.chromaKey?.spill ?? 0.05) * 100)}%
                 </span>
               </div>
               <Slider
-                value={[(imageClip.chromaKey?.spill ?? 0.05) * 100]}
+                value={[(coreClip.chromaKey?.spill ?? 0.05) * 100]}
                 onValueChange={(v) => handleChromaKeyUpdate({ spill: v[0] / 100 })}
                 max={100}
                 step={1}

@@ -1,10 +1,11 @@
-import { Studio, IClip, jsonToClip } from "openvideo";
+import { IClip } from "@openvideo/engine-pixi";
 import { generateCaptionClips } from "./caption-generator";
+import { core, projectStore } from "./project";
+import { nanoid } from "@openvideo/core";
 
 export type WordsPerLineMode = "single" | "multiple";
 
 interface RegenerateCaptionClipsOptions {
-  studio: Studio;
   captionClip: any;
   mode: WordsPerLineMode;
   fontSize?: number;
@@ -24,7 +25,6 @@ const CUSTOM_ANIMATIONS_CAPTIONS = [
 ];
 
 export async function regenerateCaptionClips({
-  studio,
   captionClip,
   mode,
   fontSize,
@@ -32,7 +32,7 @@ export async function regenerateCaptionClips({
   fontUrl,
   styleUpdate,
 }: RegenerateCaptionClipsOptions) {
-  if (!studio || !captionClip?.mediaId) return;
+  if (!captionClip?.mediaId) return;
 
   const getAnimationObjects = (animation: string | string[], clipDuration: number) => {
     const animations = Array.isArray(animation) ? animation : [animation];
@@ -40,7 +40,7 @@ export async function regenerateCaptionClips({
       .filter((a) => a !== "undefined")
       .map((a) => ({
         type: a,
-        opts: {
+        options: {
           duration: CUSTOM_ANIMATIONS_CAPTIONS.includes(a) ? clipDuration : clipDuration * 0.2,
           delay: 0,
         },
@@ -48,13 +48,16 @@ export async function regenerateCaptionClips({
   };
 
   const mediaId = captionClip.mediaId;
-  const tracks = studio.getTracks();
+  const project = projectStore.getState();
+  const clips = project.clips;
+  const tracks = project.tracks;
+
   const siblingClips: any[] = [];
 
   tracks.forEach((track: any) => {
     track.clipIds.forEach((id: string) => {
-      const c = studio.getClipById(id);
-      if (c && c.type === "Caption" && (c as any).opts.mediaId === mediaId) {
+      const c = clips[id];
+      if (c && c.type === "Caption" && (c as any).mediaId === mediaId) {
         siblingClips.push(c);
       }
     });
@@ -64,15 +67,15 @@ export async function regenerateCaptionClips({
 
   if (siblingClips.length === 0) return;
 
-  const mediaClip = studio.getClipById(mediaId);
-  if (!mediaClip) return;
+  const mediaClip = clips[mediaId];
+  if (!mediaClip || !mediaClip.display) return;
 
   const mediaStartUs = mediaClip.display.from;
   const allWords: any[] = [];
 
   siblingClips.forEach((c) => {
     const clipStartUs = c.display.from;
-    const words = c.words || [];
+    const words = c.words || c.originalOpts?.words || c.originalOpts?.caption?.words || [];
     words.forEach((w: any) => {
       allWords.push({
         ...w,
@@ -92,8 +95,8 @@ export async function regenerateCaptionClips({
 
   const currentOpts = captionClip.originalOpts || {};
   const newClipsJSON = await generateCaptionClips({
-    videoWidth: (studio as any).opts.width,
-    videoHeight: (studio as any).opts.height,
+    videoWidth: project.settings.width,
+    videoHeight: project.settings.height,
     words: allWords,
     mode: mode,
     fontSize: fontSize || currentOpts.fontSize || 80,
@@ -102,22 +105,12 @@ export async function regenerateCaptionClips({
     style: combinedStyle,
   });
 
-  const trackId = studio.findTrackIdByClipId(captionClip.id);
+  // Find track ID using project state
+  const targetTrack = tracks.find((t) => t.clipIds.includes(captionClip.id));
+  const trackId = targetTrack?.id;
   if (!trackId) return;
 
-  // Optimistically update siblings (though they will be replaced)
-  siblingClips.forEach((c) => {
-    try {
-      (c as any).wordsPerLine = mode;
-      if ((c as any).opts) (c as any).opts.wordsPerLine = mode;
-      if ((c as any).originalOpts) (c as any).originalOpts.wordsPerLine = mode;
-      (c as any).emit && (c as any).emit("propsChange", {});
-    } catch (e) {
-      // ignore
-    }
-  });
-
-  const clipsToAdd: IClip[] = [];
+  const clipsToAdd: any[] = [];
   const paddingY = styleUpdate?.textBoxStyle?.verticalPadding ?? 0;
 
   for (const json of newClipsJSON) {
@@ -155,19 +148,6 @@ export async function regenerateCaptionClips({
         ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
         ...(styleUpdate?.textBoxStyle ? { textBoxStyle: styleUpdate.textBoxStyle } : {}),
       },
-      opts: {
-        ...(json.opts || {}),
-        wordsPerLine: mode,
-        ...(styleUpdate?.caption ? { caption: styleUpdate.caption } : {}),
-        ...(styleUpdate?.animation && {
-          animations: getAnimationObjects(
-            styleUpdate.animation,
-            json.display.to - json.display.from,
-          ),
-        }),
-        ...(styleUpdate?.wordAnimation ? { wordAnimation: styleUpdate.wordAnimation } : {}),
-        ...(styleUpdate?.textBoxStyle ? { textBoxStyle: styleUpdate.textBoxStyle } : {}),
-      },
       animations: styleUpdate?.animation
         ? getAnimationObjects(styleUpdate.animation, json.display.to - json.display.from)
         : [],
@@ -179,46 +159,42 @@ export async function regenerateCaptionClips({
 
     // If styleUpdate contains other caption fields, ensure they are applied
     if (styleUpdate) {
-      if (styleUpdate.fill) enrichedJson.style.color = styleUpdate.fill;
-      if (styleUpdate.align) enrichedJson.style.align = styleUpdate.align;
-      if (styleUpdate.fontFamily) enrichedJson.style.fontFamily = styleUpdate.fontFamily;
-      if (styleUpdate.fontUrl) enrichedJson.style.fontUrl = styleUpdate.fontUrl;
-      if (styleUpdate.fontSize) enrichedJson.style.fontSize = styleUpdate.fontSize;
+      if (styleUpdate.fill) enrichedJson.fill = styleUpdate.fill;
+      if (styleUpdate.align) enrichedJson.align = styleUpdate.align;
+      if (styleUpdate.fontFamily) enrichedJson.fontFamily = styleUpdate.fontFamily;
+      if (styleUpdate.fontUrl) enrichedJson.fontUrl = styleUpdate.fontUrl;
+      if (styleUpdate.fontSize) enrichedJson.fontSize = styleUpdate.fontSize;
 
       if (styleUpdate.strokeWidth !== undefined || styleUpdate.stroke) {
-        if (typeof enrichedJson.style.stroke !== "object" || enrichedJson.style.stroke === null) {
-          enrichedJson.style.stroke = {
-            color:
-              typeof enrichedJson.style.stroke === "string" ? enrichedJson.style.stroke : "#000000",
+        if (typeof enrichedJson.stroke !== "object" || enrichedJson.stroke === null) {
+          enrichedJson.stroke = {
+            color: typeof enrichedJson.stroke === "string" ? enrichedJson.stroke : "#000000",
             width: 0,
           };
         }
         if (styleUpdate.strokeWidth !== undefined)
-          enrichedJson.style.stroke.width = styleUpdate.strokeWidth;
-        if (styleUpdate.stroke) enrichedJson.style.stroke.color = styleUpdate.stroke;
+          enrichedJson.stroke.width = styleUpdate.strokeWidth;
+        if (styleUpdate.stroke) enrichedJson.stroke.color = styleUpdate.stroke;
       }
 
       if (styleUpdate.dropShadow) {
-        enrichedJson.style.shadow = {
+        enrichedJson.dropShadow = {
           color: styleUpdate.dropShadow.color,
           alpha: styleUpdate.dropShadow.alpha,
           blur: styleUpdate.dropShadow.blur,
-          offsetX: styleUpdate.dropShadow.distance * Math.cos(styleUpdate.dropShadow.angle),
-          offsetY: styleUpdate.dropShadow.distance * Math.sin(styleUpdate.dropShadow.angle),
+          distance: styleUpdate.dropShadow.distance,
+          angle: styleUpdate.dropShadow.angle,
         };
       }
 
-      if (styleUpdate.textCase) enrichedJson.style.textCase = styleUpdate.textCase;
+      if (styleUpdate.textCase) enrichedJson.textCase = styleUpdate.textCase;
 
-      if (styleUpdate.wordAnimation) enrichedJson.style.wordAnimation = styleUpdate.wordAnimation;
+      if (styleUpdate.wordAnimation) enrichedJson.wordAnimation = styleUpdate.wordAnimation;
 
       if (styleUpdate.textBoxStyle) {
         enrichedJson.textBoxStyle = styleUpdate.textBoxStyle;
         if (!enrichedJson.caption) enrichedJson.caption = {};
         enrichedJson.caption.textBoxStyle = styleUpdate.textBoxStyle;
-        if (enrichedJson.style) {
-          enrichedJson.style.textBoxStyle = styleUpdate.textBoxStyle;
-        }
       }
 
       if (styleUpdate.caption) {
@@ -234,12 +210,25 @@ export async function regenerateCaptionClips({
       }
     }
 
-    const clip = await jsonToClip(enrichedJson);
-    clipsToAdd.push(clip);
+    clipsToAdd.push(enrichedJson);
   }
 
-  siblingClips.forEach((c) => studio.removeClipById(c.id));
-  await studio.addClip(clipsToAdd, { trackId });
+  // 3. Atomically remove and add clips via Core batch
+  const fullClips = await Promise.all(clipsToAdd.map((c) => core.clip.prepare(c as any)));
+
+  const removeCommand = {
+    id: nanoid(),
+    type: "clip.remove",
+    payload: { ids: siblingClips.map((c) => c.id) },
+  };
+
+  const addCommands = fullClips.map((clip) => ({
+    id: nanoid(),
+    type: "clip.add",
+    payload: { clip, trackId },
+  }));
+
+  core.batch([removeCommand, ...addCommands] as any[]);
 
   return clipsToAdd;
 }

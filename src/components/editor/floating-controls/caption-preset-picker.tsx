@@ -4,10 +4,10 @@ import { CircleOff, XIcon } from "lucide-react";
 import useLayoutStore from "../store/use-layout-store";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ICaptionsControlProps } from "../interface/captions";
-import { STYLE_CAPTION_PRESETS, NONE_PRESET } from "../constant/caption";
+import { NONE_PRESET, CAPTION_PRESETS } from "../constant/caption";
 
 import { useStudioStore } from "@/stores/studio-store";
-import { fontManager } from "openvideo";
+import { fontManager } from "@openvideo/engine-pixi";
 import { regenerateCaptionClips } from "@/lib/caption-utils";
 
 const CaptionPresetPicker = () => {
@@ -29,8 +29,6 @@ const CaptionPresetPicker = () => {
   }, [setFloatingControl]);
 
   const handleApplyPreset = async (preset: ICaptionsControlProps) => {
-    if (!studio) return;
-
     // Filter for Captions
     const captionClips = selectedClips.filter((c) => c.type === "Caption");
     if (captionClips.length === 0) return;
@@ -111,15 +109,11 @@ const CaptionPresetPicker = () => {
       }
     }
 
-    const allCaptionClips = studio.clips.filter((c) => c.type === "Caption");
-    // const targetClips = allCaptionClips.filter(
-    //   (c) => captionClips.includes(c) || mediaIds.has((c as any).mediaId),
-    // );
+    const allCaptionClips = studio?.clips.filter((c) => c.type === "Caption") || [];
 
     if (preset.type === "word") {
       for (const clip of allCaptionClips) {
         await regenerateCaptionClips({
-          studio,
           captionClip: clip,
           mode: "single",
           fontSize:
@@ -132,7 +126,6 @@ const CaptionPresetPicker = () => {
     } else {
       for (const clip of allCaptionClips) {
         await regenerateCaptionClips({
-          studio,
           captionClip: clip,
           mode: "multiple",
           fontSize:
@@ -146,9 +139,9 @@ const CaptionPresetPicker = () => {
   };
 
   const PresetGrid = ({ presets }: { presets: ICaptionsControlProps[] }) => (
-    <div className="grid gap-2 p-4">
+    <div className="grid grid-cols-2 gap-2 p-4">
       <div
-        className="flex h-[70px] cursor-pointer items-center justify-center bg-zinc-800"
+        className="flex h-[70px] cursor-pointer items-center justify-center bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors"
         onClick={() => {
           handleApplyPreset(NONE_PRESET);
         }}
@@ -159,34 +152,39 @@ const CaptionPresetPicker = () => {
       {presets.map((preset, index) => (
         <div
           key={index}
-          className="text-md flex h-[70px] cursor-pointer items-center justify-center bg-zinc-800 overflow-hidden"
+          className="text-md flex h-[70px] cursor-pointer items-center justify-center bg-zinc-800 overflow-hidden rounded-lg hover:ring-2 hover:ring-primary transition-all"
           onClick={() => handleApplyPreset(preset)}
         >
-          <video
-            src={preset.previewUrl}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="h-40 place-content-center rounded-lg"
-          />
+          {preset.previewUrl ? (
+            <video
+              src={preset.previewUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="text-[10px] text-muted-foreground uppercase">Preset {index + 1}</div>
+          )}
         </div>
       ))}
     </div>
   );
+
   return (
     <div
       ref={containerRef}
-      className="absolute left-full top-0 z-200 ml-2 w-72 border bg-background p-0"
+      className="absolute left-[calc(100%+8px)] top-0 z-[200] w-64 border bg-background rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-left-2 duration-200"
     >
-      <div className="handle flex  items-center justify-between px-4 py-3 pb-0">
-        <p className="text-sm font-bold">Presets</p>
-        <div className="h-4 w-4" onClick={() => setFloatingControl("")}>
-          <XIcon className="h-3 w-3 cursor-pointer font-extrabold text-muted-foreground" />
-        </div>
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Presets</p>
+        <button onClick={() => setFloatingControl("")}>
+          <XIcon className="h-4 w-4 cursor-pointer text-muted-foreground hover:text-white transition-colors" />
+        </button>
       </div>
-      <ScrollArea className="h-[500px] w-full">
-        <PresetGrid presets={STYLE_CAPTION_PRESETS} />
+      <ScrollArea className="h-[400px]">
+        <PresetGrid presets={CAPTION_PRESETS} />
       </ScrollArea>
     </div>
   );

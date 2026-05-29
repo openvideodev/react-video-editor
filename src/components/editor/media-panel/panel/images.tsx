@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useStudioStore } from "@/stores/studio-store";
-import { useProjectStore } from "@/stores/project-store";
-import { Image, Log } from "openvideo";
+import { core } from "@/lib/project";
+import { Log } from "@openvideo/engine-pixi";
 import { Search, Image as ImageIcon, Loader2 } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { VisualsChatPanel } from "../visuals-chat-panel";
 import { debounce } from "lodash";
+import Draggable from "@/components/shared/draggable";
+import { useIsDraggingOverTimeline } from "@/hooks/use-is-dragging-over-timeline";
 
 interface PexelsImage {
   id: number;
@@ -30,11 +30,10 @@ interface PexelsImage {
 }
 
 export default function PanelImages() {
-  const { studio } = useStudioStore();
-  const { canvasSize } = useProjectStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [images, setImages] = useState<PexelsImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const isDraggingOverTimeline = useIsDraggingOverTimeline();
 
   const fetchImages = async (query: string) => {
     setIsLoading(true);
@@ -73,19 +72,17 @@ export default function PanelImages() {
   };
 
   const addItemToCanvas = async (asset: PexelsImage) => {
-    if (!studio) return;
-
     try {
-      const imageClip = await Image.fromUrl(asset.src.large2x);
-      imageClip.name = `Photo by ${asset.photographer}`;
-      imageClip.display = { from: 0, to: 5 * 1e6 };
-      imageClip.duration = 5 * 1e6;
-
-      // Scale to fit and center in scene
-      await imageClip.scaleToFit(canvasSize.width, canvasSize.height);
-      imageClip.centerInScene(canvasSize.width, canvasSize.height);
-
-      await studio.addClip(imageClip);
+      // Use the new Core command API
+      await core.clip.add(
+        {
+          type: "Image",
+          src: asset.src.large2x,
+          name: `Photo by ${asset.photographer}`,
+          display: { from: 0, to: 5_000_000 },
+        },
+        { objectFit: "contain" },
+      );
     } catch (error) {
       Log.error(`Failed to add image:`, error);
     }
@@ -94,7 +91,7 @@ export default function PanelImages() {
   return (
     <div className="h-full flex flex-col">
       <div>
-        <div className="flex-1 p-4">
+        <div className="p-4">
           <InputGroup>
             <InputGroupAddon className="bg-secondary/30 pointer-events-none text-muted-foreground w-8 justify-center">
               <Search size={14} />
@@ -123,23 +120,37 @@ export default function PanelImages() {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2">
             {images.map((image) => (
-              <div
+              <Draggable
                 key={image.id}
-                className="group relative aspect-square rounded-md overflow-hidden bg-secondary/50 cursor-pointer border border-transparent hover:border-primary/50 transition-all"
-                onClick={() => addItemToCanvas(image)}
+                data={{
+                  type: "Image",
+                  src: image.src.large2x,
+                  name: `Photo by ${image.photographer}`,
+                  duration: 5_000_000,
+                }}
+                shouldDisplayPreview={!isDraggingOverTimeline}
+                renderCustomPreview={
+                  <div className="w-20 aspect-square rounded-md overflow-hidden shadow-xl border-2 border-primary">
+                    <img src={image.src.medium} className="w-full h-full object-cover" />
+                  </div>
+                }
               >
-                <img
-                  src={image.src.medium}
-                  alt={image.alt}
-                  className="w-full h-full object-cover"
-                />
-
-                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <p className="text-[10px] text-white truncate font-medium">
-                    {image.photographer}
-                  </p>
+                <div
+                  className="group relative aspect-square rounded-md overflow-hidden bg-secondary/50 cursor-pointer border border-transparent hover:border-primary/50 transition-all"
+                  onClick={() => addItemToCanvas(image)}
+                  style={{
+                    backgroundImage: `url(${image.src.medium})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="text-[10px] text-white truncate font-medium">
+                      {image.photographer}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Draggable>
             ))}
           </div>
         )}

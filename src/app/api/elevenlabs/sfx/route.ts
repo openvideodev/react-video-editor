@@ -1,60 +1,39 @@
-import { R2StorageService } from "@/lib/r2";
-import { NextRequest, NextResponse } from "next/server";
-
-const r2 = new R2StorageService({
-  bucketName: process.env.R2_BUCKET_NAME || "",
-  accountId: process.env.R2_ACCOUNT_ID || "",
-  accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-  cdn: process.env.R2_PUBLIC_DOMAIN || "",
-});
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, duration } = await req.json();
+    const body = await req.json();
+    const apiKey = process.env.ELEVENLABS_API_KEY;
 
-    if (!text) {
-      return NextResponse.json({ error: "Text/Description is required" }, { status: 400 });
+    if (!apiKey) {
+      return NextResponse.json({ error: "ElevenLabs API key not configured" }, { status: 500 });
     }
 
-    const apiKey = process.env.ELEVENLABS_API_KEY;
-    const url = `${process.env.ELEVENLABS_URL}/v1/sound-generation`;
-
-    const headers = {
-      Accept: "audio/mpeg",
-      "Content-Type": "application/json",
-      "xi-api-key": apiKey || "",
-    };
-
-    const data = {
-      text,
-      duration_seconds: duration || undefined, // ElevenLabs SFX API might auto-determine if not provided, or have a default
-    };
-
-    const response = await fetch(url, {
+    const response = await fetch("https://api.elevenlabs.io/v1/sound-generation", {
       method: "POST",
-      headers,
-      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        "xi-api-key": apiKey,
+      },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("ElevenLabs SFX API Error:", errorText);
+      const errorData = await response.json().catch(() => ({}));
       return NextResponse.json(
-        { error: "Failed to generate sfx", details: errorText },
+        { error: errorData.message || "Failed to generate sound effect" },
         { status: response.status },
       );
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const fileName = `sfx/${Date.now()}.mp3`;
-    const publicUrl = await r2.uploadData(fileName, buffer, "audio/mpeg");
-
-    return NextResponse.json({ url: publicUrl });
+    const audioBuffer = await response.arrayBuffer();
+    return new NextResponse(audioBuffer, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+      },
+    });
   } catch (error) {
-    console.error("SFX generation error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("ElevenLabs SFX API Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

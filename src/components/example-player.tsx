@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Studio, type ProjectJSON } from "openvideo";
+import { Studio, type ProjectJSON } from "@openvideo/engine-pixi";
 import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

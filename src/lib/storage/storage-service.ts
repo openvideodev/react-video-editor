@@ -5,6 +5,7 @@ import { OPFSAdapter } from "./opfs-adapter";
 import type { MediaFileData, StorageConfig, TimelineData } from "./types";
 import type { TimelineTrack } from "@/types/timeline";
 import type { SavedSoundsData, SavedSound, SoundEffect } from "@/types/sounds";
+import { nanoid } from "nanoid";
 
 export interface StorageStats {
   usedBytes: number;
@@ -63,146 +64,115 @@ class StorageService {
     return new IndexedDBAdapter<TimelineData>(dbName, "timeline", this.config.version);
   }
 
-  // Project operations
+  private getProjectAdapter() {
+    return new IndexedDBAdapter<TProject>("video-editor-projects-db", "projects", 1);
+  }
+
+  // Project operations - now using client-side IndexedDB only
   async saveProject({ project }: { project: TProject }): Promise<void> {
-    // We try to update first, if it fails or if it's new we might need a different approach
-    // But for simplicity, we'll check if it exists or just use a dedicated "update" vs "create" approach
-    // In this singleton service, we can just call the individual API
-
     try {
-      // First check if project exists
-      const existing = await this.loadProject({ id: project.id });
+      const projectAdapter = this.getProjectAdapter();
+      const existing = await projectAdapter.get(project.id);
 
-      const res = await fetch(`/api/projects${existing ? `/${project.id}` : ""}`, {
-        method: existing ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: project.id,
-          name: project.name,
-          thumbnail: project.thumbnail,
-          canvasSize: project.canvasSize,
-          canvasMode: project.canvasMode,
-          fps: project.fps,
-          data: project.data, // This is the single scene data
-          currentSceneId: project.currentSceneId,
-          bookmarks: project.bookmarks,
-          mediaItems: project.mediaItems,
-        }),
-      });
+      const projectToSave: TProject = {
+        ...project,
+        updatedAt: new Date(),
+        createdAt: existing?.createdAt || new Date(),
+      };
 
-      if (!res.ok) {
-        throw new Error(`Failed to save project: ${res.statusText}`);
-      }
+      await projectAdapter.set(project.id, projectToSave);
     } catch (e) {
-      console.error("Error saving project to DB:", e);
+      console.error("Error saving project to IndexedDB:", e);
       throw e;
     }
   }
 
   async saveProjectFull(projectId: string, data: any): Promise<void> {
     try {
-      const res = await fetch(`/api/projects/${projectId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data }),
-      });
+      const projectAdapter = this.getProjectAdapter();
+      const existing = await projectAdapter.get(projectId);
 
-      if (!res.ok) {
-        throw new Error(`Failed to save project data: ${res.statusText}`);
+      if (existing) {
+        const updated: TProject = {
+          ...existing,
+          data,
+          updatedAt: new Date(),
+        };
+        await projectAdapter.set(projectId, updated);
       }
     } catch (e) {
-      console.error("Error saving project data to DB:", e);
+      console.error("Error saving project data to IndexedDB:", e);
       throw e;
     }
   }
 
   async updateProject(projectId: string, updates: Partial<TProject>): Promise<void> {
     try {
-      const res = await fetch(`/api/projects/${projectId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
+      const projectAdapter = this.getProjectAdapter();
+      const existing = await projectAdapter.get(projectId);
 
-      if (!res.ok) {
-        throw new Error(`Failed to update project: ${res.statusText}`);
+      if (existing) {
+        const updated: TProject = {
+          ...existing,
+          ...updates,
+          updatedAt: new Date(),
+        };
+        await projectAdapter.set(projectId, updated);
       }
     } catch (e) {
-      console.error("Error updating project in DB:", e);
+      console.error("Error updating project in IndexedDB:", e);
       throw e;
     }
   }
 
   async loadProject({ id }: { id: string }): Promise<TProject | null> {
     try {
-      const res = await fetch(`/api/projects/${id}`);
-      if (!res.ok) return null;
+      const projectAdapter = this.getProjectAdapter();
+      const project = await projectAdapter.get(id);
 
-      const dbProject = await res.json();
+      if (!project) return null;
 
-      // Mapping from DB model (project) to TProject
       return {
-        id: dbProject.id,
-        name: dbProject.name,
-        thumbnail: dbProject.thumbnail,
-        createdAt: new Date(dbProject.createdAt),
-        updatedAt: new Date(dbProject.updatedAt),
-        scenes: [], // Scenes are now simplified out or handled differently
-        currentSceneId: dbProject.currentSceneId || "",
-        backgroundColor: dbProject.backgroundColor,
-        backgroundType: dbProject.backgroundType,
-        blurIntensity: dbProject.blurIntensity,
-        bookmarks: dbProject.bookmarks || [],
-        fps: dbProject.fps,
-        canvasSize: dbProject.canvasSize,
-        canvasMode: dbProject.canvasMode,
-        data: dbProject.data,
-      } as TProject;
+        ...project,
+        createdAt: new Date(project.createdAt),
+        updatedAt: new Date(project.updatedAt),
+      };
     } catch (e) {
-      console.error("Error loading project from DB:", e);
+      console.error("Error loading project from IndexedDB:", e);
       return null;
     }
   }
 
   async loadAllProjects(): Promise<TProject[]> {
     try {
-      const res = await fetch("/api/projects");
-      if (!res.ok) return [];
+      const projectAdapter = this.getProjectAdapter();
+      const projectIds = await projectAdapter.list();
 
-      const dbProjects = await res.json();
+      const projects: TProject[] = [];
+      for (const id of projectIds) {
+        const project = await projectAdapter.get(id);
+        if (project) {
+          projects.push({
+            ...project,
+            createdAt: new Date(project.createdAt),
+            updatedAt: new Date(project.updatedAt),
+          });
+        }
+      }
 
-      return dbProjects.map((dbProject: any) => ({
-        id: dbProject.id,
-        name: dbProject.name,
-        thumbnail: dbProject.thumbnail,
-        createdAt: new Date(dbProject.createdAt),
-        updatedAt: new Date(dbProject.updatedAt),
-        scenes: [],
-        currentSceneId: dbProject.currentSceneId || "",
-        backgroundColor: dbProject.backgroundColor,
-        backgroundType: dbProject.backgroundType,
-        blurIntensity: dbProject.blurIntensity,
-        bookmarks: dbProject.bookmarks || [],
-        fps: dbProject.fps,
-        canvasSize: dbProject.canvasSize,
-        canvasMode: dbProject.canvasMode,
-        data: dbProject.data,
-      }));
+      // Sort by updatedAt desc
+      return projects.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
     } catch (e) {
-      console.error("Error loading all projects from DB:", e);
+      console.error("Error loading all projects from IndexedDB:", e);
       return [];
     }
   }
 
   async deleteProject({ id }: { id: string }): Promise<void> {
     try {
-      const res = await fetch(`/api/projects/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to delete project: ${res.statusText}`);
-      }
+      // Delete from IndexedDB
+      const projectAdapter = this.getProjectAdapter();
+      await projectAdapter.remove(id);
 
       // Also delete project-specific local data (media/temp files)
       const { mediaFilesAdapter } = this.getProjectMediaAdapters({
@@ -218,7 +188,7 @@ class StorageService {
     }
   }
 
-  // Legacy OPFS serialization removed - everything is now in DB JSON
+  // All project data is stored client-side in IndexedDB
 
   // Media operations
   async saveMediaFile({

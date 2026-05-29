@@ -1,8 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useStudioStore } from "@/stores/studio-store";
-import { Text, Log } from "openvideo";
+import { core } from "@/lib/project";
+import { Log } from "@openvideo/engine-pixi";
+import Draggable from "@/components/shared/draggable";
+import { useIsDraggingOverTimeline } from "@/hooks/use-is-dragging-over-timeline";
 
 const TEXT_PRESETS = [
   {
@@ -97,31 +98,35 @@ const TEXT_PRESETS = [
 //       },
 
 export default function PanelText() {
-  const { studio } = useStudioStore();
+  const isDraggingOverTimeline = useIsDraggingOverTimeline();
 
   const handleAddText = async (preset?: (typeof TEXT_PRESETS)[0]) => {
-    if (!studio) return;
-
     try {
-      const textClip = new Text(preset ? preset.description : "Add Text", {
-        fontSize: preset?.style.fontSize || 124,
-        fontFamily: preset?.style.fontFamily || "Arial",
-        align: "center",
-        fontWeight: preset?.style.fontWeight || "bold",
-        fontStyle: (preset?.style as any)?.fontStyle || "normal",
-        fill: preset?.style.fill || "#ffffff",
-        stroke: (preset?.style as any)?.stroke || undefined,
-        dropShadow: (preset?.style as any)?.dropShadow || undefined,
-        wordWrap: true,
-        wordWrapWidth: 600,
-        fontUrl: (preset?.style as any)?.fontUrl,
+      // Use the new Core API to add a text clip
+      core.clip.add({
+        type: "Text",
+        name: preset?.name || "Text",
+        text: preset?.description || "Add Text",
+        style: {
+          fontSize: preset?.style.fontSize || 124,
+          fontFamily: preset?.style.fontFamily || "Arial",
+          align: "center",
+          fontWeight: preset?.style.fontWeight || "bold",
+          fontStyle: (preset?.style as any)?.fontStyle || "normal",
+          fill: preset?.style.fill || "#ffffff",
+          stroke: (preset?.style as any)?.stroke || undefined,
+          dropShadow: (preset?.style as any)?.dropShadow || undefined,
+          wordWrap: true,
+          wordWrapWidth: 600,
+          fontUrl: (preset?.style as any)?.fontUrl,
+        },
+        display: { from: 0, to: 5_000_000 },
+        trim: { from: 0, to: 5_000_000 },
+        left: 240,
+        top: 898.0000000000003,
+        width: 600,
+        height: 124,
       });
-      textClip.name = preset ? preset.name : "Text";
-      await textClip.ready;
-      textClip.display.from = 0;
-      textClip.duration = 5e6;
-      textClip.display.to = 5e6;
-      await studio.addClip(textClip);
     } catch (error) {
       Log.error("Failed to add text:", error);
     }
@@ -130,31 +135,81 @@ export default function PanelText() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="p-4">
-        <Button onClick={() => handleAddText()} className="w-full h-9">
-          Add Text
-        </Button>
+        <Draggable
+          data={{
+            type: "Text",
+            name: "Text",
+            text: "Add Text",
+            style: {
+              fontSize: 124,
+              fontFamily: "Arial",
+              align: "center",
+              fontWeight: "bold",
+              fill: "#ffffff",
+            },
+            duration: 5_000_000,
+          }}
+          shouldDisplayPreview={!isDraggingOverTimeline}
+          renderCustomPreview={
+            <div className="px-4 py-2 bg-black rounded border-2 border-primary shadow-xl">
+              <span className="text-white font-bold">Add Text</span>
+            </div>
+          }
+        >
+          <div
+            className="w-full h-9 bg-primary text-primary-foreground flex items-center justify-center rounded-md text-sm font-medium cursor-pointer"
+            onClick={() => handleAddText()}
+          >
+            Add Text
+          </div>
+        </Draggable>
       </div>
       <div className="flex-1 overflow-y-auto px-4">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-3 pb-4">
           {TEXT_PRESETS.map((preset, index) => (
-            <button
+            <Draggable
               key={index}
-              onClick={() => handleAddText(preset)}
-              className="aspect-square bg-secondary/50 rounded-lg flex items-center justify-center p-4 hover:bg-secondary transition-colors group relative overflow-hidden border border-border"
+              data={{
+                type: "Text",
+                name: preset.name,
+                text: preset.description,
+                style: preset.style,
+                duration: 5_000_000,
+              }}
+              shouldDisplayPreview={!isDraggingOverTimeline}
+              renderCustomPreview={
+                <div className="px-4 py-2 bg-black rounded border-2 border-primary shadow-xl flex items-center justify-center">
+                  <span
+                    style={{
+                      fontFamily: preset.style.fontFamily,
+                      fontSize: "14px",
+                      fontWeight: preset.style.fontWeight,
+                      color: preset.style.fill,
+                    }}
+                  >
+                    {preset.description}
+                  </span>
+                </div>
+              }
             >
-              <span
-                style={{
-                  fontFamily: preset.style.fontFamily,
-                  fontSize: "12px", // Scaled down for preview
-                  fontWeight: preset.style.fontWeight,
-                  color: preset.style.fill,
-                  textAlign: "center",
-                }}
-                className="line-clamp-2"
+              <button
+                onClick={() => handleAddText(preset)}
+                className="aspect-square bg-secondary/50 rounded-lg flex items-center justify-center p-4 hover:bg-secondary transition-colors group relative overflow-hidden border border-border"
               >
-                {preset.description}
-              </span>
-            </button>
+                <span
+                  style={{
+                    fontFamily: preset.style.fontFamily,
+                    fontSize: "12px",
+                    fontWeight: preset.style.fontWeight,
+                    color: preset.style.fill,
+                    textAlign: "center",
+                  }}
+                  className="line-clamp-2"
+                >
+                  {preset.description}
+                </span>
+              </button>
+            </Draggable>
           ))}
         </div>
       </div>

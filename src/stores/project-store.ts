@@ -33,6 +33,10 @@ export const useProjectStore = create<ProjectState>()(
     }),
     {
       name: "openvideo-project-storage",
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        return persistedState as ProjectState;
+      },
     },
   ),
 );

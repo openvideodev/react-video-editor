@@ -2,26 +2,21 @@
 
 import { IconMicrophone } from "@tabler/icons-react";
 import { useGeneratedStore } from "@/stores/generated-store";
-import { useStudioStore } from "@/stores/studio-store";
-import { Audio, Log } from "openvideo";
+import { core } from "@/lib/project";
 import { AudioItem } from "./audio-item";
 import { useState } from "react";
 import { VoiceoverChatPanel } from "../voiceover-chat-panel";
 
 export default function PanelVoiceovers() {
-  const { studio } = useStudioStore();
   const { voiceovers } = useGeneratedStore();
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   const handleAddAudio = async (url: string, name: string) => {
-    if (!studio) return;
-    try {
-      const audioClip = await Audio.fromUrl(url);
-      audioClip.name = name;
-      await studio.addClip(audioClip);
-    } catch (error) {
-      Log.error("Failed to add audio:", error);
-    }
+    await core.clip.add({
+      type: "Audio",
+      src: url,
+      name: name,
+    });
   };
 
   return (

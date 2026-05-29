@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Studio, IClip } from "openvideo";
+import { Studio, IClip } from "@openvideo/engine-pixi";
 
 interface StudioState {
   studio: Studio | null;

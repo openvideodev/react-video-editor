@@ -15,7 +15,7 @@ import PanelVoiceovers from "./panel/voiceovers";
 import PanelSFX from "./panel/sfx";
 import PanelElements from "./panel/elements";
 import { PropertiesPanel } from "../properties-panel";
-import type { IClip } from "openvideo";
+import type { IClip } from "@openvideo/engine-pixi";
 import { useEffect, useState } from "react";
 import { useStudioStore } from "@/stores/studio-store";
 
@@ -35,35 +35,17 @@ const viewMap: Record<Tab, React.ReactNode> = {
 
 export function MediaPanel() {
   const { activeTab } = useMediaPanelStore();
-  const [selectedClips, setSelectedClips] = useState<IClip[]>([]);
-  const { studio, setSelectedClips: setStudioSelectedClips } = useStudioStore();
+  const { studio, selectedClips } = useStudioStore();
   const [showProperties, setShowProperties] = useState(false);
 
+  // Show properties panel when a clip is selected, unless we're on a specific tab that should stay visible
   useEffect(() => {
-    if (!studio) return;
-
-    const handleSelection = (data: any) => {
-      setSelectedClips(data.selected);
-      setStudioSelectedClips(data.selected);
+    if (selectedClips.length > 0) {
       setShowProperties(true);
-    };
-
-    const handleClear = () => {
-      setSelectedClips([]);
-      setStudioSelectedClips([]);
+    } else {
       setShowProperties(false);
-    };
-
-    studio.on("selection:created", handleSelection);
-    studio.on("selection:updated", handleSelection);
-    studio.on("selection:cleared", handleClear);
-
-    return () => {
-      studio.off("selection:created", handleSelection);
-      studio.off("selection:updated", handleSelection);
-      studio.off("selection:cleared", handleClear);
-    };
-  }, [studio]);
+    }
+  }, [selectedClips]);
 
   useEffect(() => {
     if (activeTab) {

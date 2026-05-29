@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useStudioStore } from "@/stores/studio-store";
 import { useProjectStore } from "@/stores/project-store";
-import { Image, Video, Audio, Log, clipToJSON, type IClip as StudioClip } from "openvideo";
+import { core } from "@/lib/project";
 import { Upload, Film, Search, X, HardDrive, Trash2, Music } from "lucide-react";
 import { storageService, type StorageStats } from "@/lib/storage/storage-service";
 import type { MediaFile, MediaType } from "@/types/media";
 import { uploadFile } from "@/lib/upload-utils";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import Draggable from "@/components/shared/draggable";
+import { useIsDraggingOverTimeline } from "@/hooks/use-is-dragging-over-timeline";
 interface VisualAsset {
   id: string;
   type: MediaType;
@@ -71,55 +73,92 @@ function AssetCard({
   onAdd: (asset: VisualAsset) => void;
   onDelete: (id: string) => void;
 }) {
+  const isDraggingOverTimeline = useIsDraggingOverTimeline();
+
+  const typeMap: Record<string, string> = {
+    image: "Image",
+    video: "Video",
+    audio: "Audio",
+  };
+
+  const dragData = {
+    type: typeMap[asset.type],
+    src: asset.src,
+    name: asset.name,
+    duration: asset.duration ? asset.duration * 1e6 : 5_000_000,
+  };
+
   return (
-    <div className="flex flex-col gap-1.5 group cursor-pointer" onClick={() => onAdd(asset)}>
-      <div className="relative aspect-square rounded-sm overflow-hidden bg-foreground/20 border border-transparent group-hover:border-primary/50 transition-all flex items-center justify-center">
-        {asset.type === "image" ? (
-          <img src={asset.src} alt={asset.name} className="max-w-full max-h-full object-contain" />
-        ) : asset.type === "audio" ? (
-          <div className="w-full h-full flex items-center justify-center relative">
-            <Music className="text-[#2dc28c]" size={32} fill="#2dc28c" fillOpacity={0.2} />
-          </div>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-black/40 relative">
-            <video
-              src={asset.src}
-              className="max-w-full max-h-full object-contain pointer-events-none"
-              muted
-              onMouseOver={(e) => (e.currentTarget as HTMLVideoElement).play()}
-              onMouseOut={(e) => {
-                (e.currentTarget as HTMLVideoElement).pause();
-                (e.currentTarget as HTMLVideoElement).currentTime = 0;
-              }}
-            />
-          </div>
-        )}
+    <Draggable
+      data={dragData}
+      shouldDisplayPreview={!isDraggingOverTimeline}
+      renderCustomPreview={
+        <div className="w-20 aspect-square rounded-md overflow-hidden shadow-xl border-2 border-primary bg-zinc-900 flex items-center justify-center">
+          {asset.type === "image" ? (
+            <div className="w-20 aspect-square rounded-md overflow-hidden shadow-xl border-2 border-primary">
+              <img src={asset.src} className="w-full h-full object-cover" />
+            </div>
+          ) : asset.type === "audio" ? (
+            <Music className="text-[#2dc28c]" size={32} />
+          ) : (
+            <Film className="text-white" size={32} />
+          )}
+        </div>
+      }
+    >
+      <div className="flex flex-col gap-1.5 group cursor-pointer" onClick={() => onAdd(asset)}>
+        <div className="relative aspect-square rounded-sm overflow-hidden bg-foreground/20 border border-transparent group-hover:border-primary/50 transition-all flex items-center justify-center">
+          {asset.type === "image" ? (
+            <div className="w-full h-full flex items-center justify-center bg-black/40 relative">
 
-        {/* Duration Overlay (Bottom Left) */}
-        {asset.duration && (
-          <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 text-[10px] text-white font-medium">
-            {formatDuration(asset.duration)}
-          </div>
-        )}
+              <img src={asset.src} alt={asset.name} className="max-w-full max-h-full object-contain pointer-events-none"
+              />
+            </div>
+          ) : asset.type === "audio" ? (
+            <div className="w-full h-full flex items-center justify-center relative">
+              <Music className="text-[#2dc28c]" size={32} fill="#2dc28c" fillOpacity={0.2} />
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-black/40 relative">
+              <video
+                src={asset.src}
+                className="max-w-full max-h-full object-contain pointer-events-none"
+                muted
+                onMouseOver={(e) => (e.currentTarget as HTMLVideoElement).play()}
+                onMouseOut={(e) => {
+                  (e.currentTarget as HTMLVideoElement).pause();
+                  (e.currentTarget as HTMLVideoElement).currentTime = 0;
+                }}
+              />
+            </div>
+          )}
 
-        {/* Remove Button (Minimalist on Hover) */}
-        <button
-          type="button"
-          className="absolute top-1 right-1 p-1 rounded bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(asset.id);
-          }}
-        >
-          <Trash2 size={12} className="text-white" />
-        </button>
+          {/* Duration Overlay (Bottom Left) */}
+          {asset.duration && (
+            <div className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 text-[10px] text-white font-medium">
+              {formatDuration(asset.duration)}
+            </div>
+          )}
+
+          {/* Remove Button (Minimalist on Hover) */}
+          <button
+            type="button"
+            className="absolute top-1 right-1 p-1 rounded bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(asset.id);
+            }}
+          >
+            <Trash2 size={12} className="text-white" />
+          </button>
+        </div>
+
+        {/* Label (External) */}
+        <p className="text-[10px] text-muted-foreground group-hover:text-foreground truncate transition-colors px-0.5">
+          {asset.name}
+        </p>
       </div>
-
-      {/* Label (External) */}
-      <p className="text-[10px] text-muted-foreground group-hover:text-foreground truncate transition-colors px-0.5">
-        {asset.name}
-      </p>
-    </div>
+    </Draggable>
   );
 }
 
@@ -327,30 +366,24 @@ export default function PanelUploads() {
 
   // Add item to canvas
   const addItemToCanvas = async (asset: VisualAsset) => {
-    if (!studio) return;
-
     try {
-      if (asset.type === "image") {
-        const imageClip = await Image.fromUrl(asset.src);
-        imageClip.name = asset.name;
-        imageClip.display = { from: 0, to: 5 * 1e6 };
-        imageClip.duration = 5 * 1e6;
-        await imageClip.scaleToFit(canvasSize.width, canvasSize.height);
-        imageClip.centerInScene(canvasSize.width, canvasSize.height);
-        await studio.addClip(imageClip);
-      } else if (asset.type === "audio") {
-        const audioClip = await Audio.fromUrl(asset.src);
-        audioClip.name = asset.name;
-        await studio.addClip(audioClip);
-      } else {
-        const videoClip = await Video.fromUrl(asset.src);
-        videoClip.name = asset.name;
-        await videoClip.scaleToFit(canvasSize.width, canvasSize.height);
-        videoClip.centerInScene(canvasSize.width, canvasSize.height);
-        await studio.addClip(videoClip);
-      }
+      const typeMap: Record<string, string> = {
+        image: "Image",
+        video: "Video",
+        audio: "Audio",
+      };
+
+      // Use the new Core command API
+      await core.clip.add(
+        {
+          type: typeMap[asset.type] as any,
+          src: asset.src,
+          name: asset.name,
+        },
+        { objectFit: "contain" },
+      );
     } catch (error) {
-      Log.error(`Failed to add ${asset.type}:`, error);
+      console.error("Failed to add clip:", error);
     }
   };
 

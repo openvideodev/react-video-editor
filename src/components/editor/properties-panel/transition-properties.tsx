@@ -1,13 +1,15 @@
 import * as React from "react";
-import { IClip, getTransitionOptions, registerCustomTransition } from "openvideo";
+import { IClip, getTransitionOptions, registerCustomTransition } from "@openvideo/engine-pixi";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useStudioStore } from "@/stores/studio-store";
 import { Loader2, Timer } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Icons } from "@/components/shared/icons";
+import { useStore } from "zustand";
+import { projectStore, core } from "@/lib/project";
+import { nanoid } from "nanoid";
 
 interface TransitionPropertiesProps {
   clip: IClip;
@@ -178,16 +180,17 @@ const DraggableTransitionItem = ({
 };
 
 export function TransitionProperties({ clip }: TransitionPropertiesProps) {
-  const transitionClip = clip as any;
-  const { studio, selectedClips } = useStudioStore();
+  const coreClip = useStore(projectStore, (s) => s.clips[clip.id]) as any;
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const [loaded, setLoaded] = React.useState(LOADED_CACHE);
-  const [localDuration, setLocalDuration] = React.useState(transitionClip.duration / 1_000_000);
+  const [localDuration, setLocalDuration] = React.useState((coreClip?.duration || 0) / 1_000_000);
 
   React.useEffect(() => {
-    setLocalDuration(transitionClip.duration / 1_000_000);
-  }, [transitionClip.duration]);
+    if (coreClip?.duration) {
+      setLocalDuration(coreClip.duration / 1_000_000);
+    }
+  }, [coreClip?.duration]);
 
   React.useLayoutEffect(() => {
     const viewport = scrollRef.current?.querySelector("[data-radix-scroll-area-viewport]");
@@ -205,8 +208,8 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
     setLoaded({ ...LOADED_CACHE });
   };
 
-  const fromClip = studio?.timeline.getClipById(transitionClip.fromClipId);
-  const toClip = studio?.timeline.getClipById(transitionClip.toClipId);
+  const fromClip = projectStore.getState().clips[coreClip.fromClipId];
+  const toClip = projectStore.getState().clips[coreClip.toClipId];
 
   const minFromToDuration = Math.min(fromClip?.duration ?? Infinity, toClip?.duration ?? Infinity);
 
@@ -214,39 +217,32 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
   const minDurationMicro = 100_000; // 0.1s
 
   const handleUpdate = async (updates: any) => {
-    if (!studio || !transitionClip.fromClipId || !transitionClip.toClipId) return;
+    if (!coreClip || !coreClip.fromClipId || !coreClip.toClipId) return;
 
-    let newDuration = updates.duration ?? transitionClip.duration;
-    const newKey = updates.key ?? transitionClip.transitionEffect.key;
+    const fromClip = projectStore.getState().clips[coreClip.fromClipId];
+    const toClip = projectStore.getState().clips[coreClip.toClipId];
+
+    if (!fromClip || !toClip || !toClip.display) return;
+
+    let newDuration = updates.duration ?? coreClip.duration;
+    const newKey = updates.key ?? coreClip.transitionEffect.key;
 
     if (newDuration !== undefined || updates.key !== undefined) {
       newDuration = Math.max(minDurationMicro, Math.min(maxDurationMicro, newDuration));
 
-      const transitionStart = toClip!.display.from - newDuration / 2;
+      const transitionStart = toClip.display.from - newDuration / 2;
       const transitionEnd = transitionStart + newDuration;
       const transitionMeta = {
         key: newKey,
         name: newKey,
         duration: newDuration,
-        fromClipId: transitionClip.fromClipId,
-        toClipId: transitionClip.toClipId,
+        fromClipId: coreClip.fromClipId,
+        toClipId: coreClip.toClipId,
         start: Math.max(0, transitionStart),
         end: transitionEnd,
       };
 
-      // Clear cached transition renderers if the key or duration changed
-      if (
-        newKey !== transitionClip.transitionEffect.key ||
-        newDuration !== transitionClip.duration
-      ) {
-        const transKey = `${transitionClip.fromClipId}_${transitionClip.toClipId}`;
-        if ((studio as any).transitionRenderers.has(transKey)) {
-          (studio as any).transitionRenderers.get(transKey)?.destroy();
-          (studio as any).transitionRenderers.delete(transKey);
-        }
-      }
-
-      // Update the transition clip and related clips in a single batch
+      // Update the transition clip and related clips in a single batch via Core Store
       const clipUpdates: any = {
         duration: newDuration,
         display: { from: Math.max(0, transitionStart), to: transitionEnd },
@@ -254,35 +250,34 @@ export function TransitionProperties({ clip }: TransitionPropertiesProps) {
 
       if (updates.key) {
         clipUpdates.transitionEffect = {
-          id: transitionClip.transitionEffect.id,
+          id: coreClip.transitionEffect.id,
           key: newKey,
           name: newKey,
         };
       }
 
-      const updatesList = [
+      const updatesList: { id: string; updates: any }[] = [
         {
-          id: transitionClip.id,
+          id: coreClip.id,
           updates: clipUpdates,
+        },
+        {
+          id: fromClip.id,
+          updates: { transition: transitionMeta },
+        },
+        {
+          id: toClip.id,
+          updates: { transition: transitionMeta },
         },
       ];
 
-      if (fromClip) {
-        updatesList.push({
-          id: fromClip.id,
-          updates: { transition: transitionMeta } as any,
-        });
-      }
-      if (toClip) {
-        updatesList.push({
-          id: toClip.id,
-          updates: { transition: transitionMeta } as any,
-        });
-      }
+      const commands = updatesList.map(({ id, updates }) => ({
+        id: nanoid(),
+        type: "clip.update",
+        payload: { id, updates },
+      }));
 
-      await studio.updateClips(updatesList);
-
-      studio.seek(studio.currentTime);
+      core.batch(commands);
     }
   };
 

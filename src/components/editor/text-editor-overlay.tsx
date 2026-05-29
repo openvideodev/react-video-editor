@@ -16,7 +16,13 @@ interface TextEditorOverlayProps {
 export function TextEditorOverlay({ clip, onClose }: TextEditorOverlayProps) {
   const { studio } = useStudioStore();
   const [text, setText] = useState(clip.text || "");
-  const [bounds, setBounds] = useState({ x: 0, y: 0, width: 0, height: 0, rotation: 0 });
+  const [bounds, setBounds] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    rotation: 0,
+  });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const textRef = useRef(text); // Track text for saving on unmount
 
